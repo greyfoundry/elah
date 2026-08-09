@@ -32,9 +32,20 @@ async function trackedFiles(root) {
 function referencedStudyPaths(line) {
   const references = [];
   const normalizedLine = line.replaceAll('\\', '/');
-  const pattern = /(?:^|[\s"'`(=,:])((?:(?:\.{1,2})\/)*studying\/[A-Za-z0-9_.*-]+(?:\/[A-Za-z0-9_.*-]+)*)/g;
+  const pattern = /(?:^|[\s"'`(=,:])([^\s"'`()=,:]*studying\/[A-Za-z0-9_.*-]+(?:\/[A-Za-z0-9_.*-]+)*)/g;
   for (const match of normalizedLine.matchAll(pattern)) {
-    references.push(match[1].replace(/^(?:\.{1,2}\/)+/, ''));
+    const candidate = match[1].replace(/^(?:\.{1,2}\/)+/, '');
+    if (candidate.startsWith('scripts/studying/')) {
+      continue;
+    }
+    if (candidate.startsWith('studying/')) {
+      references.push(candidate);
+      continue;
+    }
+    const rootBoundary = candidate.indexOf('/studying/');
+    if (rootBoundary >= 0) {
+      references.push(candidate.slice(rootBoundary + 1));
+    }
   }
   return references;
 }

@@ -61,6 +61,32 @@ test('rejects a packaging path into a studying checkout', async () => {
   );
 });
 
+test('rejects a studying checkout path composed after a root variable', async () => {
+  await withTrackedFiles(
+    {
+      'src/paths.mjs': "// SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n// SPDX-License-Identifier: Apache-2.0 OR MIT\n\nconst checkout = `${rootDir}/studying/papermc/Folia`;\n",
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), [
+        'src/paths.mjs:4: forbidden studying checkout reference: studying/papermc/Folia',
+      ]);
+    },
+  );
+});
+
+test('rejects an absolute path into a studying checkout', async () => {
+  await withTrackedFiles(
+    {
+      'container.conf': 'source=/workspace/studying/papermc/Folia\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), [
+        'container.conf:1: forbidden studying checkout reference: studying/papermc/Folia',
+      ]);
+    },
+  );
+});
+
 test('rejects tracked content below the studying metadata boundary', async () => {
   await withTrackedFiles(
     {

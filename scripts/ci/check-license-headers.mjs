@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 const execFileAsync = promisify(execFile);
 const excludedFiles = new Set([
+  '.node-version',
   'gradle/wrapper/gradle-wrapper.jar',
   'gradlew',
   'gradlew.bat',
@@ -16,6 +17,8 @@ const excludedFiles = new Set([
 ]);
 const slashCommentExtensions = new Set(['.cjs', '.gradle', '.java', '.js', '.jsx', '.kt', '.kts', '.mjs', '.proto', '.rs', '.ts', '.tsx']);
 const hashCommentExtensions = new Set(['.bash', '.properties', '.ps1', '.py', '.rb', '.sh', '.toml', '.yaml', '.yml']);
+const binaryExtensions = new Set(['.class', '.dll', '.exe', '.ico', '.jar', '.jpeg', '.jpg', '.nbt', '.pb', '.png', '.wasm', '.zip']);
+const strictExtensions = new Set(['.json', '.lock']);
 
 async function trackedFiles(root) {
   const { stdout } = await execFileAsync('git', ['ls-files', '-z'], {
@@ -34,45 +37,71 @@ async function trackedFiles(root) {
 function commentPrefix(file) {
   const basename = path.posix.basename(file);
   if (['.gitattributes', '.gitignore', 'Dockerfile', 'Justfile', 'Makefile', 'justfile'].includes(basename)) {
-    return '#';
+    return { open: '#' };
   }
   const extension = path.posix.extname(file).toLowerCase();
   if (slashCommentExtensions.has(extension)) {
-    return '//';
+    return { open: '//' };
   }
   if (hashCommentExtensions.has(extension)) {
-    return '#';
+    return { open: '#' };
   }
   if (extension === '.bat' || extension === '.cmd') {
-    return 'REM';
+    return { open: 'REM' };
+  }
+  if (extension === '.sql') {
+    return { open: '--' };
+  }
+  if (extension === '.css') {
+    return { open: '/*', close: '*/' };
+  }
+  if (extension === '.html' || extension === '.xml') {
+    return { open: '<!--', close: '-->' };
   }
   return undefined;
 }
 
 function isExcluded(file) {
+  const extension = path.posix.extname(file).toLowerCase();
   return (
     excludedFiles.has(file) ||
+    binaryExtensions.has(extension) ||
+    strictExtensions.has(extension) ||
     file.startsWith('java/elah-api/src/generated/java/') ||
     file.startsWith('LICENSES/') ||
     file.endsWith('.md')
   );
 }
 
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function headerPattern(syntax, tag) {
+  const closing = syntax.close ? `.*\\s${escapeRegex(syntax.close)}\\s*$` : '.*$';
+  return new RegExp(`^${escapeRegex(syntax.open)}\\s+${tag}\\s+\\S${closing}`);
+}
+
 export async function checkLicenseHeaders(root = process.cwd()) {
   const diagnostics = [];
   for (const file of await trackedFiles(root)) {
-    const prefix = commentPrefix(file);
-    if (!prefix || isExcluded(file)) {
+    if (isExcluded(file)) {
+      continue;
+    }
+    const syntax = commentPrefix(file);
+    if (!syntax) {
+      diagnostics.push(
+        `${file}: unsupported file type; add native SPDX syntax or an explicit scanner classification`,
+      );
       continue;
     }
 
     const contents = (await readFile(path.join(root, file), 'utf8')).replace(/^\uFEFF/, '');
     const lines = contents.split(/\r?\n/);
     const firstLine = lines[0]?.startsWith('#!') ? 1 : 0;
-    const escapedPrefix = prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const copyrightPattern = new RegExp(`^${escapedPrefix}\\s+SPDX-FileCopyrightText:\\s+\\S`);
+    const copyrightPattern = headerPattern(syntax, 'SPDX-FileCopyrightText:');
     const licenseTag = ['SPDX-License', 'Identifier:'].join('-');
-    const licensePattern = new RegExp(`^${escapedPrefix}\\s+${licenseTag}\\s+\\S`);
+    const licensePattern = headerPattern(syntax, licenseTag);
 
     if (!copyrightPattern.test(lines[firstLine] ?? '')) {
       diagnostics.push(

@@ -66,9 +66,43 @@ test('accepts top-position SPDX notices in native comment syntax', async () => {
     {
       'src/example.mjs': '// SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n// SPDX-License-Identifier: Apache-2.0 OR MIT\n\nexport const value = 1;\n',
       'config/example.yml': '# SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n# SPDX-License-Identifier: Apache-2.0 OR MIT\n\nvalue: true\n',
+      'db/schema.sql': '-- SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n-- SPDX-License-Identifier: Apache-2.0 OR MIT\n\nSELECT 1;\n',
+      'web/example.css': '/* SPDX-FileCopyrightText: 2026 Greyfoundry contributors */\n/* SPDX-License-Identifier: Apache-2.0 OR MIT */\n\nbody {}\n',
+      'web/example.html': '<!-- SPDX-FileCopyrightText: 2026 Greyfoundry contributors -->\n<!-- SPDX-License-Identifier: Apache-2.0 OR MIT -->\n\n<p>Example</p>\n',
+      'config/example.xml': '<!-- SPDX-FileCopyrightText: 2026 Greyfoundry contributors -->\n<!-- SPDX-License-Identifier: Apache-2.0 OR MIT -->\n\n<example />\n',
     },
     async (root) => {
       assert.deepEqual(await checkLicenseHeaders(root), []);
+    },
+  );
+});
+
+test('rejects missing SPDX notices in additional comment-compatible formats', async () => {
+  await withTrackedFiles(
+    {
+      'db/schema.sql': 'SELECT 1;\n',
+      'web/example.css': 'body {}\n',
+      'web/example.html': '<p>Example</p>\n',
+      'config/example.xml': '<example />\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkLicenseHeaders(root), [
+        'config/example.xml:1: expected SPDX-FileCopyrightText on the first syntactically valid line',
+        'db/schema.sql:1: expected SPDX-FileCopyrightText on the first syntactically valid line',
+        'web/example.css:1: expected SPDX-FileCopyrightText on the first syntactically valid line',
+        'web/example.html:1: expected SPDX-FileCopyrightText on the first syntactically valid line',
+      ]);
+    },
+  );
+});
+
+test('rejects an unclassified tracked file instead of silently skipping it', async () => {
+  await withTrackedFiles(
+    { 'src/policy.future': 'human-authored content\n' },
+    async (root) => {
+      assert.deepEqual(await checkLicenseHeaders(root), [
+        'src/policy.future: unsupported file type; add native SPDX syntax or an explicit scanner classification',
+      ]);
     },
   );
 });
@@ -77,6 +111,7 @@ test('leaves strict formats to precise REUSE annotations', async () => {
   await withTrackedFiles(
     {
       'config/example.json': '{"value":true}\n',
+      '.node-version': '24.19.0\n',
       'pnpm-lock.yaml': 'lockfileVersion: 9.0\n',
     },
     async (root) => {
