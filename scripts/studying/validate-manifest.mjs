@@ -1,5 +1,28 @@
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║                                                                  ║
+// ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+// ║                                                                  ║
+// ║               https://github.com/greyfoundry/elah                ║
+// ║                                                                  ║
+// ╚══════════════════════════════════════════════════════════════════╝
+//
+// Copyright © 2026 Greyfoundry contributors.
 // SPDX-FileCopyrightText: 2026 Greyfoundry contributors
-// SPDX-License-Identifier: Apache-2.0 OR MIT
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
 
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -46,16 +69,19 @@ function validateRepository(repository, index, names, errors) {
   addMissingPropertyErrors(repository, repositorySchema.required, location, errors);
   addUnexpectedPropertyErrors(repository, Object.keys(repositorySchema.properties), location, errors);
 
+  const normalizedRepo = isNonEmptyString(repository.repo) ? repository.repo.toLowerCase() : undefined;
   if (!isNonEmptyString(repository.repo) || !new RegExp(repositorySchema.properties.repo.pattern).test(repository.repo)) {
     errors.push(`${location}.repo must be an owner/repository name`);
-  } else if (names.has(repository.repo)) {
+  } else if (names.has(normalizedRepo)) {
     errors.push(`${location}.repo is a duplicate repository name: ${repository.repo}`);
   } else {
-    names.add(repository.repo);
+    names.add(normalizedRepo);
   }
 
   if (!isNonEmptyString(repository.url) || !new RegExp(repositorySchema.properties.url.pattern).test(repository.url)) {
     errors.push(`${location}.url must be a GitHub repository URL`);
+  } else if (normalizedRepo && repository.url.toLowerCase() !== `https://github.com/${normalizedRepo}`) {
+    errors.push(`${location}.url must match repo ${repository.repo}`);
   }
   if (!isNonEmptyString(repository.ref)) {
     errors.push(`${location}.ref must be a non-empty upstream ref`);

@@ -1,6 +1,6 @@
 # Upstreams and research boundaries
 
-Elah learns from upstream projects without importing their source into production work. Research is reproducible, scoped, and documented.
+Elah learns from upstream projects without importing their source into production work. Research is repeatable from exact pins, scoped, and documented.
 
 | Upstream | Intended study | Boundary |
 | --- | --- | --- |
@@ -12,6 +12,6 @@ Elah learns from upstream projects without importing their source into productio
 
 ## Studying isolation
 
-When introduced, upstream checkouts live only under ignored `studying/`; the tracked manifest and study notes record repository, organisation, branch or tag, exact commit, date, license, purpose, and related ADRs. Production source, builds, packages, release archives, containers, and SBOMs must never resolve dependencies from studying checkouts.
+Upstream checkouts live only under ignored paths within `studying/`; the tracked manifest and study notes record repository, organisation, branch or tag, exact commit, date, license, purpose, and related ADRs. Production source, builds, packages, release archives, containers, and SBOMs must never resolve dependencies from studying checkouts.
 
 Every upstream study should produce a research note that records the problem, architecture, useful ideas, rejected ideas, incompatible assumptions, experiments, benchmarks, licensing implications, and resulting ADRs.

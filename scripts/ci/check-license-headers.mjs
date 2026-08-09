@@ -1,5 +1,28 @@
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║                                                                  ║
+// ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+// ║                                                                  ║
+// ║               https://github.com/greyfoundry/elah                ║
+// ║                                                                  ║
+// ╚══════════════════════════════════════════════════════════════════╝
+//
+// Copyright © 2026 Greyfoundry contributors.
 // SPDX-FileCopyrightText: 2026 Greyfoundry contributors
-// SPDX-License-Identifier: Apache-2.0 OR MIT
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
 
 import { execFile } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
@@ -13,6 +36,7 @@ const excludedFiles = new Set([
   'gradle/wrapper/gradle-wrapper.jar',
   'gradlew',
   'gradlew.bat',
+  'LICENSE',
   'pnpm-lock.yaml',
 ]);
 const slashCommentExtensions = new Set(['.cjs', '.gradle', '.java', '.js', '.jsx', '.kt', '.kts', '.mjs', '.proto', '.rs', '.ts', '.tsx']);
@@ -73,13 +97,41 @@ function isExcluded(file) {
   );
 }
 
-function escapeRegex(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+const apacheNoticeLines = [
+  `╔${'═'.repeat(66)}╗`,
+  `║${''.padStart(66)}║`,
+  `║${'ELAH — A GREYFOUNDRY PROJECT'.padStart(47).padEnd(66)}║`,
+  `║${''.padStart(66)}║`,
+  `║${'https://github.com/greyfoundry/elah'.padStart(50).padEnd(66)}║`,
+  `║${''.padStart(66)}║`,
+  `╚${'═'.repeat(66)}╝`,
+  '',
+  'Copyright © 2026 Greyfoundry contributors.',
+  'SPDX-FileCopyrightText: 2026 Greyfoundry contributors',
+  '',
+  'Licensed under the Apache License, Version 2.0 (the "License");',
+  'you may not use this file except in compliance with the License.',
+  'You may obtain a copy of the License at',
+  '',
+  '     https://www.apache.org/licenses/LICENSE-2.0',
+  '',
+  'Unless required by applicable law or agreed to in writing, software',
+  'distributed under the License is distributed on an "AS IS" BASIS,',
+  'WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.',
+  'See the License for the specific language governing permissions and',
+  'limitations under the License.',
+  '',
+  ['SPDX-License', 'Identifier: Apache-2.0'].join('-'),
+  '',
+];
 
-function headerPattern(syntax, tag) {
-  const closing = syntax.close ? `.*\\s${escapeRegex(syntax.close)}\\s*$` : '.*$';
-  return new RegExp(`^${escapeRegex(syntax.open)}\\s+${tag}\\s+\\S${closing}`);
+function expectedHeader(syntax) {
+  return apacheNoticeLines.map((line) => {
+    if (syntax.close) {
+      return line ? `${syntax.open} ${line} ${syntax.close}` : `${syntax.open} ${syntax.close}`;
+    }
+    return line ? `${syntax.open} ${line}` : syntax.open;
+  });
 }
 
 export async function checkLicenseHeaders(root = process.cwd()) {
@@ -109,19 +161,11 @@ export async function checkLicenseHeaders(root = process.cwd()) {
       continue;
     }
     const firstLine = lines[0]?.startsWith('#!') || xmlDeclaration === 0 ? 1 : 0;
-    const copyrightPattern = headerPattern(syntax, 'SPDX-FileCopyrightText:');
-    const licenseTag = ['SPDX-License', 'Identifier:'].join('-');
-    const licensePattern = headerPattern(syntax, licenseTag);
-
-    if (!copyrightPattern.test(lines[firstLine] ?? '')) {
+    const requiredHeader = expectedHeader(syntax);
+    const actualHeader = lines.slice(firstLine, firstLine + requiredHeader.length);
+    if (!requiredHeader.every((line, index) => actualHeader[index] === line)) {
       diagnostics.push(
-        `${file}:${firstLine + 1}: expected SPDX-FileCopyrightText on the first syntactically valid line`,
-      );
-      continue;
-    }
-    if (!licensePattern.test(lines[firstLine + 1] ?? '')) {
-      diagnostics.push(
-        `${file}:${firstLine + 2}: expected SPDX-License-Identifier immediately after SPDX-FileCopyrightText`,
+        `${file}:${firstLine + 1}: expected the complete Greyfoundry Apache-2.0 notice at the first syntactically valid line`,
       );
     }
   }
@@ -131,11 +175,11 @@ export async function checkLicenseHeaders(root = process.cwd()) {
 async function main() {
   const diagnostics = await checkLicenseHeaders(process.argv[2] ?? process.cwd());
   if (diagnostics.length > 0) {
-    process.stderr.write(`SPDX header violations:\n${diagnostics.map((item) => `- ${item}`).join('\n')}\n`);
+    process.stderr.write(`License notice violations:\n${diagnostics.map((item) => `- ${item}`).join('\n')}\n`);
     process.exitCode = 1;
     return;
   }
-  process.stdout.write('SPDX headers are correctly positioned.\n');
+  process.stdout.write('Complete Greyfoundry Apache-2.0 notices are correctly positioned.\n');
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

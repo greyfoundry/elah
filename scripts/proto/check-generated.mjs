@@ -1,10 +1,39 @@
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║                                                                  ║
+// ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+// ║                                                                  ║
+// ║               https://github.com/greyfoundry/elah                ║
+// ║                                                                  ║
+// ╚══════════════════════════════════════════════════════════════════╝
+//
+// Copyright © 2026 Greyfoundry contributors.
 // SPDX-FileCopyrightText: 2026 Greyfoundry contributors
-// SPDX-License-Identifier: Apache-2.0 OR MIT
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
 
+import { execFile } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { promisify } from 'node:util';
 import { pathToFileURL } from 'node:url';
+
+const execFileAsync = promisify(execFile);
+const generatedRoot = 'java/elah-api/src/generated/java';
 
 function resolveWithin(root, relativePath) {
   const resolvedRoot = path.resolve(root);
@@ -64,15 +93,92 @@ export async function verifyGeneratedOutput({ root, manifestPath }) {
   };
 }
 
+async function listFiles(root) {
+  const files = [];
+  async function visit(directory) {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const entryPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        await visit(entryPath);
+      } else if (entry.isFile()) {
+        files.push(path.relative(root, entryPath).replaceAll('\\', '/'));
+      }
+    }
+  }
+  try {
+    await visit(root);
+  } catch (error) {
+    if (error?.code !== 'ENOENT') {
+      throw error;
+    }
+  }
+  return files.sort();
+}
+
+async function runBufGeneration({ root, generationRoot }) {
+  await execFileAsync(
+    'buf',
+    [
+      'generate',
+      'proto',
+      '--template',
+      path.join(root, 'proto/buf.gen.yaml'),
+      '--output',
+      generationRoot,
+    ],
+    { cwd: root, maxBuffer: 16 * 1024 * 1024 },
+  );
+}
+
+export async function verifyRegeneratedOutput({ root, generate = runBufGeneration }) {
+  const generationRoot = await mkdtemp(path.join(tmpdir(), 'elah-proto-generation-'));
+  try {
+    await generate({ root, generationRoot });
+    const checkedInRoot = resolveWithin(root, generatedRoot);
+    const regeneratedRoot = resolveWithin(generationRoot, generatedRoot);
+    const checkedInFiles = await listFiles(checkedInRoot);
+    const regeneratedFiles = await listFiles(regeneratedRoot);
+    const regeneratedSet = new Set(regeneratedFiles);
+
+    for (const relativePath of checkedInFiles) {
+      if (!regeneratedSet.has(relativePath)) {
+        throw new Error(`unexpected tracked generated output: ${path.posix.join(generatedRoot, relativePath)}`);
+      }
+    }
+    const checkedInSet = new Set(checkedInFiles);
+    for (const relativePath of regeneratedFiles) {
+      const repositoryPath = path.posix.join(generatedRoot, relativePath);
+      if (!checkedInSet.has(relativePath)) {
+        throw new Error(`missing generated output: ${repositoryPath}`);
+      }
+      const [checkedIn, regenerated] = await Promise.all([
+        readFile(path.join(checkedInRoot, relativePath)),
+        readFile(path.join(regeneratedRoot, relativePath)),
+      ]);
+      if (!checkedIn.equals(regenerated)) {
+        throw new Error(`stale generated output: ${repositoryPath}`);
+      }
+    }
+
+    return { outputs: regeneratedFiles.length };
+  } finally {
+    await rm(generationRoot, { recursive: true, force: true });
+  }
+}
+
 if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {
   const manifestPath = process.argv[2];
   if (!manifestPath) {
     console.error('usage: node scripts/proto/check-generated.mjs <manifest> [root]');
     process.exitCode = 2;
   } else {
-    verifyGeneratedOutput({ root: process.argv[3] ?? process.cwd(), manifestPath })
-      .then(({ inputs, outputs }) => {
-        console.log(`generated output is current (${inputs} inputs, ${outputs} outputs)`);
+    const root = process.argv[3] ?? process.cwd();
+    Promise.all([
+      verifyGeneratedOutput({ root, manifestPath }),
+      verifyRegeneratedOutput({ root }),
+    ])
+      .then(([{ inputs, outputs }]) => {
+        console.log(`generated output is current after clean regeneration (${inputs} inputs, ${outputs} outputs)`);
       })
       .catch((error) => {
         console.error(error.message);

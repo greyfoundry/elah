@@ -1,9 +1,9 @@
 {
   "version": 1,
   "inputs": {
-    "proto/buf.gen.yaml": "80a267e4d117ae8d32fcae029f59e74c9d78602a8442559278b87b9098db9158",
-    "proto/buf.yaml": "ae3936ae69261141449dbc7c6875b1d2294ded435b676541a717b7fa57fd2831",
-    "proto/control/v1/identity.proto": "d9c00bd86c2f40de1dbab88d0917544406b05b44c99805f94089c7a685f846c0"
+    "proto/buf.gen.yaml": "059563f8606e09511d959b0b4fb228eaee74d25a54597420bf8e4130c5b1055a",
+    "proto/buf.yaml": "96180afd313f56f8135b3ebb6597b2d94f5053316219e6b33af2d5c6c520ea71",
+    "proto/control/v1/identity.proto": "b673a976cf24beb6267e7138cf4e69bd61ce94b5250c28c71d6a42c99a27cb5a"
   },
   "outputs": {
     "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/ComponentIdentity.java": "0a70fa4621c00983b561c2d0a9f4d11f97a423078d29d52cfdd654952e2dfa09",

@@ -10,7 +10,7 @@
       "retrievedAt": "2026-08-09",
       "spdx": "GPL-3.0",
       "purpose": "Research regionised server-concurrency architecture and Paper-compatible server surface.",
-      "adrs": []
+      "adrs": ["docs/adr/0001-folia-worker-runtime.md"]
     },
     {
       "repo": "PaperMC/Velocity",
@@ -20,7 +20,7 @@
       "retrievedAt": "2026-08-09",
       "spdx": "GPL-3.0",
       "purpose": "Research modern Minecraft proxy design and multi-backend routing.",
-      "adrs": []
+      "adrs": ["docs/adr/0002-velocity-gateway.md"]
     },
     {
       "repo": "MultiPaper/MultiPaper",
@@ -30,7 +30,7 @@
       "retrievedAt": "2026-08-09",
       "spdx": "GPL-3.0",
       "purpose": "Research distributed server/world coordination patterns.",
-      "adrs": []
+      "adrs": ["docs/adr/0004-cells-over-per-chunk-ownership.md"]
     },
     {
       "repo": "RelativityMC/C2ME-fabric",

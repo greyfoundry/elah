@@ -1,5 +1,28 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║                                                                  ║
+# ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+# ║                                                                  ║
+# ║               https://github.com/greyfoundry/elah                ║
+# ║                                                                  ║
+# ╚══════════════════════════════════════════════════════════════════╝
+#
+# Copyright © 2026 Greyfoundry contributors.
 # SPDX-FileCopyrightText: 2026 Greyfoundry contributors
-# SPDX-License-Identifier: Apache-2.0 OR MIT
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 
 name: CI
 
@@ -124,9 +147,14 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24.19.0
+      - name: Set up Buf 1.72.0
+        uses: bufbuild/buf-setup-action@a47c93e0b1648d5651a065437926377d060baa99 # v1.50.0
+        with:
+          version: 1.72.0
+          github_token: ${{ github.token }}
       - name: Validate studying manifest
         run: node scripts/studying/validate-manifest.mjs studying/manifest.lock
-      - name: Validate generated-output manifest
+      - name: Validate generated output by clean regeneration
         run: node scripts/proto/check-generated.mjs proto/generated-manifest.json
 
   studying-boundary:
@@ -156,7 +184,7 @@ jobs:
         run: node scripts/ci/check-public-provenance.mjs
 
   licensing:
-    name: Enforce SPDX headers and REUSE coverage
+    name: Enforce Apache notices and REUSE coverage
     runs-on: ubuntu-24.04
     steps:
       - name: Check out repository
@@ -171,7 +199,7 @@ jobs:
           python-version: "3.13"
       - name: Install REUSE 6.2.0
         run: python -m pip install --disable-pip-version-check reuse==6.2.0
-      - name: Check first-valid-line SPDX headers
+      - name: Check complete Greyfoundry Apache notices
         run: node scripts/ci/check-license-headers.mjs
       - name: Check REUSE 3.3 coverage
         run: reuse lint

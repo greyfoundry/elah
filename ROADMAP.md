@@ -2,7 +2,7 @@
 
 ## 0.0.1 — Genesis
 
-Genesis establishes the laboratory: monorepo foundations, licensing, ADRs, build and CI foundations, studying isolation, an upstream manifest, and public architecture documents. It is not released to server owners and ships **no gameplay feature**. Its exit gate is reproducible builds.
+Genesis establishes the laboratory: monorepo foundations, licensing, ADRs, build and CI foundations, studying isolation, an upstream manifest, and public architecture documents. It is not released to server owners and ships **no gameplay feature**. Its exit gate is repeatable validation under pinned toolchains.
 
 ## Near-term sequence
 

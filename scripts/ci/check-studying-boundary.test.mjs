@@ -1,5 +1,28 @@
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║                                                                  ║
+// ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+// ║                                                                  ║
+// ║               https://github.com/greyfoundry/elah                ║
+// ║                                                                  ║
+// ╚══════════════════════════════════════════════════════════════════╝
+//
+// Copyright © 2026 Greyfoundry contributors.
 // SPDX-FileCopyrightText: 2026 Greyfoundry contributors
-// SPDX-License-Identifier: Apache-2.0 OR MIT
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
 
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
@@ -29,7 +52,7 @@ async function withTrackedFiles(files, callback) {
 test('rejects a source import from a studying checkout', async () => {
   await withTrackedFiles(
     {
-      'src/bridge.mjs': "// SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n// SPDX-License-Identifier: Apache-2.0 OR MIT\n\nimport worker from '../studying/papermc/Folia/Worker.js';\n",
+      'src/bridge.mjs': "// SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n// SPDX-License-Identifier: Apache-2.0\n\nimport worker from '../studying/papermc/Folia/Worker.js';\n",
     },
     async (root) => {
       assert.deepEqual(await checkStudyingBoundary(root), [
@@ -42,7 +65,7 @@ test('rejects a source import from a studying checkout', async () => {
 test('rejects a build reference to a studying checkout', async () => {
   await withTrackedFiles(
     {
-      'build.gradle.kts': "// SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n// SPDX-License-Identifier: Apache-2.0 OR MIT\n\nsourceSets.main { java.srcDir(\"studying/papermc/Folia\") }\n",
+      'build.gradle.kts': "// SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n// SPDX-License-Identifier: Apache-2.0\n\nsourceSets.main { java.srcDir(\"studying/papermc/Folia\") }\n",
     },
     async (root) => {
       assert.match((await checkStudyingBoundary(root)).join('\n'), /build\.gradle\.kts:4: forbidden studying checkout reference/);
@@ -53,7 +76,7 @@ test('rejects a build reference to a studying checkout', async () => {
 test('rejects a packaging path into a studying checkout', async () => {
   await withTrackedFiles(
     {
-      Dockerfile: '# SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n# SPDX-License-Identifier: Apache-2.0 OR MIT\n\nCOPY studying/papermc/Folia /srv/folia\n',
+      Dockerfile: '# SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n# SPDX-License-Identifier: Apache-2.0\n\nCOPY studying/papermc/Folia /srv/folia\n',
     },
     async (root) => {
       assert.match((await checkStudyingBoundary(root)).join('\n'), /Dockerfile:4: forbidden studying checkout reference/);
@@ -64,7 +87,7 @@ test('rejects a packaging path into a studying checkout', async () => {
 test('rejects a studying checkout path composed after a root variable', async () => {
   await withTrackedFiles(
     {
-      'src/paths.mjs': "// SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n// SPDX-License-Identifier: Apache-2.0 OR MIT\n\nconst checkout = `${rootDir}/studying/papermc/Folia`;\n",
+      'src/paths.mjs': "// SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n// SPDX-License-Identifier: Apache-2.0\n\nconst checkout = `${rootDir}/studying/papermc/Folia`;\n",
     },
     async (root) => {
       assert.deepEqual(await checkStudyingBoundary(root), [

@@ -15,7 +15,7 @@ At maturity, component-to-component communication uses mutual TLS. Worker enroll
 - Treat ownership fencing, transfer idempotency, and storage verification as security-relevant correctness controls.
 - Do not place secrets in source, fixtures, issues, or documentation.
 - Keep dependencies reviewable and record their licenses.
-- Prefer signed artifacts, checksums, SBOMs, published source commits, dependency audits, and reproducible builds for releases.
+- Prefer signed artifacts, checksums, SBOMs, published source commits, dependency audits, and pinned-toolchain build verification for releases.
 - Do not add an opaque curl-pipe-shell installer.
 
 This policy will gain a project contact and supported-version table before the first server-owner release.

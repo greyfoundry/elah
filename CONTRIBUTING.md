@@ -13,16 +13,39 @@ Thanks for helping make Elah correct before making it ambitious.
 
 ## Licensing and notices
 
-Contributions to original Elah work are made under `Apache-2.0 OR MIT`. Put these first-line-compatible SPDX notices in every human-authored non-documentation file, using the native comment syntax:
+Contributions to original Elah work are made under `Apache-2.0`. Every human-authored, comment-capable non-documentation file must begin with the complete branded notice below, translated only into the file's native comment syntax:
 
 ```text
-SPDX-FileCopyrightText: 2026 Greyfoundry contributors
-SPDX-License-Identifier: Apache-2.0 OR MIT
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║                                                                  ║
+# ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+# ║                                                                  ║
+# ║               https://github.com/greyfoundry/elah                ║
+# ║                                                                  ║
+# ╚══════════════════════════════════════════════════════════════════╝
+#
+# Copyright © 2026 Greyfoundry contributors.
+# SPDX-FileCopyrightText: 2026 Greyfoundry contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 ```
 
-If a format cannot safely carry an inline notice, add a precise annotation to `REUSE.toml`. Do not add those notices to the verbatim license texts. Code derived from Folia belongs in `java/elah-folia` and is `GPL-3.0-only`.
+Do not abbreviate this to two SPDX lines. If a format cannot safely carry an inline notice, add a precise annotation to `REUSE.toml`. Do not add notices to verbatim license texts or generated output. Code derived from Folia belongs in `java/elah-folia` and is `GPL-3.0-only`.
 
-For a human-authored, non-documentation format that supports comments, the copyright notice must be the first syntactically valid line and the license identifier must immediately follow it. Generated files, upstream wrapper files, strict data formats, binaries, and documentation use precise `REUSE.toml` annotations instead. CI enforces both the header position and complete REUSE 3.3 coverage.
+The banner must be the first syntactically valid line. A required shebang or XML declaration stays first and the notice follows immediately. Generated files, upstream wrapper files, strict data formats, binaries, and documentation use precise `REUSE.toml` annotations instead. CI enforces the complete notice, its position, Apache-2.0 identity, and REUSE 3.3 coverage.
 
 ## Changes and validation
 

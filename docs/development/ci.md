@@ -31,7 +31,9 @@ On Windows, use `gradlew.bat --no-daemon check` when running the Gradle command 
 
 - `pnpm ci:check-studying` enforces the boundary around upstream-study material.
 - `pnpm ci:check-provenance` scans public files for disallowed provenance markers.
-- `pnpm ci:check-licenses` checks required SPDX header placement for files that need inline notices.
+- `pnpm ci:check-licenses` checks the complete Greyfoundry Apache-2.0 notice and its required placement for files that support inline notices.
+
+The generated-output gate runs pinned Buf generation into a clean temporary directory and compares the complete generated tree byte for byte with the checked-in Java output. The committed hash manifest is an additional integrity check, not the source of truth for freshness.
 
 `reuse lint` verifies REUSE licensing coverage. Documentation is covered through the Markdown annotation in `REUSE.toml`, so Markdown files do not carry embedded SPDX notices.
 

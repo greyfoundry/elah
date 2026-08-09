@@ -1,6 +1,6 @@
 # Repository map
 
-Genesis begins with public contracts. Later work will add the following roots, with each component remaining in the monorepo so cross-language protocol changes can be reviewed together.
+Genesis begins with public contracts and the roots below. Later work expands them in place so cross-language protocol changes can be reviewed together.
 
 ```text
 crates/       Rust control-plane, core, storage, scheduler, and test crates

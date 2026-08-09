@@ -38,4 +38,4 @@ For a local validation baseline, see [CI and local checks](docs/development/ci.m
 
 ## Licensing
 
-Original Elah work is dual-licensed under Apache-2.0 or MIT at your option. The complete license texts and module boundary are in [LICENSES.md](LICENSES.md). `java/elah-folia` is reserved for GPL-3.0-only derivative work if and when it contains Folia-derived code.
+Original Elah work is licensed under Apache-2.0. The complete license text, file-notice policy, and module boundary are in [LICENSES.md](LICENSES.md). `java/elah-folia` is reserved for GPL-3.0-only derivative work if and when it contains Folia-derived code.
