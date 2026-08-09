@@ -2,8 +2,8 @@
 
 Original Elah work is available under either of these licenses, at the recipient's option:
 
-- [Apache License 2.0](LICENSE-APACHE) (`Apache-2.0`)
-- [MIT License](LICENSE-MIT) (`MIT`)
+- [Apache License 2.0](LICENSES/Apache-2.0.txt) (`Apache-2.0`)
+- [MIT License](LICENSES/MIT.txt) (`MIT`)
 
 SPDX expression: `Apache-2.0 OR MIT`.
 

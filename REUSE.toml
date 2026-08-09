@@ -4,18 +4,6 @@
 version = 1
 
 [[annotations]]
-path = ["LICENSE-APACHE"]
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
-SPDX-License-Identifier = "Apache-2.0"
-
-[[annotations]]
-path = ["LICENSE-MIT"]
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
-SPDX-License-Identifier = "MIT"
-
-[[annotations]]
 path = [
   "**/*.class",
   "**/*.dll",
@@ -33,6 +21,18 @@ path = [
   "**/*.zip",
   "pnpm-lock.yaml",
 ]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
+SPDX-License-Identifier = "Apache-2.0 OR MIT"
+
+[[annotations]]
+path = ["**/*.md"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
+SPDX-License-Identifier = "Apache-2.0 OR MIT"
+
+[[annotations]]
+path = ["java/elah-api/src/generated/java/**/*.java"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
 SPDX-License-Identifier = "Apache-2.0 OR MIT"

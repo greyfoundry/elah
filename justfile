@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: 2026 Greyfoundry contributors
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 
-gradle := if os() == "windows" { "gradlew.bat" } else { "./gradlew" }
+set windows-shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-Command"]
+
+gradle := if os() == "windows" { ".\\gradlew.bat" } else { "./gradlew" }
 
 default: check
 
@@ -22,6 +24,7 @@ node-check:
 proto-check:
     buf lint proto
     buf build proto
+    pnpm proto:check-generated
 
 proto-generate:
     pnpm proto:generate
