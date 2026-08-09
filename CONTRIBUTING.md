@@ -11,6 +11,21 @@ Thanks for helping make Elah correct before making it ambitious.
 - Keep normal gameplay off the control plane.
 - Design state changes for retries, explicit epochs, traces, and failure recovery.
 
+## AI-assisted contributions
+
+AI-assisted code and other AI-assisted contributions are allowed, but the person submitting the change remains fully responsible for it. Assistance does not lower Elah's standards for correctness, security, licensing, provenance, testing, or reviewability.
+
+Before submitting assisted work, the contributor must:
+
+- Manually inspect every material change rather than relying on a generated summary or claimed test result.
+- Understand the implementation and be able to explain its behaviour, design choices, trade-offs, and failure modes during review.
+- Run the relevant checks personally and verify that the reported evidence came from the submitted revision.
+- Check for fabricated APIs, insecure defaults, copied material, incompatible licenses, hidden dependencies, and unintended changes.
+- Keep secrets, private infrastructure details, personal data, and restricted source material out of external services.
+- Accept responsibility for correcting, maintaining, or withdrawing the contribution.
+
+Maintainers may ask the contributor to explain or revise any part of a submission. A contribution may be closed if its submitter cannot demonstrate that they reviewed and understand it. Do not add generated-by notices, tool attribution, or automated authorship claims to source, documentation, commit messages, or release artifacts; the human submitter is the accountable author of record.
+
 ## Licensing and notices
 
 Contributions to original Elah work are made under `Apache-2.0`. Every human-authored, comment-capable non-documentation file must begin with the complete branded notice below, translated only into the file's native comment syntax:

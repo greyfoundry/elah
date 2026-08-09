@@ -43,6 +43,7 @@ const namedAttributions = [
 const ambiguousAttributions = [
   ['cur', 'sor'],
 ].map((parts) => parts.join(''));
+const automatedContributionsPolicyHeading = `## ${['AI', 'assisted'].join('-')} contributions`;
 const markers = [
   {
     category: 'named model or tool',
@@ -103,8 +104,15 @@ export async function checkPublicProvenance(root = process.cwd()) {
       continue;
     }
     const lines = contents.toString('utf8').split(/\r?\n/);
+    let inAutomatedContributionsPolicy = false;
     for (const [index, line] of lines.entries()) {
+      if (file === 'CONTRIBUTING.md' && line.startsWith('## ')) {
+        inAutomatedContributionsPolicy = line.trim() === automatedContributionsPolicyHeading;
+      }
       for (const marker of markers) {
+        if (inAutomatedContributionsPolicy && marker.category === 'automated authorship claim') {
+          continue;
+        }
         if (marker.pattern.test(line)) {
           diagnostics.push(`${file}:${index + 1}: public provenance policy violation: ${marker.category}`);
         }
