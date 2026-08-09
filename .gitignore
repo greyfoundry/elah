@@ -4,3 +4,8 @@
 /.private/
 /.superpowers/
 /.worktrees/
+
+# Keep reproducible study metadata while excluding upstream checkout contents.
+/studying/*
+!/studying/README.md
+!/studying/manifest.lock
