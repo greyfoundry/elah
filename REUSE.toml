@@ -17,7 +17,6 @@ SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 path = [
-  "**/*.jar",
   "**/*.class",
   "**/*.dll",
   "**/*.exe",
@@ -32,8 +31,24 @@ path = [
   "**/*.toml",
   "**/*.wasm",
   "**/*.zip",
-  "gradle/wrapper/gradle-wrapper.jar",
+  "pnpm-lock.yaml",
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
 SPDX-License-Identifier = "Apache-2.0 OR MIT"
+
+[[annotations]]
+path = [".node-version"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
+SPDX-License-Identifier = "Apache-2.0 OR MIT"
+
+[[annotations]]
+path = [
+  "gradlew",
+  "gradlew.bat",
+  "gradle/wrapper/gradle-wrapper.jar",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2015 the original authors"
+SPDX-License-Identifier = "Apache-2.0"

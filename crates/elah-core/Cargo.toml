@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2026 Greyfoundry contributors
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
+[package]
+name = "elah-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+path = "src/lib.rs"

@@ -4,6 +4,11 @@
 /.private/
 /.superpowers/
 /.worktrees/
+/.gradle/
+/node_modules/
+/target/
+**/build/
+**/generated/
 
 # Keep reproducible study metadata while excluding upstream checkout contents.
 /studying/*

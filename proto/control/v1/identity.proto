@@ -1,0 +1,16 @@
+// SPDX-FileCopyrightText: 2026 Greyfoundry contributors
+// SPDX-License-Identifier: Apache-2.0 OR MIT
+
+syntax = "proto3";
+
+package elah.control.v1;
+
+option java_multiple_files = true;
+option java_outer_classname = "IdentityProto";
+option java_package = "org.greyfoundry.elah.control.v1";
+
+// Identifies a versioned Elah component across language boundaries.
+message ComponentIdentity {
+  string component_name = 1;
+  string semantic_version = 2;
+}

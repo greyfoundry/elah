@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Greyfoundry contributors
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
+[toolchain]
+channel = "1.97.1"
+components = ["clippy", "rustfmt"]
+profile = "minimal"

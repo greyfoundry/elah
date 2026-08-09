@@ -1,8 +1,20 @@
 {
   "name": "elah",
+  "version": "0.0.1",
   "private": true,
+  "license": "Apache-2.0 OR MIT",
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": "24.19.0"
+  },
   "scripts": {
+    "test": "node --test scripts/studying/validate-manifest.test.mjs lab/bots/test/component-identity.test.mjs scripts/proto/check-generated.test.mjs",
     "studying:validate": "node scripts/studying/validate-manifest.mjs studying/manifest.lock",
-    "test:studying": "node --test scripts/studying/validate-manifest.test.mjs"
+    "test:studying": "node --test scripts/studying/validate-manifest.test.mjs",
+    "test:bots": "node --test lab/bots/test/component-identity.test.mjs",
+    "test:proto": "node --test scripts/proto/check-generated.test.mjs",
+    "proto:lint": "buf lint proto",
+    "proto:build": "buf build proto",
+    "proto:generate": "buf generate proto --template proto/buf.gen.yaml"
   }
 }

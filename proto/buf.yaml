@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2026 Greyfoundry contributors
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
+version: v2
+modules:
+  - path: .
+lint:
+  use:
+    - STANDARD
+  except:
+    # The repository owns the `proto/` namespace, so packages omit an `elah/` path segment.
+    - PACKAGE_DIRECTORY_MATCH
+breaking:
+  use:
+    - FILE
