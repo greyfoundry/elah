@@ -24,15 +24,11 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-/.private/
-/.superpowers/
-/.worktrees/
-/.gradle/
-/node_modules/
-/target/
-**/build/
+[workspace]
+members = ["crates/elah-core"]
+resolver = "3"
 
-# Keep reproducible study metadata while excluding upstream checkout contents.
-/studying/*
-!/studying/README.md
-!/studying/manifest.lock
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+license = "Apache-2.0"

@@ -1,0 +1,235 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║                                                                  ║
+# ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+# ║                                                                  ║
+# ║               https://github.com/greyfoundry/elah                ║
+# ║                                                                  ║
+# ╚══════════════════════════════════════════════════════════════════╝
+#
+# Copyright © 2026 Greyfoundry contributors.
+# SPDX-FileCopyrightText: 2026 Greyfoundry contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rust:
+    name: Rust format, lint, and test
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install Rust 1.97.1
+        run: rustup toolchain install 1.97.1 --profile minimal --component rustfmt,clippy
+      - name: Verify formatting
+        run: cargo +1.97.1 fmt --check
+      - name: Lint
+        run: cargo +1.97.1 clippy --workspace --all-targets --all-features -- -D warnings
+      - name: Test
+        run: cargo +1.97.1 test --workspace --all-targets --all-features --locked
+
+  java:
+    name: Java format, compile, and test
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Temurin Java 25
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: "25"
+      - name: Set up Gradle 9.6.1 wrapper
+        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+      - name: Check Java formatting
+        shell: bash
+        run: |
+          formatter="$RUNNER_TEMP/google-java-format-1.36.1-all-deps.jar"
+          curl --fail --location --silent --show-error \
+            --output "$formatter" \
+            https://repo1.maven.org/maven2/com/google/googlejavaformat/google-java-format/1.36.1/google-java-format-1.36.1-all-deps.jar
+          echo "25b400f003089d23cc5320cdaf1a16cabee19b8aa3434d0ff021b3d9f42154b4  $formatter" | sha256sum --check
+          mapfile -d '' java_files < <(find java -path '*/src/generated/*' -prune -o -name '*.java' -print0)
+          java -jar "$formatter" --dry-run --set-exit-if-changed "${java_files[@]}"
+      - name: Compile and test with the wrapper
+        run: ./gradlew --no-daemon check
+
+  node:
+    name: Node lint and test
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node 24.19.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.19.0
+      - name: Install pnpm 10.34.5
+        run: npm install --global pnpm@10.34.5
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint Node sources
+        shell: bash
+        run: |
+          while IFS= read -r -d '' file; do
+            node --check "$file"
+          done < <(git ls-files -z '*.mjs')
+      - name: Test
+        run: pnpm test
+
+  buf:
+    name: Buf lint, build, and breaking
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository with history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Set up Buf 1.72.0
+        uses: bufbuild/buf-setup-action@a47c93e0b1648d5651a065437926377d060baa99 # v1.50.0
+        with:
+          version: 1.72.0
+          github_token: ${{ github.token }}
+      - name: Lint
+        run: buf lint proto
+      - name: Build
+        run: buf build proto
+      - name: Check breaking changes against the event base
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        shell: bash
+        run: |
+          if [[ -z "$BASE_SHA" || "$BASE_SHA" =~ ^0+$ ]] || ! git cat-file -e "$BASE_SHA^{commit}"; then
+            echo "::notice::Buf breaking comparison is not applicable because the event has no base commit."
+          elif git ls-tree -r --name-only "$BASE_SHA" -- proto | grep -q '\.proto$'; then
+            baseline="$RUNNER_TEMP/buf-baseline"
+            mkdir -p "$baseline"
+            git archive "$BASE_SHA" proto | tar -x -C "$baseline"
+            buf breaking proto --against "$baseline/proto"
+          else
+            echo "::notice::Buf breaking comparison is not applicable because the base commit has no Protobuf baseline."
+          fi
+
+  manifest:
+    name: Validate manifests and generated output
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node 24.19.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.19.0
+      - name: Set up Buf 1.72.0
+        uses: bufbuild/buf-setup-action@a47c93e0b1648d5651a065437926377d060baa99 # v1.50.0
+        with:
+          version: 1.72.0
+          github_token: ${{ github.token }}
+      - name: Validate studying manifest
+        run: node scripts/studying/validate-manifest.mjs studying/manifest.lock
+      - name: Validate generated output by clean regeneration
+        run: node scripts/proto/check-generated.mjs proto/generated-manifest.json
+
+  studying-boundary:
+    name: Enforce studying boundary
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node 24.19.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.19.0
+      - name: Scan tracked paths and references
+        run: node scripts/ci/check-studying-boundary.mjs
+
+  public-provenance:
+    name: Enforce public provenance policy
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node 24.19.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.19.0
+      - name: Scan public files
+        run: node scripts/ci/check-public-provenance.mjs
+
+  licensing:
+    name: Enforce Apache notices and REUSE coverage
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node 24.19.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.19.0
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+      - name: Install REUSE 6.2.0
+        run: python -m pip install --disable-pip-version-check reuse==6.2.0
+      - name: Check complete Greyfoundry Apache notices
+        run: node scripts/ci/check-license-headers.mjs
+      - name: Check REUSE 3.3 coverage
+        run: reuse lint
+
+  dependency-review:
+    name: Review dependency changes
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: moderate
+
+  sbom:
+    name: Generate and upload SBOM
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Generate SPDX JSON SBOM
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
+        with:
+          path: .
+          format: spdx-json
+          output-file: elah.spdx.json
+          artifact-name: elah-sbom.spdx.json
+          syft-version: v1.50.0
+          upload-artifact: true
+          upload-artifact-retention: 14
+          upload-release-assets: false

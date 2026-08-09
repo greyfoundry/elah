@@ -24,15 +24,30 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-/.private/
-/.superpowers/
-/.worktrees/
-/.gradle/
-/node_modules/
-/target/
-**/build/
+set windows-shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-Command"]
 
-# Keep reproducible study metadata while excluding upstream checkout contents.
-/studying/*
-!/studying/README.md
-!/studying/manifest.lock
+gradle := if os() == "windows" { ".\\gradlew.bat" } else { "./gradlew" }
+
+default: check
+
+check: rust-check java-check node-check proto-check
+
+rust-check:
+    cargo fmt --check
+    cargo clippy --workspace --all-targets --all-features -- -D warnings
+    cargo test --workspace --all-targets --all-features --locked
+
+java-check:
+    {{gradle}} --no-daemon check
+
+node-check:
+    pnpm install --frozen-lockfile
+    pnpm test
+
+proto-check:
+    buf lint proto
+    buf build proto
+    pnpm proto:check-generated
+
+proto-generate:
+    pnpm proto:generate

@@ -24,15 +24,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-/.private/
-/.superpowers/
-/.worktrees/
-/.gradle/
-/node_modules/
-/target/
-**/build/
-
-# Keep reproducible study metadata while excluding upstream checkout contents.
-/studying/*
-!/studying/README.md
-!/studying/manifest.lock
+[toolchain]
+channel = "1.97.1"
+components = ["clippy", "rustfmt"]
+profile = "minimal"

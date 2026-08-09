@@ -1,0 +1,26 @@
+{
+  "name": "elah",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": "24.19.0"
+  },
+  "scripts": {
+    "test": "node --test scripts/studying/validate-manifest.test.mjs lab/bots/test/component-identity.test.mjs scripts/proto/check-generated.test.mjs scripts/ci/check-studying-boundary.test.mjs scripts/ci/check-public-provenance.test.mjs scripts/ci/check-license-headers.test.mjs",
+    "studying:validate": "node scripts/studying/validate-manifest.mjs studying/manifest.lock",
+    "test:studying": "node --test scripts/studying/validate-manifest.test.mjs",
+    "test:bots": "node --test lab/bots/test/component-identity.test.mjs",
+    "test:proto": "node --test scripts/proto/check-generated.test.mjs",
+    "proto:check-generated": "node scripts/proto/check-generated.mjs proto/generated-manifest.json",
+    "proto:lint": "buf lint proto",
+    "proto:build": "buf build proto",
+    "proto:generate": "buf generate proto --template proto/buf.gen.yaml",
+    "test:ci": "node --test scripts/ci/check-studying-boundary.test.mjs scripts/ci/check-public-provenance.test.mjs scripts/ci/check-license-headers.test.mjs",
+    "ci:check-studying": "node scripts/ci/check-studying-boundary.mjs",
+    "ci:check-provenance": "node scripts/ci/check-public-provenance.mjs",
+    "ci:check-licenses": "node scripts/ci/check-license-headers.mjs",
+    "ci:check": "pnpm ci:check-studying && pnpm ci:check-provenance && pnpm ci:check-licenses"
+  }
+}

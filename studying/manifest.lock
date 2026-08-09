@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "retrievedAt": "2026-08-09",
+  "repositories": [
+    {
+      "repo": "PaperMC/Folia",
+      "url": "https://github.com/PaperMC/Folia",
+      "ref": "ver/26.2.x",
+      "sha": "57f643f10e0a9d01024773232d38ae666067d593",
+      "retrievedAt": "2026-08-09",
+      "spdx": "GPL-3.0",
+      "purpose": "Research regionised server-concurrency architecture and Paper-compatible server surface.",
+      "adrs": ["docs/adr/0001-folia-worker-runtime.md"]
+    },
+    {
+      "repo": "PaperMC/Velocity",
+      "url": "https://github.com/PaperMC/Velocity",
+      "ref": "dev/4.0.0",
+      "sha": "00759e52790e85e148efc08adb7e7dd29e6c5110",
+      "retrievedAt": "2026-08-09",
+      "spdx": "GPL-3.0",
+      "purpose": "Research modern Minecraft proxy design and multi-backend routing.",
+      "adrs": ["docs/adr/0002-velocity-gateway.md"]
+    },
+    {
+      "repo": "MultiPaper/MultiPaper",
+      "url": "https://github.com/MultiPaper/MultiPaper",
+      "ref": "main",
+      "sha": "7af143b66299c68a50a7dce3997214ac5cb39c9a",
+      "retrievedAt": "2026-08-09",
+      "spdx": "GPL-3.0",
+      "purpose": "Research distributed server/world coordination patterns.",
+      "adrs": ["docs/adr/0004-cells-over-per-chunk-ownership.md"]
+    },
+    {
+      "repo": "RelativityMC/C2ME-fabric",
+      "url": "https://github.com/RelativityMC/C2ME-fabric",
+      "ref": "dev/26.2.0",
+      "sha": "615baf860a2c0ebdc39e63b408fe1c3539e5af9d",
+      "retrievedAt": "2026-08-09",
+      "spdx": "NOASSERTION",
+      "licenseNote": "GitHub reports NOASSERTION. LICENSE.md says the monorepo is MIT unless noted, while c2me-opts-accel-opencl/ is proprietary and All Rights Reserved; do not treat this repository as uniformly MIT.",
+      "purpose": "Research Fabric-side asynchronous chunk generation and performance techniques.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/mineflayer",
+      "url": "https://github.com/PrismarineJS/mineflayer",
+      "ref": "master",
+      "sha": "a89e76b7a45e790247be77b5c18e155efd89315d",
+      "retrievedAt": "2026-08-09",
+      "spdx": "MIT",
+      "purpose": "Research high-level programmable Minecraft client/bot APIs.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/node-minecraft-protocol",
+      "url": "https://github.com/PrismarineJS/node-minecraft-protocol",
+      "ref": "master",
+      "sha": "aa23a03964bf84e2f7fe813818a4ec5b7b2a1270",
+      "retrievedAt": "2026-08-09",
+      "spdx": "BSD-3-Clause",
+      "purpose": "Research protocol framing, codecs, and client/server transport.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/minecraft-data",
+      "url": "https://github.com/PrismarineJS/minecraft-data",
+      "ref": "master",
+      "sha": "e8ff8ec779a48814c2fc5b8a0ba7c95b9bc05d6d",
+      "retrievedAt": "2026-08-09",
+      "spdx": "NOASSERTION",
+      "licenseNote": "GitHub reports NOASSERTION and its license endpoint returned 404 with no detected top-level license; independent legal and provenance review is required.",
+      "purpose": "Research versioned Minecraft protocol/block/item data organization.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/prismarine-registry",
+      "url": "https://github.com/PrismarineJS/prismarine-registry",
+      "ref": "master",
+      "sha": "e4a2a9f2a9696939bff7d4ca4f7ffef5c1bb1c94",
+      "retrievedAt": "2026-08-09",
+      "spdx": "MIT",
+      "purpose": "Research runtime registries for version-specific game data.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/prismarine-world",
+      "url": "https://github.com/PrismarineJS/prismarine-world",
+      "ref": "master",
+      "sha": "e1296ec37029b0032e41aab810b0f22a00e63453",
+      "retrievedAt": "2026-08-09",
+      "spdx": "NOASSERTION",
+      "licenseNote": "GitHub reports NOASSERTION and its license endpoint returned 404 with no detected top-level license; independent legal and provenance review is required.",
+      "purpose": "Research chunk/world storage abstractions.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/prismarine-provider-anvil",
+      "url": "https://github.com/PrismarineJS/prismarine-provider-anvil",
+      "ref": "master",
+      "sha": "ef65db33b65bd4bc11e247ab8bd9b2229977e5d0",
+      "retrievedAt": "2026-08-09",
+      "spdx": "NOASSERTION",
+      "licenseNote": "GitHub reports NOASSERTION and its license endpoint returned 404 with no detected top-level license; independent legal and provenance review is required.",
+      "purpose": "Research Anvil region-file persistence adapters.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/prismarine-chunk",
+      "url": "https://github.com/PrismarineJS/prismarine-chunk",
+      "ref": "master",
+      "sha": "ce60c5fcd09c6198e28de011eec3f8811b96923d",
+      "retrievedAt": "2026-08-09",
+      "spdx": "MIT",
+      "purpose": "Research versioned chunk representation and serialization.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/prismarine-nbt",
+      "url": "https://github.com/PrismarineJS/prismarine-nbt",
+      "ref": "master",
+      "sha": "02ee0e80f1b247622b117772c769bae4309c1d32",
+      "retrievedAt": "2026-08-09",
+      "spdx": "NOASSERTION",
+      "licenseNote": "GitHub reports NOASSERTION and its license endpoint returned 404 with no detected top-level license; independent legal and provenance review is required.",
+      "purpose": "Research Minecraft NBT encoding and parsing.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/prismarine-physics",
+      "url": "https://github.com/PrismarineJS/prismarine-physics",
+      "ref": "master",
+      "sha": "a5353a922f1dee075aa797cb53be31919f9e1f46",
+      "retrievedAt": "2026-08-09",
+      "spdx": "MIT",
+      "purpose": "Research deterministic player movement and collision simulation.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/prismarine-entity",
+      "url": "https://github.com/PrismarineJS/prismarine-entity",
+      "ref": "master",
+      "sha": "4f2678f704d3aaa46c1ee8045a1e92d9b48dd937",
+      "retrievedAt": "2026-08-09",
+      "spdx": "NOASSERTION",
+      "licenseNote": "GitHub reports NOASSERTION and its license endpoint returned 404 with no detected top-level license; independent legal and provenance review is required.",
+      "purpose": "Research client-side entity-state representation.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/prismarine-item",
+      "url": "https://github.com/PrismarineJS/prismarine-item",
+      "ref": "master",
+      "sha": "0f2ee79208a9c9b3e9fb566d55dd77ef5b9add73",
+      "retrievedAt": "2026-08-09",
+      "spdx": "NOASSERTION",
+      "licenseNote": "GitHub reports NOASSERTION and its license endpoint returned 404 with no detected top-level license; independent legal and provenance review is required.",
+      "purpose": "Research version-aware item-stack representation.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/prismarine-windows",
+      "url": "https://github.com/PrismarineJS/prismarine-windows",
+      "ref": "master",
+      "sha": "173c4dbdc39622b3fbfab768277d173b81f704e6",
+      "retrievedAt": "2026-08-09",
+      "spdx": "NOASSERTION",
+      "licenseNote": "GitHub reports NOASSERTION and its license endpoint returned 404 with no detected top-level license; independent legal and provenance review is required.",
+      "purpose": "Research inventory/container window state and transactions.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/prismarine-viewer",
+      "url": "https://github.com/PrismarineJS/prismarine-viewer",
+      "ref": "master",
+      "sha": "bead85c57a2365e7c88bfe36ee1944da51f8449f",
+      "retrievedAt": "2026-08-09",
+      "spdx": "MIT",
+      "purpose": "Research browser-based world/entity visualisation.",
+      "adrs": []
+    },
+    {
+      "repo": "PrismarineJS/flying-squid",
+      "url": "https://github.com/PrismarineJS/flying-squid",
+      "ref": "master",
+      "sha": "fa022792d30e79f96c8c8dbf659fc61ae4177b4f",
+      "retrievedAt": "2026-08-09",
+      "spdx": "MIT",
+      "purpose": "Research lightweight JavaScript Minecraft server composition.",
+      "adrs": []
+    }
+  ]
+}

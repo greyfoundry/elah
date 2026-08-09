@@ -24,15 +24,9 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-/.private/
-/.superpowers/
-/.worktrees/
-/.gradle/
-/node_modules/
-/target/
-**/build/
-
-# Keep reproducible study metadata while excluding upstream checkout contents.
-/studying/*
-!/studying/README.md
-!/studying/manifest.lock
+version: v2
+clean: true
+plugins:
+  - remote: buf.build/protocolbuffers/java:v33.2
+    revision: 1
+    out: java/elah-api/src/generated/java

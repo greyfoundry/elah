@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "inputs": {
+    "proto/buf.gen.yaml": "059563f8606e09511d959b0b4fb228eaee74d25a54597420bf8e4130c5b1055a",
+    "proto/buf.yaml": "96180afd313f56f8135b3ebb6597b2d94f5053316219e6b33af2d5c6c520ea71",
+    "proto/control/v1/identity.proto": "b673a976cf24beb6267e7138cf4e69bd61ce94b5250c28c71d6a42c99a27cb5a"
+  },
+  "outputs": {
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/ComponentIdentity.java": "0a70fa4621c00983b561c2d0a9f4d11f97a423078d29d52cfdd654952e2dfa09",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/ComponentIdentityOrBuilder.java": "eb6d4569a747371330ec4ad1288e3b72359f6ce3d0f01ad320a20b5cf0194d25",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/IdentityProto.java": "c37c38dedaa4463235b3fb45d4ad72da87636241fc80e4d2abde49d9b828e5ad"
+  }
+}

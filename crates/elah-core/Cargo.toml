@@ -24,15 +24,11 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-/.private/
-/.superpowers/
-/.worktrees/
-/.gradle/
-/node_modules/
-/target/
-**/build/
+[package]
+name = "elah-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
 
-# Keep reproducible study metadata while excluding upstream checkout contents.
-/studying/*
-!/studying/README.md
-!/studying/manifest.lock
+[lib]
+path = "src/lib.rs"

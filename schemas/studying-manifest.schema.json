@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Elah studying manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "retrievedAt", "repositories"],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "retrievedAt": {
+      "type": "string",
+      "format": "date"
+    },
+    "repositories": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/repository"
+      }
+    }
+  },
+  "$defs": {
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repo", "url", "ref", "sha", "retrievedAt", "spdx", "purpose", "adrs"],
+      "properties": {
+        "repo": {
+          "type": "string",
+          "pattern": "^[^/\\s]+/[^/\\s]+$"
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https://github\\.com/[^/\\s]+/[^/\\s]+$"
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "retrievedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "spdx": {
+          "type": "string",
+          "minLength": 1
+        },
+        "licenseNote": {
+          "type": "string",
+          "minLength": 1
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "adrs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

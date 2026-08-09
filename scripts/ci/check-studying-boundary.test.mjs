@@ -1,0 +1,190 @@
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║                                                                  ║
+// ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+// ║                                                                  ║
+// ║               https://github.com/greyfoundry/elah                ║
+// ║                                                                  ║
+// ╚══════════════════════════════════════════════════════════════════╝
+//
+// Copyright © 2026 Greyfoundry contributors.
+// SPDX-FileCopyrightText: 2026 Greyfoundry contributors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import test from 'node:test';
+
+import { checkStudyingBoundary } from './check-studying-boundary.mjs';
+
+async function withTrackedFiles(files, callback) {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'elah-studying-boundary-'));
+  try {
+    execFileSync('git', ['init', '--quiet'], { cwd: root });
+    for (const [relativePath, contents] of Object.entries(files)) {
+      const absolutePath = path.join(root, relativePath);
+      await mkdir(path.dirname(absolutePath), { recursive: true });
+      await writeFile(absolutePath, contents);
+    }
+    execFileSync('git', ['add', '--force', '.'], { cwd: root });
+    await callback(root);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+}
+
+test('rejects a source import from a studying checkout', async () => {
+  await withTrackedFiles(
+    {
+      'src/bridge.mjs': "// SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n// SPDX-License-Identifier: Apache-2.0\n\nimport worker from '../studying/papermc/Folia/Worker.js';\n",
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), [
+        'src/bridge.mjs:4: forbidden studying checkout reference: studying/papermc/Folia/Worker.js',
+      ]);
+    },
+  );
+});
+
+test('rejects a build reference to a studying checkout', async () => {
+  await withTrackedFiles(
+    {
+      'build.gradle.kts': "// SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n// SPDX-License-Identifier: Apache-2.0\n\nsourceSets.main { java.srcDir(\"studying/papermc/Folia\") }\n",
+    },
+    async (root) => {
+      assert.match((await checkStudyingBoundary(root)).join('\n'), /build\.gradle\.kts:4: forbidden studying checkout reference/);
+    },
+  );
+});
+
+test('rejects a packaging path into a studying checkout', async () => {
+  await withTrackedFiles(
+    {
+      Dockerfile: '# SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n# SPDX-License-Identifier: Apache-2.0\n\nCOPY studying/papermc/Folia /srv/folia\n',
+    },
+    async (root) => {
+      assert.match((await checkStudyingBoundary(root)).join('\n'), /Dockerfile:4: forbidden studying checkout reference/);
+    },
+  );
+});
+
+test('rejects a studying checkout path composed after a root variable', async () => {
+  await withTrackedFiles(
+    {
+      'src/paths.mjs': "// SPDX-FileCopyrightText: 2026 Greyfoundry contributors\n// SPDX-License-Identifier: Apache-2.0\n\nconst checkout = `${rootDir}/studying/papermc/Folia`;\n",
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), [
+        'src/paths.mjs:4: forbidden studying checkout reference: studying/papermc/Folia',
+      ]);
+    },
+  );
+});
+
+test('rejects an absolute path into a studying checkout', async () => {
+  await withTrackedFiles(
+    {
+      'container.conf': 'source=/workspace/studying/papermc/Folia\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), [
+        'container.conf:1: forbidden studying checkout reference: studying/papermc/Folia',
+      ]);
+    },
+  );
+});
+
+test('allows the studying validator namespace below an absolute repository root', async () => {
+  await withTrackedFiles(
+    {
+      'container.conf': 'validator=/workspace/scripts/studying/check-manifest.mjs\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), []);
+    },
+  );
+});
+
+test('does not let a validator suffix hide an earlier studying checkout root', async () => {
+  await withTrackedFiles(
+    {
+      'container.conf': 'source=/workspace/studying/papermc/Folia/scripts/studying/check-manifest.mjs\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), [
+        'container.conf:1: forbidden studying checkout reference: studying/papermc/Folia/scripts/studying/check-manifest.mjs',
+      ]);
+    },
+  );
+});
+
+test('rejects a direct studying root before a later validator-looking suffix', async () => {
+  await withTrackedFiles(
+    {
+      'container.conf': 'source=studying/papermc/Folia/scripts/studying/check-manifest.mjs\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), [
+        'container.conf:1: forbidden studying checkout reference: studying/papermc/Folia/scripts/studying/check-manifest.mjs',
+      ]);
+    },
+  );
+});
+
+test('rejects a parent-relative studying root before a later validator-looking suffix', async () => {
+  await withTrackedFiles(
+    {
+      'src/paths.mjs': 'const source = "../studying/papermc/Folia/scripts/studying/check-manifest.mjs";\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), [
+        'src/paths.mjs:1: forbidden studying checkout reference: studying/papermc/Folia/scripts/studying/check-manifest.mjs',
+      ]);
+    },
+  );
+});
+
+test('rejects tracked content below the studying metadata boundary', async () => {
+  await withTrackedFiles(
+    {
+      'studying/README.md': '# Study policy\n',
+      'studying/manifest.lock': '{}\n',
+      'studying/papermc/Folia/settings.gradle.kts': '// upstream checkout\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), [
+        'studying/papermc/Folia/settings.gradle.kts: tracked studying content is forbidden; only studying/README.md and studying/manifest.lock may be tracked',
+      ]);
+    },
+  );
+});
+
+test('allows the tracked study metadata and documentation references to its policy', async () => {
+  await withTrackedFiles(
+    {
+      'studying/README.md': '# Study policy\n',
+      'studying/manifest.lock': '{}\n',
+      'docs/upstreams.md': 'See `studying/manifest.lock`; never package `studying/papermc/Folia`.\n',
+      'package.json': '{"scripts":{"validate":"node check.mjs studying/manifest.lock"}}\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), []);
+    },
+  );
+});
