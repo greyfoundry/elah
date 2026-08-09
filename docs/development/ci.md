@@ -35,6 +35,8 @@ On Windows, use `gradlew.bat --no-daemon check` when running the Gradle command 
 
 The generated-output gate runs pinned Buf generation into a clean temporary directory and compares the complete generated tree byte for byte with the checked-in Java output. The committed hash manifest is an additional integrity check, not the source of truth for freshness.
 
+The Java CodeQL job disables Gradle's build cache and performs a clean compilation so the CodeQL extractor always observes source compilation instead of receiving only restored class outputs.
+
 `reuse lint` verifies REUSE licensing coverage. Documentation is covered through the Markdown annotation in `REUSE.toml`, so Markdown files do not carry embedded SPDX notices.
 
 ## Hosted checks

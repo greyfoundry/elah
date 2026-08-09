@@ -54,7 +54,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "25"
-      - name: Set up Gradle 9.6.1 wrapper
+      - name: Set up Gradle 9.7.0 wrapper
         uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
       - name: Initialize CodeQL
         uses: github/codeql-action/init@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
@@ -62,7 +62,7 @@ jobs:
           languages: java-kotlin
           build-mode: manual
       - name: Build Java
-        run: ./gradlew --no-daemon classes
+        run: ./gradlew --no-daemon --no-build-cache clean classes
       - name: Analyze
         uses: github/codeql-action/analyze@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
         with:
