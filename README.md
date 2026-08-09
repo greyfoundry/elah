@@ -4,7 +4,7 @@
 
 Elah is a distributed orchestration and ownership layer for Minecraft worlds. It does not replace a Minecraft server, a proxy, or a database. It coordinates authoritative world ownership across workers while retaining a normal Java-client experience.
 
-Elah is at the beginning of its journey. **0.0.1 (Genesis) is a laboratory foundation, not a gameplay release.** It establishes project contracts, build foundations, and research boundaries; it does not ship a playable distributed world.
+Elah is at the beginning of its journey. **0.0.1 (Genesis) is a laboratory foundation, not a gameplay release.** It establishes project contracts, build foundations, and research boundaries; it implements no gameplay behavior and does not provide a runnable Minecraft cluster or playable distributed world. See the [Genesis release gate](docs/releases/0.0.1-genesis.md) for the demonstrated scope and [development setup](docs/development/toolchains.md) for the local entrypoint.
 
 ## Architecture at a glance
 
@@ -26,11 +26,13 @@ The central rule is simple: Folia scales vertically within a worker; Elah scales
 
 ## Status
 
-The first engineering target is deliberately small: two Folia processes, one pregenerated world, one Velocity proxy, and a fixed coordinate boundary crossed repeatedly without losing or duplicating player state. Dynamic placement, distributed storage, autoscaling, custom clients, and gameplay features are explicitly out of scope for Genesis.
+Genesis establishes the laboratory only. The roadmap's Folia workers, Mineflayer laboratory client, multi-worker handoff, chaos exercises, storage services, and soak testing are future work, not Genesis capabilities. The intended fixed-boundary experiment is a later engineering target; it has not been demonstrated by this release.
 
 ## Contributing and security
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before contributing and [SECURITY.md](SECURITY.md) to report a vulnerability privately.
+
+For a local validation baseline, see [CI and local checks](docs/development/ci.md). Toolchain versions and installation checks are recorded in [Toolchains](docs/development/toolchains.md).
 
 ## Licensing
 
