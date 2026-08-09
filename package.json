@@ -1,0 +1,8 @@
+{
+  "name": "elah",
+  "private": true,
+  "scripts": {
+    "studying:validate": "node scripts/studying/validate-manifest.mjs studying/manifest.lock",
+    "test:studying": "node --test scripts/studying/validate-manifest.test.mjs"
+  }
+}
