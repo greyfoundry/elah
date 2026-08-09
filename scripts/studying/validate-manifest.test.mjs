@@ -54,6 +54,13 @@ test('rejects an upstream entry without ADR references array', () => {
   assert.match(validateManifest(manifest).join('\n'), /ADRs array/);
 });
 
+test('rejects an upstream pin without its own retrieval date', () => {
+  const manifest = copiedManifest();
+  delete manifest.repositories[0].retrievedAt;
+
+  assert.match(validateManifest(manifest).join('\n'), /retrievedAt/);
+});
+
 test('rejects a retrieval date that is not a real ISO calendar date', () => {
   const manifest = copiedManifest();
   manifest.retrievedAt = '2026-02-31';

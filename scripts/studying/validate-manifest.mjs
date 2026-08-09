@@ -63,6 +63,9 @@ function validateRepository(repository, index, names, errors) {
   if (!isNonEmptyString(repository.sha) || !new RegExp(repositorySchema.properties.sha.pattern).test(repository.sha)) {
     errors.push(`${location}.sha must be a 40-character lowercase hexadecimal SHA`);
   }
+  if (!isNonEmptyString(repository.retrievedAt) || !isIsoDate(repository.retrievedAt)) {
+    errors.push(`${location}.retrievedAt must be an ISO-8601 date`);
+  }
   if (!isNonEmptyString(repository.spdx)) {
     errors.push(`${location}.spdx must contain an SPDX license identifier`);
   }
