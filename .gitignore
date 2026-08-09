@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Greyfoundry contributors
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
 /.private/
 /.superpowers/
 /.worktrees/

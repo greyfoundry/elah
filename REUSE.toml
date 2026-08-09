@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: 2026 Greyfoundry contributors
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
+version = 1
+
+[[annotations]]
+path = ["LICENSE-APACHE"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["LICENSE-MIT"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = [
+  "**/*.jar",
+  "**/*.class",
+  "**/*.dll",
+  "**/*.exe",
+  "**/*.ico",
+  "**/*.jpeg",
+  "**/*.jpg",
+  "**/*.json",
+  "**/*.lock",
+  "**/*.nbt",
+  "**/*.pb",
+  "**/*.png",
+  "**/*.toml",
+  "**/*.wasm",
+  "**/*.zip",
+  "gradle/wrapper/gradle-wrapper.jar",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
+SPDX-License-Identifier = "Apache-2.0 OR MIT"
