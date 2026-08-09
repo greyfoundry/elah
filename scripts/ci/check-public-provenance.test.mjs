@@ -55,11 +55,15 @@ test('rejects tool provenance markers in source comments', async () => {
 
 test('scans the provenance scanner and its tests like every other public file', async () => {
   const namedTool = assembled('Code', 'x');
+  const genericClaim = ['AI', 'authored'].join('-');
   await withTrackedFiles(
-    { 'scripts/ci/check-public-provenance.test.mjs': `// Created with ${namedTool}\n` },
+    {
+      'scripts/ci/check-public-provenance.test.mjs': `// Created with ${namedTool}\n// ${genericClaim} release notes\n`,
+    },
     async (root) => {
       assert.deepEqual(await checkPublicProvenance(root), [
         'scripts/ci/check-public-provenance.test.mjs:1: public provenance policy violation: named model or tool',
+        'scripts/ci/check-public-provenance.test.mjs:2: public provenance policy violation: automated authorship claim',
       ]);
     },
   );
@@ -96,6 +100,40 @@ test('rejects additional named model and tool attributions', async () => {
         'NOTICE.txt:1: public provenance policy violation: named model or tool',
         'NOTICE.txt:2: public provenance policy violation: named model or tool',
         'NOTICE.txt:3: public provenance policy violation: named model or tool',
+      ]);
+    },
+  );
+});
+
+test('rejects an additional generic automated authorship formulation', async () => {
+  const claim = ['AI', 'authored'].join('-');
+  await withTrackedFiles(
+    { 'release-notes.md': `${claim} release notes.\n` },
+    async (root) => {
+      assert.deepEqual(await checkPublicProvenance(root), [
+        'release-notes.md:1: public provenance policy violation: automated authorship claim',
+      ]);
+    },
+  );
+});
+
+test('allows an ambiguous tool name in ordinary CSS syntax', async () => {
+  const property = assembled('cur', 'sor');
+  await withTrackedFiles(
+    { 'web/button.css': `button { ${property}: pointer; }\n` },
+    async (root) => {
+      assert.deepEqual(await checkPublicProvenance(root), []);
+    },
+  );
+});
+
+test('rejects an ambiguous tool name in attribution context', async () => {
+  const namedTool = assembled('Cur', 'sor');
+  await withTrackedFiles(
+    { 'NOTICE.txt': `Authored with ${namedTool}.\n` },
+    async (root) => {
+      assert.deepEqual(await checkPublicProvenance(root), [
+        'NOTICE.txt:1: public provenance policy violation: named model or tool',
       ]);
     },
   );

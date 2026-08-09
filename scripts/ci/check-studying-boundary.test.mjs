@@ -87,6 +87,30 @@ test('rejects an absolute path into a studying checkout', async () => {
   );
 });
 
+test('allows the studying validator namespace below an absolute repository root', async () => {
+  await withTrackedFiles(
+    {
+      'container.conf': 'validator=/workspace/scripts/studying/check-manifest.mjs\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), []);
+    },
+  );
+});
+
+test('does not let a validator suffix hide an earlier studying checkout root', async () => {
+  await withTrackedFiles(
+    {
+      'container.conf': 'source=/workspace/studying/papermc/Folia/scripts/studying/check-manifest.mjs\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), [
+        'container.conf:1: forbidden studying checkout reference: studying/papermc/Folia/scripts/studying/check-manifest.mjs',
+      ]);
+    },
+  );
+});
+
 test('rejects tracked content below the studying metadata boundary', async () => {
   await withTrackedFiles(
     {

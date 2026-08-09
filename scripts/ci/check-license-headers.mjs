@@ -98,7 +98,17 @@ export async function checkLicenseHeaders(root = process.cwd()) {
 
     const contents = (await readFile(path.join(root, file), 'utf8')).replace(/^\uFEFF/, '');
     const lines = contents.split(/\r?\n/);
-    const firstLine = lines[0]?.startsWith('#!') ? 1 : 0;
+    const extension = path.posix.extname(file).toLowerCase();
+    const xmlDeclaration = extension === '.xml'
+      ? lines.findIndex((line) => /^<\?xml(?:\s|\?>)/i.test(line))
+      : -1;
+    if (xmlDeclaration > 0) {
+      diagnostics.push(
+        `${file}:${xmlDeclaration + 1}: XML declaration must be the first syntactically valid line`,
+      );
+      continue;
+    }
+    const firstLine = lines[0]?.startsWith('#!') || xmlDeclaration === 0 ? 1 : 0;
     const copyrightPattern = headerPattern(syntax, 'SPDX-FileCopyrightText:');
     const licenseTag = ['SPDX-License', 'Identifier:'].join('-');
     const licensePattern = headerPattern(syntax, licenseTag);

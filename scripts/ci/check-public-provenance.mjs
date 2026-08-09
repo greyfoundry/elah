@@ -15,8 +15,10 @@ const namedAttributions = [
   ['clau', 'de'],
   ['anthro', 'pic'],
   ['co', 'pilot'],
-  ['cur', 'sor'],
   ['gem', 'ini'],
+].map((parts) => parts.join(''));
+const ambiguousAttributions = [
+  ['cur', 'sor'],
 ].map((parts) => parts.join(''));
 const markers = [
   {
@@ -33,6 +35,10 @@ const markers = [
   },
   {
     category: 'automated authorship claim',
+    pattern: new RegExp(`\\b${['ai', 'authored'].join('[- ]')}\\b`, 'i'),
+  },
+  {
+    category: 'automated authorship claim',
     pattern: new RegExp(`\\b${['llm', 'generated'].join('[- ]')}\\b`, 'i'),
   },
   {
@@ -42,6 +48,13 @@ const markers = [
   {
     category: 'automated authorship claim',
     pattern: new RegExp(`\\bgenerated\\s+by\\s+(?:an?\\s+)?(?:${['ai', ...namedAttributions].join('|')})\\b`, 'i'),
+  },
+  {
+    category: 'named model or tool',
+    pattern: new RegExp(
+      `\\b(?:authored|built|created|generated|made|written)\\s+(?:by|using|with)\\s+(?:${ambiguousAttributions.join('|')})\\b|\\b(?:${ambiguousAttributions.join('|')})[- ](?:assisted|authored|generated)\\b`,
+      'i',
+    ),
   },
 ];
 

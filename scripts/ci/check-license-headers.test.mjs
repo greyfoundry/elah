@@ -107,6 +107,30 @@ test('rejects an unclassified tracked file instead of silently skipping it', asy
   );
 });
 
+test('accepts an XML declaration immediately followed by SPDX comments', async () => {
+  await withTrackedFiles(
+    {
+      'config/example.xml': '<?xml version="1.0" encoding="UTF-8"?>\n<!-- SPDX-FileCopyrightText: 2026 Greyfoundry contributors -->\n<!-- SPDX-License-Identifier: Apache-2.0 OR MIT -->\n<example />\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkLicenseHeaders(root), []);
+    },
+  );
+});
+
+test('rejects SPDX comments placed before an XML declaration', async () => {
+  await withTrackedFiles(
+    {
+      'config/example.xml': '<!-- SPDX-FileCopyrightText: 2026 Greyfoundry contributors -->\n<!-- SPDX-License-Identifier: Apache-2.0 OR MIT -->\n<?xml version="1.0" encoding="UTF-8"?>\n<example />\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkLicenseHeaders(root), [
+        'config/example.xml:3: XML declaration must be the first syntactically valid line',
+      ]);
+    },
+  );
+});
+
 test('leaves strict formats to precise REUSE annotations', async () => {
   await withTrackedFiles(
     {
