@@ -49,10 +49,16 @@ SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
-path = ["**/*.md"]
+path = ["**/*.md", "!CODE_OF_CONDUCT.md"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
 SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["CODE_OF_CONDUCT.md"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Contributor Covenant contributors"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
 
 [[annotations]]
 path = ["java/elah-api/src/generated/java/**/*.java"]
