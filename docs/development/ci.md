@@ -39,7 +39,9 @@ On Windows, use `gradlew.bat --no-daemon check` when running the Gradle command 
 
 GitHub Actions runs the same Rust, Java, Node, Buf, manifest/generated-output, studying-boundary, public-provenance, and licensing checks on pushes and pull requests to `main`.
 
-The hosted Java job also checks formatting with the pinned Google Java Format release. Run that formatter before submitting Java changes; the Gradle `check` task does not replace this formatting gate.
+The hosted Java job downloads Google Java Format 1.36.1 from Maven Central, verifies the downloaded JAR by SHA-256, and checks Java formatting in dry-run mode. Run that formatter before submitting Java changes; the Gradle `check` task does not replace this formatting gate.
+
+The hosted licensing job sets up Python 3.13, installs `reuse==6.2.0` with pip, and runs `reuse lint`. Use those exact versions when reproducing the licensing gate locally; see [Toolchains](toolchains.md).
 
 Additional hosted gates are:
 

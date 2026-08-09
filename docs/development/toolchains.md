@@ -10,6 +10,9 @@ Use the pinned toolchain inputs below when preparing a local contributor environ
 | Node.js | 24.19.0 | `.node-version` |
 | pnpm | 10.34.5 | `package.json` |
 | Buf | 1.72.0 | CI configuration |
+| Google Java Format | 1.36.1 | CI Java job downloads the Maven Central all-dependencies JAR and verifies its SHA-256 |
+| Python | 3.13 | CI licensing job |
+| REUSE | 6.2.0 | CI licensing job installs `reuse==6.2.0` with pip |
 
 ## Prepare a checkout
 
@@ -22,6 +25,8 @@ java --version
 node --version
 pnpm --version
 buf --version
+python --version
+python -m reuse --version
 ```
 
 Run the Gradle wrapper rather than a system Gradle installation:
@@ -37,6 +42,15 @@ Install Node dependencies with the committed lockfile:
 ```sh
 pnpm install --frozen-lockfile
 ```
+
+For the same licensing tool used by CI, install and run the pinned REUSE release with Python 3.13:
+
+```sh
+python -m pip install reuse==6.2.0
+reuse lint
+```
+
+CI obtains Google Java Format 1.36.1 from Maven Central in its Java job, verifies the downloaded JAR by SHA-256, and uses it in dry-run mode. CI sets up Python 3.13 in its licensing job, installs `reuse==6.2.0`, and then runs `reuse lint`.
 
 The project does not require a Minecraft server, proxy, cluster, database, or gameplay workload for the Genesis validation gate. Those runtime environments belong to later stages and are not represented as a local setup requirement here.
 
