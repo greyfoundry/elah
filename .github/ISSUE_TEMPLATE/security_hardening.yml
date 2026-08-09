@@ -1,0 +1,82 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║                                                                  ║
+# ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+# ║                                                                  ║
+# ║               https://github.com/greyfoundry/elah                ║
+# ║                                                                  ║
+# ╚══════════════════════════════════════════════════════════════════╝
+#
+# Copyright © 2026 Greyfoundry contributors.
+# SPDX-FileCopyrightText: 2026 Greyfoundry contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+name: Public security-hardening finding
+description: Suggest non-sensitive defense-in-depth work. Report vulnerabilities privately instead.
+title: "[Hardening]: "
+labels:
+  - security
+  - needs-triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not disclose an exploitable weakness here.** Use the [private vulnerability report](https://github.com/greyfoundry/elah/security/advisories/new) for vulnerabilities, suspected vulnerabilities, bypasses, secrets, or sensitive proof of concept material.
+  - type: checkboxes
+    id: public_safe
+    attributes:
+      label: Public-disclosure check
+      options:
+        - label: This is a non-sensitive defense-in-depth suggestion and does not describe an exploitable weakness.
+          required: true
+        - label: This report contains no secrets, private infrastructure details, or sensitive proof of concept material.
+          required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Hardening area
+      options:
+        - Authentication or authorisation
+        - Network exposure or transport security
+        - Secrets or identity lifecycle
+        - Supply chain or release integrity
+        - Auditability or security observability
+        - Resource limits or abuse resistance
+        - Secure defaults or operator guidance
+        - Other defense in depth
+    validations:
+      required: true
+  - type: textarea
+    id: finding
+    attributes:
+      label: Hardening opportunity
+      description: Describe the current public behaviour and the defense-in-depth improvement.
+    validations:
+      required: true
+  - type: textarea
+    id: public_reason
+    attributes:
+      label: Why this is safe to discuss publicly
+      description: Explain why the report does not enable exploitation or expose sensitive implementation details.
+    validations:
+      required: true
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommended mitigation
+      description: Include secure defaults, compatibility implications, and validation ideas.
+    validations:
+      required: true

@@ -1,0 +1,95 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║                                                                  ║
+# ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+# ║                                                                  ║
+# ║               https://github.com/greyfoundry/elah                ║
+# ║                                                                  ║
+# ╚══════════════════════════════════════════════════════════════════╝
+#
+# Copyright © 2026 Greyfoundry contributors.
+# SPDX-FileCopyrightText: 2026 Greyfoundry contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+name: Code-quality finding
+description: Record maintainability, correctness-risk, testing, or design debt with concrete evidence.
+title: "[Quality]: "
+labels:
+  - code-quality
+  - needs-triage
+body:
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Preflight
+      options:
+        - label: This finding is more specific than a general preference or style opinion.
+          required: true
+        - label: This finding does not disclose a vulnerability or sensitive security weakness.
+          required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Finding category
+      options:
+        - Correctness risk
+        - Maintainability or complexity
+        - Test quality or coverage gap
+        - Performance or resource use
+        - Observability or diagnostics
+        - API or compatibility design
+        - Build or developer experience
+        - Documentation-to-code drift
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Finding
+      description: State the concern and why it matters.
+    validations:
+      required: true
+  - type: textarea
+    id: locations
+    attributes:
+      label: Exact locations
+      description: List files, symbols, and relevant line numbers or revisions.
+      placeholder: |
+        - path/to/file:42 — SymbolName
+        - commit SHA or permalink
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and impact
+      description: Include a failing test, trace, measurement, duplication example, or realistic maintenance failure.
+    validations:
+      required: true
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommended direction
+      description: Describe the smallest safe improvement and any trade-offs.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation strategy
+      description: Explain positive, negative, and failure-path checks that would prove the finding resolved.
+    validations:
+      required: true
