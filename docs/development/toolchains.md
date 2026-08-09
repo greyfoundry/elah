@@ -6,7 +6,7 @@ Use the pinned toolchain inputs below when preparing a local contributor environ
 | --- | --- | --- |
 | Rust | 1.97.1, with `clippy` and `rustfmt` | `rust-toolchain.toml` |
 | Java | Temurin 25 | CI configuration |
-| Gradle | 9.6.1 | Gradle wrapper |
+| Gradle | 9.7.0 | Gradle wrapper |
 | Node.js | 24.19.0 | `.node-version` |
 | pnpm | 10.34.5 | `package.json` |
 | Buf | 1.72.0 | CI configuration |
