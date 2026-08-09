@@ -2,7 +2,21 @@
 
 ## Reporting a vulnerability
 
-Do not open a public issue for a suspected vulnerability. Report it privately to the project maintainers with a clear description, affected revision, reproduction or proof of concept where safe, impact, and any suggested mitigation. Please avoid publishing details until a coordinated fix and advisory plan exist.
+Do not open a public issue for a suspected vulnerability. Use GitHub's [private vulnerability reporting](https://github.com/greyfoundry/elah/security/advisories/new) with a clear description, affected revision, reproduction or proof of concept where safe, impact, and any suggested mitigation. Please avoid publishing details until a coordinated fix and advisory plan exist.
+
+Public issues may use the security-hardening form only for non-sensitive defense-in-depth suggestions that do not expose an exploitable weakness, bypass, secret, private infrastructure detail, or sensitive proof of concept.
+
+## Supported versions
+
+Elah is pre-release software. Security fixes currently target the latest revision of `main`; no released version is supported for production deployment yet.
+
+## What to include
+
+- The affected component, revision, and deployment conditions.
+- The security impact and a realistic attack scenario.
+- Minimal reproduction steps or a proof of concept, shared privately and without unrelated sensitive data.
+- Known mitigations, workarounds, and evidence that the issue is not already fixed on `main`.
+- A safe contact method if coordination requires follow-up.
 
 ## Security posture
 
