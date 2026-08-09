@@ -35,15 +35,15 @@ function referencedStudyPaths(line) {
   const pattern = /(?:^|[\s"'`(=,:])([^\s"'`()=,:]*studying\/[A-Za-z0-9_.*-]+(?:\/[A-Za-z0-9_.*-]+)*)/g;
   for (const match of normalizedLine.matchAll(pattern)) {
     const candidate = match[1].replace(/^(?:\.{1,2}\/)+/, '');
+    if (candidate.startsWith('studying/')) {
+      references.push(candidate);
+      continue;
+    }
     const validatorBoundary = candidate.indexOf('/scripts/studying/');
     const firstStudyBoundary = candidate.indexOf('/studying/');
     const isRootedValidator = validatorBoundary >= 0
       && firstStudyBoundary === validatorBoundary + '/scripts'.length;
     if (candidate.startsWith('scripts/studying/') || isRootedValidator) {
-      continue;
-    }
-    if (candidate.startsWith('studying/')) {
-      references.push(candidate);
       continue;
     }
     const rootBoundary = candidate.indexOf('/studying/');

@@ -111,6 +111,32 @@ test('does not let a validator suffix hide an earlier studying checkout root', a
   );
 });
 
+test('rejects a direct studying root before a later validator-looking suffix', async () => {
+  await withTrackedFiles(
+    {
+      'container.conf': 'source=studying/papermc/Folia/scripts/studying/check-manifest.mjs\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), [
+        'container.conf:1: forbidden studying checkout reference: studying/papermc/Folia/scripts/studying/check-manifest.mjs',
+      ]);
+    },
+  );
+});
+
+test('rejects a parent-relative studying root before a later validator-looking suffix', async () => {
+  await withTrackedFiles(
+    {
+      'src/paths.mjs': 'const source = "../studying/papermc/Folia/scripts/studying/check-manifest.mjs";\n',
+    },
+    async (root) => {
+      assert.deepEqual(await checkStudyingBoundary(root), [
+        'src/paths.mjs:1: forbidden studying checkout reference: studying/papermc/Folia/scripts/studying/check-manifest.mjs',
+      ]);
+    },
+  );
+});
+
 test('rejects tracked content below the studying metadata boundary', async () => {
   await withTrackedFiles(
     {
