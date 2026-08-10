@@ -26,14 +26,21 @@
 
 //! Read-only Minecraft Java world observation.
 
+mod dimension;
 mod error;
+mod evidence;
+mod level;
 mod report;
+mod world;
 
 pub use error::{ErrorKind, ObservationError};
+pub use evidence::InputEvidence;
+pub use level::{LevelMetadata, read_level};
 pub use report::{
     Bounds, DeepValidation, DimensionKind, DimensionReport, NumericDistribution, ObservationLimits,
     ScanDepth, ScanSummary, TextDistribution, WorldIdentity, WorldReport, WorldTotals,
 };
+pub use world::{DiscoveredDimension, DiscoveredWorld, SafeFile, discover_world};
 
 /// Stable schema identifier for successful Observer JSON reports.
 pub const REPORT_SCHEMA: &str = "elah.observe/v1";

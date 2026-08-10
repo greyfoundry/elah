@@ -54,6 +54,20 @@ pub struct ObservationError {
 }
 
 impl ObservationError {
+    /// Creates an unsupported-world error with one technical detail.
+    pub(crate) fn unsupported_world(
+        summary: impl Into<String>,
+        recovery: impl Into<String>,
+        detail: impl Into<String>,
+    ) -> Self {
+        Self {
+            kind: ErrorKind::UnsupportedWorld,
+            summary: summary.into(),
+            recovery: recovery.into(),
+            details: vec![detail.into()],
+        }
+    }
+
     /// Creates an unsafe-input error with one technical detail.
     pub(crate) fn unsafe_input(
         summary: impl Into<String>,
@@ -62,6 +76,48 @@ impl ObservationError {
     ) -> Self {
         Self {
             kind: ErrorKind::UnsafeInput,
+            summary: summary.into(),
+            recovery: recovery.into(),
+            details: vec![detail.into()],
+        }
+    }
+
+    /// Creates a read-only filesystem error with one technical detail.
+    pub(crate) fn io(
+        summary: impl Into<String>,
+        recovery: impl Into<String>,
+        detail: impl Into<String>,
+    ) -> Self {
+        Self {
+            kind: ErrorKind::Io,
+            summary: summary.into(),
+            recovery: recovery.into(),
+            details: vec![detail.into()],
+        }
+    }
+
+    /// Creates a malformed-input error with one technical detail.
+    pub(crate) fn malformed_input(
+        summary: impl Into<String>,
+        recovery: impl Into<String>,
+        detail: impl Into<String>,
+    ) -> Self {
+        Self {
+            kind: ErrorKind::MalformedInput,
+            summary: summary.into(),
+            recovery: recovery.into(),
+            details: vec![detail.into()],
+        }
+    }
+
+    /// Creates a changed-input error with one technical detail.
+    pub(crate) fn changed(
+        summary: impl Into<String>,
+        recovery: impl Into<String>,
+        detail: impl Into<String>,
+    ) -> Self {
+        Self {
+            kind: ErrorKind::Changed,
             summary: summary.into(),
             recovery: recovery.into(),
             details: vec![detail.into()],
