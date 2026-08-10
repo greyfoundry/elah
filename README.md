@@ -4,11 +4,11 @@
 
 Elah is intended to become a distributed orchestration and ownership layer for Minecraft worlds. The planned system would not replace a Minecraft server, a proxy, or a database; it would coordinate authoritative world ownership across workers while retaining a normal Java-client experience.
 
-Elah is at the beginning of its journey. **0.0.2 (Protocol Laboratory) is a control-plane experiment, not a gameplay release.** It provides a loopback-only Rust gRPC controller, a Java dummy worker, and a CI-hosted forced-reconnect exercise. It does not provide a runnable Minecraft cluster or playable distributed world. See the [0.0.2 release gate](docs/releases/0.0.2-protocol-laboratory.md) and [laboratory guide](docs/development/protocol-laboratory.md).
+Elah is at the beginning of its journey. **0.0.3 (Observer) is a read-only world inspection release, not a gameplay release.** It adds `elah observe <world>` for deterministic structural reports over offline Minecraft Java Anvil worlds, with an optional bounded deep scan. Observer does not provide a runnable Minecraft cluster or playable distributed world. See the [0.0.3 release gate](docs/releases/0.0.3-observer.md) and [Observer guide](docs/development/observer.md).
 
 ## Intended architecture
 
-This diagram and its component descriptions are a future design target. The Protocol Laboratory implements only the `elahd`-to-dummy-worker control connection.
+This diagram and its component descriptions are a future design target. Observer is independent of this future runtime path; Protocol Laboratory implements only the `elahd`-to-dummy-worker control connection.
 
 ```text
 Minecraft client -> Velocity / Sling -> ElahFolia workers
@@ -28,7 +28,7 @@ The intended division of responsibility is that Folia would scale vertically wit
 
 ## Status
 
-Protocol Laboratory demonstrates versioned registration, sequenced heartbeats, deterministic session replacement, and rejection of retired sessions across a real Rust-to-Java gRPC connection. Its GitHub-hosted release gate force-kills 26 worker processes to prove an initial connection plus 25 reconnects. Folia workers, Mineflayer clients, multi-worker handoff, storage, ownership epochs, failover, and gameplay remain future work.
+Observer reports saved world identity, dimensions, region and chunk counts, storage distribution, coordinate bounds, and source-labelled timestamps without modifying the selected world. Standard mode validates every terrain region header and occupied chunk envelope. `--deep` additionally decodes every occupied chunk within fixed resource limits. Both modes repeat discovery and evidence collection before returning a report; changed inputs fail closed. Folia workers, Mineflayer clients, multi-worker handoff, storage, ownership epochs, failover, repair, and gameplay remain future work.
 
 ## Contributing and security
 

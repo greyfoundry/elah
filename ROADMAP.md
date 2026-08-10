@@ -8,15 +8,19 @@ Genesis establishes the laboratory: monorepo foundations, licensing, ADRs, build
 
 Protocol Laboratory adds the first executable cross-language control path: a loopback-only Rust `elahd`, versioned Protocol Buffer and gRPC contracts, generated Rust/Java/TypeScript surfaces, and a Java dummy worker. Its release gate force-kills and reconnects worker sessions 25 times on a GitHub-hosted runner while asserting exact generations, monotonic heartbeats, and retired-session rejection. It still ships **no Minecraft integration or gameplay feature**.
 
+## 0.0.3 — Observer
+
+Observer adds the read-only `elah observe <world>` administrator command for Minecraft Java Anvil snapshots. Standard mode inventories safe files, dimensions, `level.dat`, region headers, and chunk envelopes. Optional deep mode boundedly decompresses and validates chunk NBT. Both modes use two-pass evidence and produce no report if report-driving data changes. A development-only PrismarineJS oracle independently creates and reads the release fixture, compares standard and deep reports, and proves complete file hashes remain unchanged. Observer still ships **no server integration, ownership, storage write, failover, repair, or gameplay feature**.
+
 ## Near-term sequence
 
 The immediate path is intentionally narrow:
 
 1. Add a separate protocol-aware laboratory client without coupling it to production code.
-2. Run a single Folia worker and record a baseline.
+2. Run a single Folia worker and record a baseline using Observer evidence where applicable.
 3. Introduce a second worker with static cells.
 4. Demonstrate a fixed-boundary player handoff repeatedly without state loss or duplication.
-5. Add ownership epochs, crash-safe transfer recovery, and observability before broader scaling.
+5. Add ownership epochs, crash-safe transfer recovery, and runtime observability before broader scaling.
 
 ## Later directions
 

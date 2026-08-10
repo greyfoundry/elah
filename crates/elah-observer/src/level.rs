@@ -29,7 +29,8 @@ use std::io::Read;
 use flate2::read::GzDecoder;
 use serde::Deserialize;
 
-use crate::evidence::read_bounded;
+use crate::evidence::{read_bounded, sentinel_limit};
+use crate::nbt::validate_structure;
 use crate::{InputEvidence, ObservationError, ObservationLimits, SafeFile};
 
 /// Saved world metadata extracted without interpreting gameplay state.
@@ -79,7 +80,7 @@ pub fn read_level(
     let decoder = GzDecoder::new(compressed.as_slice());
     let mut decompressed = Vec::new();
     decoder
-        .take(limits.max_decompressed_level_bytes as u64 + 1)
+        .take(sentinel_limit(limits.max_decompressed_level_bytes))
         .read_to_end(&mut decompressed)
         .map_err(|error| {
             ObservationError::malformed_input(
@@ -99,7 +100,18 @@ pub fn read_level(
         ));
     }
 
-    let root: LevelRoot = fastnbt::from_bytes(&decompressed).map_err(|error| {
+    validate_structure(&decompressed, limits.max_nbt_sequence_elements).map_err(|error| {
+        ObservationError::malformed_input(
+            "The level.dat file contains invalid NBT structure.",
+            "Use a known-good world backup or filesystem snapshot, then try again.",
+            format!("{}: {error}", level_dat.relative_path),
+        )
+    })?;
+    let root: LevelRoot = fastnbt::from_bytes_with_opts(
+        &decompressed,
+        fastnbt::DeOpts::new().max_seq_len(limits.max_nbt_sequence_elements),
+    )
+    .map_err(|error| {
         ObservationError::malformed_input(
             "The level.dat file does not contain valid Java world NBT metadata.",
             "Use a known-good world backup or filesystem snapshot, then try again.",

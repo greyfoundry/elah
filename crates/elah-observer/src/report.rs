@@ -47,6 +47,8 @@ pub struct ObservationLimits {
     pub max_compressed_external_chunk_bytes: usize,
     /// Maximum decompressed chunk NBT bytes.
     pub max_decompressed_chunk_bytes: usize,
+    /// Maximum elements accepted in any NBT list or array.
+    pub max_nbt_sequence_elements: usize,
     /// Maximum number of paths accepted beneath a world root.
     pub max_paths: usize,
     /// Maximum changed paths exposed by verbose diagnostics.
@@ -60,6 +62,7 @@ impl Default for ObservationLimits {
             max_decompressed_level_bytes: 64 * 1024 * 1024,
             max_compressed_external_chunk_bytes: 128 * 1024 * 1024,
             max_decompressed_chunk_bytes: 128 * 1024 * 1024,
+            max_nbt_sequence_elements: 1_000_000,
             max_paths: 1_000_000,
             max_changed_path_details: 50,
         }

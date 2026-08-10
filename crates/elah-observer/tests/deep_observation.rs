@@ -215,6 +215,49 @@ fn enforces_external_compressed_limit_and_rejects_truncated_streams() {
 }
 
 #[test]
+fn maximum_chunk_limits_do_not_overflow_read_sentinels() {
+    let fixture = WorldFixture::new();
+    fixture.write_level(LevelFixture::default());
+    let mut region = RegionFixture::new();
+    region.add_chunk(0, 0, 1, 0x80 | 2, &[]);
+    fixture.write_file("region/r.0.0.mca", &region.into_bytes());
+    fixture.write_file(
+        "region/c.0.0.mcc",
+        &compress_chunk(2, &ChunkFixture::at(0, 0).nbt_bytes()),
+    );
+    let (scan, _) = scan_only_region(&fixture);
+
+    let metadata = decode_chunk(
+        &scan.source,
+        &scan.chunks[0],
+        ObservationLimits {
+            max_compressed_external_chunk_bytes: usize::MAX,
+            max_decompressed_chunk_bytes: usize::MAX,
+            ..ObservationLimits::default()
+        },
+    )
+    .expect("maximum limits remain valid without arithmetic overflow");
+
+    assert_eq!(metadata.x_pos, Some(0));
+}
+
+#[test]
+fn malformed_unknown_end_lists_fail_without_panicking() {
+    let fixture = WorldFixture::new();
+    fixture.write_level(LevelFixture::default());
+    let mut region = RegionFixture::new();
+    let malicious = [10, 0, 0, 9, 0, 1, b'x', 0, 0, 0, 0, 1, 0];
+    region.add_chunk(0, 0, 1, 3, &malicious);
+    fixture.write_file("region/r.0.0.mca", &region.into_bytes());
+    let (scan, _) = scan_only_region(&fixture);
+
+    let error = decode_chunk(&scan.source, &scan.chunks[0], ObservationLimits::default())
+        .expect_err("a non-empty list of End tags is malformed");
+
+    assert_eq!(error.kind(), ErrorKind::MalformedInput);
+}
+
+#[test]
 fn deep_mode_fails_closed_when_payload_bytes_change_after_decoding() {
     let fixture = WorldFixture::new();
     fixture.write_level(LevelFixture::default());

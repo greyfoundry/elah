@@ -31,6 +31,7 @@ mod dimension;
 mod error;
 mod evidence;
 mod level;
+mod nbt;
 mod observe;
 mod region;
 mod report;

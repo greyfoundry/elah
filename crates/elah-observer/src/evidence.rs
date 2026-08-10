@@ -102,7 +102,11 @@ pub(crate) fn read_bounded(
         )
     })?;
     let mut bytes = Vec::with_capacity(metadata.len() as usize);
-    read_with_sentinel(file.take(maximum_bytes as u64 + 1), &mut bytes, subject)?;
+    read_with_sentinel(
+        file.take(sentinel_limit(maximum_bytes)),
+        &mut bytes,
+        subject,
+    )?;
     if bytes.len() > maximum_bytes {
         return Err(ObservationError::unsafe_input(
             format!("The compressed {subject} input exceeds the safe read limit."),
@@ -244,6 +248,12 @@ pub(crate) fn sha256_hex(bytes: &[u8]) -> String {
         write!(&mut output, "{byte:02x}").expect("writing to a String cannot fail");
     }
     output
+}
+
+pub(crate) fn sentinel_limit(maximum_bytes: usize) -> u64 {
+    u64::try_from(maximum_bytes)
+        .unwrap_or(u64::MAX)
+        .saturating_add(1)
 }
 
 #[cfg(test)]

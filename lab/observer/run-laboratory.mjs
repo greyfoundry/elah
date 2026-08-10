@@ -87,7 +87,7 @@ export async function runLaboratory ({
 }
 
 async function runElah (elahPath, fixtureRoot, deep) {
-  const elahArguments = ['observe', fixtureRoot, '--format', 'json']
+  const elahArguments = ['observe', fixtureRoot, '--format', 'json', '--verbose']
   if (deep) elahArguments.push('--deep')
   const { stdout, stderr } = await execFileAsync(elahPath, elahArguments, {
     encoding: 'utf8',

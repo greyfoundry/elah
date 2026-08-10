@@ -81,7 +81,14 @@ export async function createFixture (root, { small = false } = {}) {
     const semantic = new Chunk({ minY: -64, worldHeight: 384 })
     semantic.lastUpdate = [0, 0]
     semantic.inhabitedTime = [0, 0]
-    await overworld.save(2, 3, semantic)
+    semantic.setBlockStateId({ x: 0, y: 0, z: 0 }, registry.blocksByName.stone.defaultState)
+    const semanticTag = providerAnvil.chunk(MINECRAFT_VERSION).prismarineChunkToNbt(semantic, 2, 3)
+    // Version 2.13.0 places these optional fields after an early root terminator.
+    // Keep the semantic conversion while emitting structurally valid NBT for the oracle.
+    for (const field of ['isLightOn', 'block_ticks', 'PostProcessing', 'fluid_ticks']) {
+      delete semanticTag.value[field]
+    }
+    await overworld.saveRaw(2, 3, semanticTag)
     chunks.push({
       dimension: 'minecraft:overworld',
       x: 2,

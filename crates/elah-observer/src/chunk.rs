@@ -31,7 +31,8 @@ use flate2::read::{GzDecoder, ZlibDecoder};
 use lz4_java_wrc::Lz4BlockInput;
 use serde::Deserialize;
 
-use crate::evidence::read_bounded;
+use crate::evidence::{read_bounded, sentinel_limit};
+use crate::nbt::validate_structure;
 use crate::{ChunkRecord, Compression, ObservationError, ObservationLimits, SafeFile};
 
 const SECTOR_BYTES: u64 = 4096;
@@ -90,7 +91,18 @@ pub fn decode_chunk(
         read_internal_chunk(region_file, record)?
     };
     let decoded = decompress_chunk(region_file, record, &compressed, limits)?;
-    let root: ChunkRoot = fastnbt::from_bytes(&decoded).map_err(|error| {
+    validate_structure(&decoded, limits.max_nbt_sequence_elements).map_err(|error| {
+        malformed_chunk(
+            region_file,
+            record,
+            format!("NBT structure is invalid: {error}"),
+        )
+    })?;
+    let root: ChunkRoot = fastnbt::from_bytes_with_opts(
+        &decoded,
+        fastnbt::DeOpts::new().max_seq_len(limits.max_nbt_sequence_elements),
+    )
+    .map_err(|error| {
         malformed_chunk(
             region_file,
             record,
@@ -204,7 +216,7 @@ fn decompress_chunk(
         Compression::Uncompressed => Box::new(Cursor::new(compressed)),
         Compression::Lz4 => Box::new(Lz4BlockInput::new(Cursor::new(compressed))),
     };
-    let sentinel = limits.max_decompressed_chunk_bytes as u64 + 1;
+    let sentinel = sentinel_limit(limits.max_decompressed_chunk_bytes);
     let mut decoded = Vec::new();
     reader
         .take(sentinel)

@@ -133,3 +133,23 @@ fn enforces_compressed_and_decompressed_level_limits() {
     assert_eq!(decompressed_error.kind(), ErrorKind::UnsafeInput);
     assert!(decompressed_error.summary().contains("decompressed"));
 }
+
+#[test]
+fn maximum_level_limits_do_not_overflow_the_read_sentinel() {
+    let fixture = WorldFixture::new();
+    fixture.write_level(LevelFixture::default());
+    let world = discover_world(fixture.root(), ObservationLimits::default())
+        .expect("fixture world is discovered");
+
+    let (level, _) = read_level(
+        &world.level_dat,
+        ObservationLimits {
+            max_compressed_level_bytes: usize::MAX,
+            max_decompressed_level_bytes: usize::MAX,
+            ..ObservationLimits::default()
+        },
+    )
+    .expect("maximum limits remain valid without arithmetic overflow");
+
+    assert_eq!(level.level_name.as_deref(), Some("Observer Fixture"));
+}

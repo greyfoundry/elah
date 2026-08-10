@@ -49,3 +49,9 @@ ElahFolia follows this escalation order: Folia public API, normal Folia plugin, 
 Elah is a monorepo because protocol changes span Rust, Java, and TypeScript validation together. Current roots include `crates/`, `java/`, `lab/`, `proto/`, `schemas/`, `scripts/`, `docs/`, and `studying/`; later implementation may add `tests/`. The `studying/` tree is isolated: no production source, build, release artifact, or runtime dependency may import or resolve from it.
 
 Protocol Laboratory implements only the versioned, loopback-only `elahd` worker-registration and heartbeat path. Its registry is deliberately in memory and has no ownership, placement, storage, failover, or gameplay authority.
+
+## Implemented read-only Observer
+
+The `elah` Rust binary contains a separate read-only Observer path for offline Minecraft Java Anvil worlds. Its production parser owns the filesystem boundary, Anvil header and envelope validation, bounded decompression, schema-light NBT extraction, report aggregation, and two-pass consistency ledger. It rejects symbolic links and never opens an observed input with write capability.
+
+Standard mode reads report-driving metadata, every region header, and every occupied chunk envelope. Deep mode additionally fingerprints and boundedly decodes complete chunk payload inputs. PrismarineJS is a development and CI oracle only: it creates and rereads fixtures independently, but it is not a production dependency or runtime authority. Observer does not assign ownership, repair data, write storage, route clients, simulate gameplay, or prove player activity.
