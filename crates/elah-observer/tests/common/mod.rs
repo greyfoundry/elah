@@ -35,6 +35,8 @@ use flate2::write::GzEncoder;
 use serde::Serialize;
 use tempfile::TempDir;
 
+const SECTOR_BYTES: usize = 4096;
+
 #[derive(Clone, Debug)]
 pub struct LevelFixture {
     pub level_name: Option<String>,
@@ -155,5 +157,78 @@ impl WorldFixture {
         {
             std::os::windows::fs::symlink_file(source, target)
         }
+    }
+}
+
+pub struct RegionFixture {
+    bytes: Vec<u8>,
+    next_sector: u32,
+}
+
+impl RegionFixture {
+    pub fn new() -> Self {
+        Self {
+            bytes: vec![0; SECTOR_BYTES * 2],
+            next_sector: 2,
+        }
+    }
+
+    pub fn add_chunk(
+        &mut self,
+        local_x: u8,
+        local_z: u8,
+        timestamp_seconds: u32,
+        compression: u8,
+        payload: &[u8],
+    ) {
+        assert!(local_x < 32 && local_z < 32);
+        let length = 1_usize + payload.len();
+        let required = 4_usize + length;
+        let sectors = required.div_ceil(SECTOR_BYTES);
+        assert!((1..=255).contains(&sectors));
+        let offset = self.next_sector;
+        self.set_location(local_x, local_z, offset, sectors as u8);
+        self.set_timestamp(local_x, local_z, timestamp_seconds);
+
+        let start = offset as usize * SECTOR_BYTES;
+        self.bytes.resize(start + sectors * SECTOR_BYTES, 0);
+        self.bytes[start..start + 4].copy_from_slice(&(length as u32).to_be_bytes());
+        self.bytes[start + 4] = compression;
+        self.bytes[start + 5..start + 5 + payload.len()].copy_from_slice(payload);
+        self.next_sector += sectors as u32;
+    }
+
+    pub fn set_location(&mut self, local_x: u8, local_z: u8, sector_offset: u32, sector_count: u8) {
+        assert!(sector_offset <= 0x00ff_ffff);
+        let index = usize::from(local_x) + usize::from(local_z) * 32;
+        let position = index * 4;
+        let encoded = sector_offset.to_be_bytes();
+        self.bytes[position..position + 3].copy_from_slice(&encoded[1..4]);
+        self.bytes[position + 3] = sector_count;
+    }
+
+    pub fn set_timestamp(&mut self, local_x: u8, local_z: u8, timestamp_seconds: u32) {
+        let index = usize::from(local_x) + usize::from(local_z) * 32;
+        let position = SECTOR_BYTES + index * 4;
+        self.bytes[position..position + 4].copy_from_slice(&timestamp_seconds.to_be_bytes());
+    }
+
+    pub fn ensure_sector_count(&mut self, sector_count: usize) {
+        self.bytes.resize(sector_count * SECTOR_BYTES, 0);
+    }
+
+    pub fn set_envelope(&mut self, sector_offset: u32, length: u32, compression: u8) {
+        let start = sector_offset as usize * SECTOR_BYTES;
+        self.bytes.resize(start + 5, 0);
+        self.bytes[start..start + 4].copy_from_slice(&length.to_be_bytes());
+        self.bytes[start + 4] = compression;
+    }
+
+    pub fn truncate(&mut self, length: usize) {
+        self.bytes.truncate(length);
+    }
+
+    pub fn into_bytes(self) -> Vec<u8> {
+        self.bytes
     }
 }

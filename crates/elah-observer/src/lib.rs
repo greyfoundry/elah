@@ -30,12 +30,17 @@ mod dimension;
 mod error;
 mod evidence;
 mod level;
+mod region;
 mod report;
 mod world;
 
 pub use error::{ErrorKind, ObservationError};
 pub use evidence::InputEvidence;
 pub use level::{LevelMetadata, read_level};
+pub use region::{
+    ChunkCoordinate, ChunkRecord, Compression, RegionCoordinate, RegionEvidence, RegionScan,
+    scan_region_standard,
+};
 pub use report::{
     Bounds, DeepValidation, DimensionKind, DimensionReport, NumericDistribution, ObservationLimits,
     ScanDepth, ScanSummary, TextDistribution, WorldIdentity, WorldReport, WorldTotals,
