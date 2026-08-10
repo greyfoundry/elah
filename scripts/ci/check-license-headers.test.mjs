@@ -122,6 +122,16 @@ test('accepts complete notices in every supported comment syntax', async () => {
   });
 });
 
+test('accepts the ASCII project banner for new source files', async () => {
+  const asciiBanner = `║${'ELAH | A GREYFOUNDRY PROJECT'.padStart(47).padEnd(66)}║`;
+  const asciiNotice = notice('//').replace(`// ${noticeLines[2]}`, `// ${asciiBanner}`);
+  await withTrackedFiles({
+    'src/example.mjs': `${asciiNotice}export const value = 1;\n`,
+  }, async (root) => {
+    assert.deepEqual(await checkLicenseHeaders(root), []);
+  });
+});
+
 test('accepts a shebang immediately followed by the complete notice', async () => {
   await withTrackedFiles({
     'scripts/example.sh': `#!/bin/sh\n${notice('#')}echo ok\n`,
