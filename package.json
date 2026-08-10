@@ -9,11 +9,12 @@
     "node": "24.19.0"
   },
   "scripts": {
-    "test": "node --test scripts/studying/validate-manifest.test.mjs lab/bots/test/component-identity.test.mjs lab/protocol/test/bindings.test.mjs scripts/proto/check-generated.test.mjs scripts/ci/check-studying-boundary.test.mjs scripts/ci/check-public-provenance.test.mjs scripts/ci/check-license-headers.test.mjs",
+    "test": "node --test scripts/studying/validate-manifest.test.mjs lab/bots/test/component-identity.test.mjs lab/protocol/test/bindings.test.mjs lab/protocol/test/laboratory-ledger.test.mjs scripts/proto/check-generated.test.mjs scripts/ci/check-studying-boundary.test.mjs scripts/ci/check-public-provenance.test.mjs scripts/ci/check-license-headers.test.mjs",
     "studying:validate": "node scripts/studying/validate-manifest.mjs studying/manifest.lock",
     "test:studying": "node --test scripts/studying/validate-manifest.test.mjs",
     "test:bots": "node --test lab/bots/test/component-identity.test.mjs",
-    "test:protocol": "node --test lab/protocol/test/bindings.test.mjs",
+    "test:protocol": "node --test lab/protocol/test/*.test.mjs",
+    "lab:protocol": "node lab/protocol/run-laboratory.mjs",
     "test:proto": "node --test scripts/proto/check-generated.test.mjs",
     "proto:check-generated": "node scripts/proto/check-generated.mjs proto/generated-manifest.json",
     "proto:lint": "buf lint proto",

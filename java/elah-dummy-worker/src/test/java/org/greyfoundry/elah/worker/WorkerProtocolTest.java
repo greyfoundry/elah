@@ -24,13 +24,31 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
+package org.greyfoundry.elah.worker;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.greyfoundry.elah.control.v1.HeartbeatRequest;
+import org.greyfoundry.elah.control.v1.RegisterWorkerRequest;
+import org.junit.jupiter.api.Test;
+
+final class WorkerProtocolTest {
+  @Test
+  void createsVersionedRegistrationAndSequencedHeartbeatMessages() {
+    WorkerArguments arguments =
+        WorkerArguments.parse(
+            new String[] {"--worker-id", "worker-a", "--session-id", "session-1"});
+    WorkerProtocol protocol = new WorkerProtocol("laboratory", "dummy-host");
+
+    RegisterWorkerRequest registration = protocol.registration(arguments, "register", "trace-1");
+    HeartbeatRequest heartbeat = protocol.heartbeat(arguments, 7, "heartbeat", "trace-1");
+
+    assertEquals("0.0.2", registration.getContext().getProductSemver());
+    assertEquals(2, registration.getContext().getCurrentProtocol().getPatch());
+    assertEquals("dummy-worker", registration.getContext().getCaller().getComponentName());
+    assertEquals("worker-a", registration.getWorkerId());
+    assertEquals("dummy-host", registration.getProfile().getHostname());
+    assertEquals(7, heartbeat.getSequence());
+    assertEquals("heartbeat", heartbeat.getContext().getRequestId());
+  }
 }
-
-rootProject.name = "elah"
-
-include(":java:elah-api")
-include(":java:elah-dummy-worker")

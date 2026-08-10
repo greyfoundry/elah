@@ -24,13 +24,22 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
+plugins {
+    application
 }
 
-rootProject.name = "elah"
+dependencies {
+    implementation(project(":java:elah-api"))
+    implementation("io.grpc:grpc-netty-shaded:1.83.1")
+    testImplementation(platform("org.junit:junit-bom:6.1.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
 
-include(":java:elah-api")
-include(":java:elah-dummy-worker")
+application {
+    mainClass = "org.greyfoundry.elah.worker.DummyWorker"
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
