@@ -58,3 +58,7 @@ protocol-lab-build:
 
 protocol-lab reconnects="2": protocol-lab-build
     node lab/protocol/run-laboratory.mjs --reconnects {{reconnects}}
+
+observer-lab:
+    cargo build --locked -p elah-cli --bin elah
+    pnpm lab:observer

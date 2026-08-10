@@ -43,7 +43,7 @@ final class GeneratedWorkerContractTest {
             .setContext(
                 RequestContext.newBuilder()
                     .setRequestId("request-001")
-                    .setProductSemver("0.0.2")
+                    .setProductSemver("0.0.3")
                     .setCurrentProtocol(ProtocolVersion.newBuilder().setPatch(2)))
             .setWorkerId("worker-a")
             .setSessionId("session-a")

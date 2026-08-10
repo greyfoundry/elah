@@ -1,6 +1,6 @@
 # CI and local checks
 
-Continuous integration validates the repository foundation and Protocol Laboratory. It checks source quality, declared boundaries, generated artifacts, supply-chain metadata, and the cross-language worker lifecycle; it does not run a Minecraft cluster or demonstrate gameplay behavior.
+Continuous integration validates the repository foundation, Protocol Laboratory, and read-only Observer. It checks source quality, declared boundaries, generated artifacts, supply-chain metadata, the cross-language worker lifecycle, and independent world-report evidence; it does not run a Minecraft cluster or demonstrate gameplay behavior.
 
 ## Local baseline
 
@@ -64,5 +64,16 @@ Additional hosted gates are:
 - CodeQL analysis for Java/Kotlin and JavaScript/TypeScript.
 - An SPDX JSON SBOM generated and retained as a CI artifact.
 - The `Protocol Laboratory (25 reconnects)` job, with its JSON report retained as an artifact.
+- The `Observer Laboratory (standard, deep, immutable, fail-closed)` job, with its report and comparison JSON retained as an artifact.
+
+## Observer Laboratory
+
+Run the focused local gate with:
+
+```text
+just observer-lab
+```
+
+This builds only the `elah` CLI, creates a temporary world outside the repository with the pinned PrismarineJS development oracle, compares standard and deep reports, verifies complete before/after file hashes, runs the synchronized changed-world CLI harness, writes reports only after all assertions pass, and removes the temporary world. See [Observer](observer.md) for the operator boundary and evidence model.
 
 Some hosted gates depend on pull-request or GitHub Actions context and cannot be fully reproduced by the local commands. A passing local baseline therefore establishes repository checks only; it does not replace those hosted checks or prove a runtime deployment.

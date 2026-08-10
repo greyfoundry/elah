@@ -292,3 +292,39 @@ jobs:
           path: build/reports/protocol-laboratory/report.json
           if-no-files-found: error
           retention-days: 14
+
+  observer-laboratory:
+    name: Observer Laboratory (standard, deep, immutable, fail-closed)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install Rust 1.97.1
+        run: rustup toolchain install 1.97.1 --profile minimal
+      - name: Set up Node 24.19.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.19.0
+      - name: Install pnpm 10.34.5
+        run: npm install --global pnpm@10.34.5
+      - name: Install locked development oracle
+        run: pnpm install --frozen-lockfile
+      - name: Build only the Observer CLI
+        run: cargo +1.97.1 build --locked -p elah-cli --bin elah
+      - name: Test the independent oracle
+        run: pnpm test:observer
+      - name: Prove standard, deep, immutable, and fail-closed behavior
+        run: pnpm lab:observer
+      - name: Upload the Observer evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: observer-laboratory-report
+          path: |
+            build/reports/observer-laboratory/report.json
+            build/reports/observer-laboratory/comparison.json
+          if-no-files-found: error
+          retention-days: 14

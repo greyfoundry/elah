@@ -79,7 +79,7 @@ fn context() -> RequestContext {
         request_id: "request-001".to_owned(),
         trace_id: "trace-001".to_owned(),
         cluster_id: "laboratory".to_owned(),
-        product_semver: "0.0.2".to_owned(),
+        product_semver: "0.0.3".to_owned(),
         current_protocol: Some(ProtocolVersion {
             major: 0,
             minor: 0,
@@ -92,7 +92,7 @@ fn context() -> RequestContext {
         }),
         caller: Some(ComponentIdentity {
             component_name: "integration-test".to_owned(),
-            semantic_version: "0.0.2".to_owned(),
+            semantic_version: "0.0.3".to_owned(),
         }),
     }
 }

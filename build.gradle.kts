@@ -30,5 +30,5 @@ plugins {
 
 allprojects {
     group = "org.greyfoundry.elah"
-    version = "0.0.2"
+    version = "0.0.3"
 }
