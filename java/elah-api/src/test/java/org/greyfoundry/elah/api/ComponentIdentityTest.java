@@ -37,7 +37,7 @@ final class ComponentIdentityTest {
     ComponentIdentity identity = ComponentIdentity.of("elah-api");
 
     assertEquals("elah-api", identity.name());
-    assertEquals("0.0.1", identity.version());
+    assertEquals("0.0.2", identity.version());
   }
 
   @Test

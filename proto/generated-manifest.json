@@ -1,13 +1,42 @@
 {
   "version": 1,
   "inputs": {
-    "proto/buf.gen.yaml": "059563f8606e09511d959b0b4fb228eaee74d25a54597420bf8e4130c5b1055a",
+    "proto/buf.gen.yaml": "04b088a1dc729c70b330d73270714c737f1cc714f088c5ee2eeed2516a251462",
     "proto/buf.yaml": "96180afd313f56f8135b3ebb6597b2d94f5053316219e6b33af2d5c6c520ea71",
-    "proto/control/v1/identity.proto": "b673a976cf24beb6267e7138cf4e69bd61ce94b5250c28c71d6a42c99a27cb5a"
+    "proto/control/v1/identity.proto": "b673a976cf24beb6267e7138cf4e69bd61ce94b5250c28c71d6a42c99a27cb5a",
+    "proto/control/v1/protocol.proto": "bcd395a6698af4e81a4dddc689fcdf79862d7c9952d2455f3a11ef3a06c7ec71",
+    "proto/control/v1/worker_control.proto": "62943038feedb45a9717fde72d53a220179cbf9bc86663f0131f440d157e3c7f"
   },
   "outputs": {
     "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/ComponentIdentity.java": "0a70fa4621c00983b561c2d0a9f4d11f97a423078d29d52cfdd654952e2dfa09",
     "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/ComponentIdentityOrBuilder.java": "eb6d4569a747371330ec4ad1288e3b72359f6ce3d0f01ad320a20b5cf0194d25",
-    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/IdentityProto.java": "c37c38dedaa4463235b3fb45d4ad72da87636241fc80e4d2abde49d9b828e5ad"
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/HeartbeatRequest.java": "fcba28b3f6fcfa5d0f0e6224238b440728839ad7df2aae67bb7f98064d4724f5",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/HeartbeatRequestOrBuilder.java": "871618b58c5d5452933129f2965bcaa2b0ece137074c7a99d2423c7e6405137a",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/HeartbeatResponse.java": "3c3cd6ea15af4c4bf6f30c0048343a3c6e7b2d28fa466ba651f2d32421164a5d",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/HeartbeatResponseOrBuilder.java": "4e74d39a33c5d9b07f4a6b9fcb90df7473511d9e8f30d69869b5e812092efb84",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/IdentityProto.java": "c37c38dedaa4463235b3fb45d4ad72da87636241fc80e4d2abde49d9b828e5ad",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/ProtocolProto.java": "86966f4c80014cda1d47f66f5d5135d1e8fd742857a27d2785742bdfba0cdb78",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/ProtocolVersion.java": "77b4885b4071b64e01b02ea8d1502b74923fe8fe6e28aa2ede1a5827ee1ce0df",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/ProtocolVersionOrBuilder.java": "3b812c545d9df51207af8f44a1a101c0d195c4f8c06396670cff35c9d9c32253",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/RegisterWorkerRequest.java": "80e67ce7f142a4e0fdf6e93745c770dd82df50d2de4e08ceee4e9485b06bdeab",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/RegisterWorkerRequestOrBuilder.java": "424149ea2606c59dbdf3327f5c715fa98d6576b1236a3ab55bc9907580dcdfb3",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/RegisterWorkerResponse.java": "cc5d90c43c987a0ee8825cd4d946dac514b2cd5ec9219dfba8bffbdc09895dac",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/RegisterWorkerResponseOrBuilder.java": "1787f2abdd75d092dc64d9116728ae1232a465b253e4922df5cefe7cf8e6af98",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/RequestContext.java": "25b8675e40efeb2817c9bab0e36f193e3389bca4ec513db4d64dcedfe924723a",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/RequestContextOrBuilder.java": "ad6717efd79ebfde0303063183834538dc3c0b1f6639cdaa8ddd0b6282f35770",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/WorkerCapacity.java": "f0b4dd1fd4d11dd6dbb5817d401275a51d1be43eb3e10c3c43cfe79c898ba3c3",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/WorkerCapacityOrBuilder.java": "76f10a1fb7a33e589ca88623c405bcdf4a60cd5d6624ace4e926dba5ca0f2b4f",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/WorkerControlProto.java": "c7eb701e254243a5c0cc8e484f509709d939eae90425784d4d20dcc03aabaa1c",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/WorkerControlServiceGrpc.java": "693cdbe47a7279a426fc97d5884e531b10721db995640490c3cdb0d2355b197a",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/WorkerLoad.java": "f29c9100b450e732851e761350a297d7d17352d992d4464bb9e0240f019d930a",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/WorkerLoadOrBuilder.java": "3be7b3d3eb350820ae8a5a6c466cfd0684e50e881d18fe07eeca870c906beb56",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/WorkerProfile.java": "b1964625355709034bd39b2bf5a072ee78f1c5c34330ad1aaed5cf670b792a0e",
+    "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/WorkerProfileOrBuilder.java": "7f8e5c1201c86ae64c900be98aa2a892bba6ea3571697ba3e1d648d00422cfe8",
+    "lab/protocol/generated/control/v1/identity_pb.d.ts": "70df03cdde15cf85c8a2659be3ffdc151543d9b4dfd9966e81c1dd4e1377cb6c",
+    "lab/protocol/generated/control/v1/identity_pb.js": "985433a46012e4c0bc5c65e4e6a66c262d843b55de03e37f54b792b222c54df0",
+    "lab/protocol/generated/control/v1/protocol_pb.d.ts": "63623f7fa18f86906719bf8ff450db6133ece544310c0c87cccbb9651765319d",
+    "lab/protocol/generated/control/v1/protocol_pb.js": "07e5dd3f835c13eebce3d87d9a24bd741878fca92945fbc698d08219b0112d4b",
+    "lab/protocol/generated/control/v1/worker_control_pb.d.ts": "dce2cd4dc593643007b19a2e4122515cd7553312129de57d09cd9d7e47b0b76c",
+    "lab/protocol/generated/control/v1/worker_control_pb.js": "7b3fe58ce87e1e09ae24cd6542f3092711033fb4e8c8b2a313ad166256d8dbbd"
   }
 }

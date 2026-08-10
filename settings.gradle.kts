@@ -33,3 +33,4 @@ dependencyResolutionManagement {
 rootProject.name = "elah"
 
 include(":java:elah-api")
+include(":java:elah-dummy-worker")

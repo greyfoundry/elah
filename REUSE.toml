@@ -67,6 +67,12 @@ SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
+path = ["lab/protocol/generated/**/*"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Greyfoundry contributors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
 path = [".node-version"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Greyfoundry contributors"

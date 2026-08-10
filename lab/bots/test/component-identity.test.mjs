@@ -32,7 +32,7 @@ import { createComponentIdentity } from '../src/component-identity.mjs';
 test('component identity is immutable and carries the workspace version', () => {
   const identity = createComponentIdentity('elah-lab-bot');
 
-  assert.deepEqual(identity, { name: 'elah-lab-bot', version: '0.0.1' });
+  assert.deepEqual(identity, { name: 'elah-lab-bot', version: '0.0.2' });
   assert.equal(Object.isFrozen(identity), true);
 });
 

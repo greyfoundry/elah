@@ -30,3 +30,10 @@ plugins:
   - remote: buf.build/protocolbuffers/java:v33.2
     revision: 1
     out: java/elah-api/src/generated/java
+  - remote: buf.build/grpc/java:v1.83.1
+    out: java/elah-api/src/generated/java
+  - remote: buf.build/bufbuild/es:v2.13.0
+    out: lab/protocol/generated
+    opt:
+      - target=js+dts
+      - import_extension=js

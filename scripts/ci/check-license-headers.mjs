@@ -92,6 +92,7 @@ function isExcluded(file) {
     binaryExtensions.has(extension) ||
     strictExtensions.has(extension) ||
     file.startsWith('java/elah-api/src/generated/java/') ||
+    file.startsWith('lab/protocol/generated/') ||
     file.startsWith('LICENSES/') ||
     file.endsWith('.md')
   );

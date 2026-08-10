@@ -65,7 +65,7 @@ async function withTrackedGenerationFixture(run) {
 test('tracked generated output matches its production manifest', async () => {
   const result = await verifyGeneratedOutput({ root: repositoryRoot, manifestPath });
 
-  assert.deepEqual(result, { inputs: 3, outputs: 3 });
+  assert.deepEqual(result, { inputs: 5, outputs: 30 });
 });
 
 test('changing a tracked generation input is rejected', async () => {
@@ -159,6 +159,31 @@ test('clean regeneration rejects an extra tracked output omitted from the manife
     await writeFile(path.join(root, extraOutputPath), 'unlisted generated output');
 
     await verifyGeneratedOutput({ root, manifestPath });
+
+    await assert.rejects(
+      generatedChecks.verifyRegeneratedOutput({
+        root,
+        generate: async ({ generationRoot }) => {
+          for (const outputPath of Object.keys(manifest.outputs)) {
+            const destination = path.join(generationRoot, outputPath);
+            await mkdir(path.dirname(destination), { recursive: true });
+            await copyFile(path.join(root, outputPath), destination);
+          }
+        },
+      }),
+      new RegExp(`unexpected tracked generated output: ${extraOutputPath.replaceAll('\\', '/').replaceAll('/', '\\/')}`),
+    );
+  });
+});
+
+test('clean regeneration rejects an unlisted TypeScript binding', async () => {
+  await withTrackedGenerationFixture(async ({ root, manifest }) => {
+    const extraOutputPath = path.join(
+      'lab/protocol/generated',
+      'control/v1/unlisted_pb.js',
+    );
+    await mkdir(path.dirname(path.join(root, extraOutputPath)), { recursive: true });
+    await writeFile(path.join(root, extraOutputPath), 'unlisted generated output');
 
     await assert.rejects(
       generatedChecks.verifyRegeneratedOutput({
