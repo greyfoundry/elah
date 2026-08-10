@@ -24,6 +24,45 @@ The immediate path is intentionally narrow:
 
 ## Later directions
 
-Stone storage, Brook generation, Shepherd placement, entity handoff, boundary awareness, static multi-worker operation, richer recovery, and operator tooling follow only after the fixed-boundary foundation is boringly reliable. Dynamic repartitioning, autoscaling, multi-region operation, custom clients, GPU world generation, and a Kubernetes requirement are not early work.
+The dependency order is locked even though release dates are not.
+
+### 1.x: Safe static multi-machine Minecraft
+
+The 1.x train proves static cells, player and entity handoff, ownership epochs, crash recovery, worker drain, boundary awareness, storage, generation, capacity evidence, rolling upgrades, and control-plane high availability.
+
+Elah 1.0 is the first production-supported target: one logical Minecraft deployment across several workers using static spatial ownership. It does not include dynamic placement, elastic workers, or automatic failover.
+
+### 2.0 through 2.3: Minecraft-aware dynamic placement
+
+Shepherd gains live cell migration, measured placement recommendations, optional automatic placement, cell split and merge, and operator placement constraints.
+
+This work must prove that Elah can safely change ownership before Elah is allowed to create or remove infrastructure capacity.
+
+### 2.4 through 2.9: Runtime Providers and elastic workers
+
+| Release | Direction |
+| --- | --- |
+| 2.4 | Runtime Provider contract and conformance laboratory. |
+| 2.5 | Native elastic workers on operator-managed machines. |
+| 2.6 | Optional Docker worker lifecycle. |
+| 2.7 | COLD, WARM, and HOT pools plus GUARANTEED, BURST, and PREEMPTIBLE capacity. |
+| 2.8 | Hard resource envelopes and authenticated External Provider integrations. |
+| 2.9 | Qualification of many isolated clusters sharing one heterogeneous infrastructure pool. |
+
+Kubernetes, hosting panels, cloud systems, and custom provisioners remain optional adapters below the provider boundary. Elah does not become a hosting panel, billing platform, VM manager, or general-purpose container scheduler.
+
+### 2.10 through 2.14: Advanced single-region operation
+
+Predictive prefetch, regenerative storage, advanced Stone, boundary simulation, and published scale qualification follow elastic-worker safety. These releases must continue to preserve one authoritative owner and one epoch per cell.
+
+### 3.x: Geographic operation
+
+Geographic Sling, latency-aware placement, cross-region handoff, replicated Stone, disaster recovery, global directories, cross-region plugin primitives, and mature security are a later major-version track.
+
+### 4.0: Mature product target
+
+The mature target combines safe ownership, dynamic placement, elastic workers, advanced storage, geographic operation, plugin contracts, observability, security, rolling maintenance, and optional infrastructure integrations while retaining normal Minecraft Java clients.
+
+Dynamic repartitioning, autoscaling, multi-region operation, custom clients, GPU world generation, and a Kubernetes requirement are not early work. Runtime Provider concepts may inform earlier interface design, but provider orchestration cannot enter an earlier milestone.
 
 The mature aim remains one logical Minecraft world across many workers while retaining vanilla Java clients. This roadmap is directional, not a promise of release dates.

@@ -24,7 +24,7 @@ Minecraft client -> Velocity / Sling -> ElahFolia workers
 - **Shepherd** is planned as the placement and workload scheduler in `elahd`.
 - **Brook** is planned to coordinate generation and pregeneration.
 
-The intended division of responsibility is that Folia would scale vertically within a worker while Elah would scale horizontally between workers. See [ARCHITECTURE.md](ARCHITECTURE.md), [INVARIANTS.md](INVARIANTS.md), and [FAILURE_MODEL.md](FAILURE_MODEL.md) for the design contracts.
+The intended division of responsibility is that Folia would scale vertically within a worker while Elah would scale horizontally between workers. Generic infrastructure would manage processes, containers, VMs, and machines underneath Elah; Elah would make Minecraft-specific ownership and placement decisions. See [VISION.md](VISION.md), [ARCHITECTURE.md](ARCHITECTURE.md), [INVARIANTS.md](INVARIANTS.md), and [FAILURE_MODEL.md](FAILURE_MODEL.md) for the design contracts.
 
 ## Status
 

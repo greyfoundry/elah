@@ -28,6 +28,42 @@ Folia owns vertical concurrency inside a worker process. Elah owns horizontal co
 | Stone | Persistent-world storage subsystem. |
 | Brook | Chunk-generation and pregeneration subsystem. |
 
+## Infrastructure boundary
+
+The project boundary is:
+
+> Generic infrastructure manages machines. Elah manages Minecraft.
+
+Shepherd will eventually decide what Minecraft needs using ownership, topology, Folia region pressure, MSPT, TPS, players, entities, loaded chunks, generation pressure, storage temperature, handoffs, and cross-cell traffic. A Runtime Provider will translate a compatible worker request into generic lifecycle operations.
+
+```text
+Shepherd -> Runtime Provider -> Native process, Docker container, or external infrastructure
+```
+
+Providers may report capacity and prepare, inspect, drain, or stop workers. They never assign cell ownership, advance an ownership epoch, move a player, split a cell, or write world state. A provider operation can succeed while an Elah ownership operation still fails closed.
+
+The planned provider order is Native, Docker, then an authenticated External Provider for hosting panels, Kubernetes, cloud systems, and custom infrastructure. Kubernetes remains optional. Elah is not a container orchestrator, VM manager, billing platform, hosting panel, or general-purpose scheduler.
+
+## Elastic worker model
+
+Future worker lifecycle states are:
+
+| State | Meaning |
+| --- | --- |
+| COLD | No worker process exists. |
+| WARM | A compatible runtime has joined the cluster but owns no authoritative cells. |
+| HOT | The worker owns and serves one or more authoritative cells. |
+
+A HOT worker can be stopped or reclaimed only after players and cells are drained and zero authoritative ownership is proven. Uncertain drain completion leaves the worker allocated.
+
+Future capacity policy classes are GUARANTEED, BURST, and PREEMPTIBLE. These classes affect availability and placement, never ownership strength. Per-cluster resource envelopes bound workers, CPU, memory, storage, generation, network use, priority, preemptible eligibility, and warm capacity.
+
+## Deployment scopes
+
+Elah core operates one cluster as one ownership domain. A hosting provider may place many isolated clusters on a shared fleet through the provider boundary, but those clusters do not share controller authority, credentials, storage namespaces, networks, metrics, or ownership state.
+
+Customer lifecycle, billing, fleet-wide inventory, and generic host allocation remain outside Elah. Tenant isolation is a qualification gate for future fleet integrations.
+
 Control-plane RPC will use Protocol Buffers, gRPC, and TLS. Calls carry a request ID, trace ID, caller identity, deadline, protocol version, and cluster ID. Ownership-sensitive calls additionally carry cell ID, epoch, and operation ID.
 
 ## Ownership model
