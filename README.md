@@ -32,6 +32,8 @@ Observer reports saved world identity, dimensions, region and chunk counts, stor
 
 ## Contributing and security
 
+The [Elah wiki](https://github.com/greyfoundry/elah/wiki) has separate starting points for [non-technical readers](https://github.com/greyfoundry/elah/wiki/For-everyone) and [technical readers](https://github.com/greyfoundry/elah/wiki/Technical-guide). Repository documentation remains the source for contributor procedures and exact engineering contracts.
+
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before contributing and [SECURITY.md](SECURITY.md) to report a vulnerability privately.
 
 For a local validation baseline, see [CI and local checks](docs/development/ci.md). Toolchain versions and installation checks are recorded in [Toolchains](docs/development/toolchains.md).
