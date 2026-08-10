@@ -163,6 +163,8 @@ test('leaves strict, generated, documentation, and upstream wrapper files to REU
     'pnpm-lock.yaml': 'lockfileVersion: 9.0\n',
     'docs/example.md': '# Documentation\n',
     'java/elah-api/src/generated/java/Generated.java': 'generated\n',
+    'lab/protocol/generated/control/v1/protocol_pb.js': 'generated\n',
+    'lab/protocol/generated/control/v1/protocol_pb.d.ts': 'generated\n',
     gradlew: '#!/bin/sh\n',
     'gradlew.bat': '@echo off\n',
   }, async (root) => {

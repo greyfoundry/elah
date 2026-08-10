@@ -24,29 +24,39 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-plugins {
-    `java-library`
-}
+import assert from 'node:assert/strict';
+import test from 'node:test';
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
-    sourceSets.main {
-        java.srcDir("src/generated/java")
-    }
-}
+import { RegisterWorkerRequestSchema } from '../generated/control/v1/worker_control_pb.js';
 
-dependencies {
-    api("com.google.protobuf:protobuf-java:4.35.1")
-    api("io.grpc:grpc-protobuf:1.83.1")
-    api("io.grpc:grpc-stub:1.83.1")
-    testImplementation(platform("org.junit:junit-bom:6.1.2"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
+test('generated JavaScript bindings round-trip a worker registration', () => {
+  const registration = create(RegisterWorkerRequestSchema, {
+    context: {
+      requestId: 'request-001',
+      traceId: 'trace-001',
+      clusterId: 'laboratory',
+      productSemver: '0.0.2',
+      currentProtocol: { major: 0, minor: 0, patch: 2 },
+      minimumProtocol: { major: 0, minor: 0, patch: 2 },
+      caller: { componentName: 'dummy-worker', semanticVersion: '0.0.2' },
+    },
+    workerId: 'worker-a',
+    sessionId: 'session-a',
+    profile: {
+      hostname: 'loopback',
+      minecraftVersion: 'laboratory',
+      capacity: { cpuCores: 2, memoryBytes: 1_073_741_824n },
+    },
+  });
 
-tasks.test {
-    useJUnitPlatform()
-}
+  const decoded = fromBinary(
+    RegisterWorkerRequestSchema,
+    toBinary(RegisterWorkerRequestSchema, registration),
+  );
+
+  assert.equal(decoded.workerId, 'worker-a');
+  assert.equal(decoded.context?.currentProtocol?.patch, 2);
+  assert.equal(decoded.profile?.capacity?.memoryBytes, 1_073_741_824n);
+});

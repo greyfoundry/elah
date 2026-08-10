@@ -24,29 +24,30 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-plugins {
-    `java-library`
+syntax = "proto3";
+
+package elah.control.v1;
+
+import "control/v1/identity.proto";
+
+option java_multiple_files = true;
+option java_outer_classname = "ProtocolProto";
+option java_package = "org.greyfoundry.elah.control.v1";
+
+// A semantic version for the Elah protocol rather than a product release.
+message ProtocolVersion {
+  uint32 major = 1;
+  uint32 minor = 2;
+  uint32 patch = 3;
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
-
-    sourceSets.main {
-        java.srcDir("src/generated/java")
-    }
-}
-
-dependencies {
-    api("com.google.protobuf:protobuf-java:4.35.1")
-    api("io.grpc:grpc-protobuf:1.83.1")
-    api("io.grpc:grpc-stub:1.83.1")
-    testImplementation(platform("org.junit:junit-bom:6.1.2"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
-
-tasks.test {
-    useJUnitPlatform()
+// Context supplied by every caller so compatibility and diagnostics are explicit.
+message RequestContext {
+  string request_id = 1;
+  string trace_id = 2;
+  string cluster_id = 3;
+  string product_semver = 4;
+  ProtocolVersion current_protocol = 5;
+  ProtocolVersion minimum_protocol = 6;
+  ComponentIdentity caller = 7;
 }

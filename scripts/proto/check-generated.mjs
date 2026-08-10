@@ -33,7 +33,10 @@ import { promisify } from 'node:util';
 import { pathToFileURL } from 'node:url';
 
 const execFileAsync = promisify(execFile);
-const generatedRoot = 'java/elah-api/src/generated/java';
+const generatedRoots = [
+  'java/elah-api/src/generated/java',
+  'lab/protocol/generated',
+];
 
 function resolveWithin(root, relativePath) {
   const resolvedRoot = path.resolve(root);
@@ -134,33 +137,37 @@ export async function verifyRegeneratedOutput({ root, generate = runBufGeneratio
   const generationRoot = await mkdtemp(path.join(tmpdir(), 'elah-proto-generation-'));
   try {
     await generate({ root, generationRoot });
-    const checkedInRoot = resolveWithin(root, generatedRoot);
-    const regeneratedRoot = resolveWithin(generationRoot, generatedRoot);
-    const checkedInFiles = await listFiles(checkedInRoot);
-    const regeneratedFiles = await listFiles(regeneratedRoot);
-    const regeneratedSet = new Set(regeneratedFiles);
+    let outputCount = 0;
+    for (const generatedRoot of generatedRoots) {
+      const checkedInRoot = resolveWithin(root, generatedRoot);
+      const regeneratedRoot = resolveWithin(generationRoot, generatedRoot);
+      const checkedInFiles = await listFiles(checkedInRoot);
+      const regeneratedFiles = await listFiles(regeneratedRoot);
+      const regeneratedSet = new Set(regeneratedFiles);
 
-    for (const relativePath of checkedInFiles) {
-      if (!regeneratedSet.has(relativePath)) {
-        throw new Error(`unexpected tracked generated output: ${path.posix.join(generatedRoot, relativePath)}`);
+      for (const relativePath of checkedInFiles) {
+        if (!regeneratedSet.has(relativePath)) {
+          throw new Error(`unexpected tracked generated output: ${path.posix.join(generatedRoot, relativePath)}`);
+        }
       }
-    }
-    const checkedInSet = new Set(checkedInFiles);
-    for (const relativePath of regeneratedFiles) {
-      const repositoryPath = path.posix.join(generatedRoot, relativePath);
-      if (!checkedInSet.has(relativePath)) {
-        throw new Error(`missing generated output: ${repositoryPath}`);
+      const checkedInSet = new Set(checkedInFiles);
+      for (const relativePath of regeneratedFiles) {
+        const repositoryPath = path.posix.join(generatedRoot, relativePath);
+        if (!checkedInSet.has(relativePath)) {
+          throw new Error(`missing generated output: ${repositoryPath}`);
+        }
+        const [checkedIn, regenerated] = await Promise.all([
+          readFile(path.join(checkedInRoot, relativePath)),
+          readFile(path.join(regeneratedRoot, relativePath)),
+        ]);
+        if (!checkedIn.equals(regenerated)) {
+          throw new Error(`stale generated output: ${repositoryPath}`);
+        }
       }
-      const [checkedIn, regenerated] = await Promise.all([
-        readFile(path.join(checkedInRoot, relativePath)),
-        readFile(path.join(regeneratedRoot, relativePath)),
-      ]);
-      if (!checkedIn.equals(regenerated)) {
-        throw new Error(`stale generated output: ${repositoryPath}`);
-      }
+      outputCount += regeneratedFiles.length;
     }
 
-    return { outputs: regeneratedFiles.length };
+    return { outputs: outputCount };
   } finally {
     await rm(generationRoot, { recursive: true, force: true });
   }
