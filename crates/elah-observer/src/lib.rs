@@ -30,13 +30,16 @@ mod dimension;
 mod error;
 mod evidence;
 mod level;
+mod observe;
 mod region;
 mod report;
+mod snapshot;
 mod world;
 
 pub use error::{ErrorKind, ObservationError};
 pub use evidence::InputEvidence;
 pub use level::{LevelMetadata, read_level};
+pub use observe::{ObservationEvent, ObserveRequest, observe};
 pub use region::{
     ChunkCoordinate, ChunkRecord, Compression, RegionCoordinate, RegionEvidence, RegionScan,
     scan_region_standard,

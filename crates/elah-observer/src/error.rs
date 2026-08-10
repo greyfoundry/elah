@@ -124,6 +124,18 @@ impl ObservationError {
         }
     }
 
+    /// Creates a changed-world error with bounded sorted evidence.
+    pub(crate) fn changed_inputs(details: Vec<String>) -> Self {
+        Self {
+            kind: ErrorKind::Changed,
+            summary: "The world changed while Elah was reading it, so no report was produced."
+                .to_owned(),
+            recovery: "Stop the server or observe a filesystem snapshot, then try again."
+                .to_owned(),
+            details,
+        }
+    }
+
     /// Returns the stable failure category.
     #[must_use]
     pub const fn kind(&self) -> ErrorKind {
