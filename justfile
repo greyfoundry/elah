@@ -51,3 +51,10 @@ proto-check:
 
 proto-generate:
     pnpm proto:generate
+
+protocol-lab-build:
+    cargo build --locked -p elahd
+    {{gradle}} --no-daemon :java:elah-dummy-worker:installDist
+
+protocol-lab reconnects="2": protocol-lab-build
+    node lab/protocol/run-laboratory.mjs --reconnects {{reconnects}}

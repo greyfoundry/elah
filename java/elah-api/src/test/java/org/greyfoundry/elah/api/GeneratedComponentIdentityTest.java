@@ -36,10 +36,10 @@ final class GeneratedComponentIdentityTest {
     org.greyfoundry.elah.control.v1.ComponentIdentity identity =
         org.greyfoundry.elah.control.v1.ComponentIdentity.newBuilder()
             .setComponentName("elah-api")
-            .setSemanticVersion("0.0.1")
+            .setSemanticVersion("0.0.2")
             .build();
 
     assertEquals("elah-api", identity.getComponentName());
-    assertEquals("0.0.1", identity.getSemanticVersion());
+    assertEquals("0.0.2", identity.getSemanticVersion());
   }
 }

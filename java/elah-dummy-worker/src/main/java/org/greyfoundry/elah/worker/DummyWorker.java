@@ -57,8 +57,7 @@ public final class DummyWorker {
           client
               .withDeadlineAfter(RPC_DEADLINE_SECONDS, TimeUnit.SECONDS)
               .registerWorker(
-                  protocol.registration(
-                      arguments, UUID.randomUUID().toString(), traceId));
+                  protocol.registration(arguments, UUID.randomUUID().toString(), traceId));
       System.out.printf(
           "ELAH_WORKER_REGISTERED worker_id=%s session_id=%s generation=%d replaced=%s%n",
           arguments.workerId(),
@@ -73,10 +72,10 @@ public final class DummyWorker {
             client
                 .withDeadlineAfter(RPC_DEADLINE_SECONDS, TimeUnit.SECONDS)
                 .heartbeat(
-                    protocol.heartbeat(
-                        arguments, sequence, UUID.randomUUID().toString(), traceId));
+                    protocol.heartbeat(arguments, sequence, UUID.randomUUID().toString(), traceId));
         System.out.printf(
-            "ELAH_WORKER_HEARTBEAT worker_id=%s session_id=%s generation=%d sequence=%d duplicate=%s%n",
+            "ELAH_WORKER_HEARTBEAT worker_id=%s session_id=%s generation=%d sequence=%d"
+                + " duplicate=%s%n",
             arguments.workerId(),
             arguments.sessionId(),
             heartbeat.getGeneration(),

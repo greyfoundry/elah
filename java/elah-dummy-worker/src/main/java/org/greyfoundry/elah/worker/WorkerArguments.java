@@ -60,8 +60,10 @@ record WorkerArguments(
     String endpoint = values.getOrDefault("--endpoint", "127.0.0.1:50051");
     String workerId = requireNonBlank("--worker-id", values.get("--worker-id"));
     String sessionId = requireNonBlank("--session-id", values.get("--session-id"));
-    long heartbeatMillis = parsePositiveLong("--heartbeat-ms", values.getOrDefault("--heartbeat-ms", "250"));
-    int maxHeartbeats = parseNonNegativeInt("--max-heartbeats", values.getOrDefault("--max-heartbeats", "0"));
+    long heartbeatMillis =
+        parsePositiveLong("--heartbeat-ms", values.getOrDefault("--heartbeat-ms", "250"));
+    int maxHeartbeats =
+        parseNonNegativeInt("--max-heartbeats", values.getOrDefault("--max-heartbeats", "0"));
     validateEndpoint(endpoint);
 
     return new WorkerArguments(

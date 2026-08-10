@@ -48,8 +48,7 @@ final class WorkerProtocol {
     this.hostname = hostname;
   }
 
-  RegisterWorkerRequest registration(
-      WorkerArguments arguments, String requestId, String traceId) {
+  RegisterWorkerRequest registration(WorkerArguments arguments, String requestId, String traceId) {
     return RegisterWorkerRequest.newBuilder()
         .setContext(context(requestId, traceId))
         .setWorkerId(arguments.workerId())

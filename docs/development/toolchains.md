@@ -14,6 +14,8 @@ Use the pinned toolchain inputs below when preparing a local contributor environ
 | Python | 3.13 | CI licensing job |
 | REUSE | 6.2.0 | CI licensing job installs `reuse==6.2.0` with pip |
 
+Rust Protocol Buffer compilation uses `protoc-bin-vendored` 3.2.0, so a system `protoc` installation is not required.
+
 ## Prepare a checkout
 
 From the repository root, confirm the available versions:
@@ -52,7 +54,7 @@ reuse lint
 
 CI obtains Google Java Format 1.36.1 from Maven Central in its Java job, verifies the downloaded JAR by SHA-256, and uses it in dry-run mode. CI sets up Python 3.13 in its licensing job, installs `reuse==6.2.0`, and then runs `reuse lint`.
 
-The project does not require a Minecraft server, proxy, cluster, database, or gameplay workload for the Genesis validation gate. Those runtime environments belong to later stages and are not represented as a local setup requirement here.
+The project does not require a Minecraft server, proxy, cluster, database, or gameplay workload for the Protocol Laboratory validation gate. Those runtime environments belong to later stages and are not represented as a local setup requirement here.
 
 ## Verify the environment
 

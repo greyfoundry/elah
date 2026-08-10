@@ -51,9 +51,7 @@ final class GeneratedWorkerContractTest {
                 WorkerProfile.newBuilder()
                     .setHostname("loopback")
                     .setCapacity(
-                        WorkerCapacity.newBuilder()
-                            .setCpuCores(2)
-                            .setMemoryBytes(1_073_741_824L)))
+                        WorkerCapacity.newBuilder().setCpuCores(2).setMemoryBytes(1_073_741_824L)))
             .build();
 
     RegisterWorkerRequest decoded = RegisterWorkerRequest.parseFrom(request.toByteArray());

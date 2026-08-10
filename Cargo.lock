@@ -205,11 +205,11 @@ checksum = "9e5e8f6c15a24b9a3ee5efec809ccd006d3b30e8b3bb63c39af737c7f87daa1d"
 
 [[package]]
 name = "elah-core"
-version = "0.0.1"
+version = "0.0.2"
 
 [[package]]
 name = "elah-protocol"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "prost",
  "prost-build",
@@ -221,7 +221,7 @@ dependencies = [
 
 [[package]]
 name = "elahd"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "clap",
  "elah-protocol",

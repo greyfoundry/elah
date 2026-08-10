@@ -48,4 +48,4 @@ ElahFolia follows this escalation order: Folia public API, normal Folia plugin, 
 
 Elah is a monorepo because protocol changes span Rust, Java, and TypeScript validation together. Current roots include `crates/`, `java/`, `lab/`, `proto/`, `schemas/`, `scripts/`, `docs/`, and `studying/`; later implementation may add `tests/`. The `studying/` tree is isolated: no production source, build, release artifact, or runtime dependency may import or resolve from it.
 
-Genesis creates the public contracts for this architecture. It intentionally contains no gameplay feature.
+Protocol Laboratory implements only the versioned, loopback-only `elahd` worker-registration and heartbeat path. Its registry is deliberately in memory and has no ownership, placement, storage, failover, or gameplay authority.
