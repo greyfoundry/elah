@@ -31,7 +31,8 @@ use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 
 use flate2::Compression;
-use flate2::write::GzEncoder;
+use flate2::write::{GzEncoder, ZlibEncoder};
+use lz4_java_wrc::Lz4BlockOutput;
 use serde::Serialize;
 use tempfile::TempDir;
 
@@ -163,6 +164,105 @@ impl WorldFixture {
 pub struct RegionFixture {
     bytes: Vec<u8>,
     next_sector: u32,
+}
+
+#[derive(Clone, Debug)]
+pub struct ChunkFixture {
+    pub data_version: Option<i32>,
+    pub x_pos: Option<i32>,
+    pub z_pos: Option<i32>,
+    pub status: Option<String>,
+    pub legacy_level: bool,
+}
+
+impl ChunkFixture {
+    pub fn at(x_pos: i32, z_pos: i32) -> Self {
+        Self {
+            data_version: Some(4440),
+            x_pos: Some(x_pos),
+            z_pos: Some(z_pos),
+            status: Some("minecraft:full".to_owned()),
+            legacy_level: false,
+        }
+    }
+
+    pub fn nbt_bytes(&self) -> Vec<u8> {
+        let fields = ChunkFields {
+            x_pos: self.x_pos,
+            z_pos: self.z_pos,
+            status: self.status.as_deref(),
+        };
+        fastnbt::to_bytes(&ChunkRoot {
+            data_version: self.data_version,
+            x_pos: if self.legacy_level {
+                None
+            } else {
+                fields.x_pos
+            },
+            z_pos: if self.legacy_level {
+                None
+            } else {
+                fields.z_pos
+            },
+            status: if self.legacy_level {
+                None
+            } else {
+                fields.status
+            },
+            level: self.legacy_level.then_some(fields),
+        })
+        .expect("fixture chunk NBT serializes")
+    }
+}
+
+#[derive(Clone, Copy, Serialize)]
+struct ChunkRoot<'a> {
+    #[serde(rename = "DataVersion", skip_serializing_if = "Option::is_none")]
+    data_version: Option<i32>,
+    #[serde(rename = "xPos", skip_serializing_if = "Option::is_none")]
+    x_pos: Option<i32>,
+    #[serde(rename = "zPos", skip_serializing_if = "Option::is_none")]
+    z_pos: Option<i32>,
+    #[serde(rename = "Status", skip_serializing_if = "Option::is_none")]
+    status: Option<&'a str>,
+    #[serde(rename = "Level", skip_serializing_if = "Option::is_none")]
+    level: Option<ChunkFields<'a>>,
+}
+
+#[derive(Clone, Copy, Serialize)]
+struct ChunkFields<'a> {
+    #[serde(rename = "xPos", skip_serializing_if = "Option::is_none")]
+    x_pos: Option<i32>,
+    #[serde(rename = "zPos", skip_serializing_if = "Option::is_none")]
+    z_pos: Option<i32>,
+    #[serde(rename = "Status", skip_serializing_if = "Option::is_none")]
+    status: Option<&'a str>,
+}
+
+pub fn compress_chunk(compression: u8, nbt: &[u8]) -> Vec<u8> {
+    match compression {
+        1 => {
+            let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
+            encoder.write_all(nbt).expect("fixture GZip writes");
+            encoder.finish().expect("fixture GZip finishes")
+        }
+        2 => {
+            let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
+            encoder.write_all(nbt).expect("fixture Zlib writes");
+            encoder.finish().expect("fixture Zlib finishes")
+        }
+        3 => nbt.to_vec(),
+        4 => {
+            let mut compressed = Vec::new();
+            {
+                let mut encoder = Lz4BlockOutput::new(&mut compressed);
+                encoder.write_all(nbt).expect("fixture LZ4 writes");
+                encoder.flush().expect("fixture LZ4 flushes");
+            }
+            compressed
+        }
+        _ => panic!("unsupported fixture compression {compression}"),
+    }
 }
 
 impl RegionFixture {

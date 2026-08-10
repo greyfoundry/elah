@@ -131,6 +131,96 @@ pub(crate) fn read_bounded(
     Ok((bytes, evidence))
 }
 
+pub(crate) fn fingerprint_file(safe_file: &SafeFile) -> Result<InputEvidence, ObservationError> {
+    let metadata = fs::symlink_metadata(&safe_file.absolute_path).map_err(|error| {
+        ObservationError::io(
+            "An observation input could not be read.",
+            "Check permissions or observe a readable filesystem snapshot, then try again.",
+            format!("{}: {error}", safe_file.absolute_path.display()),
+        )
+    })?;
+    if metadata.file_type().is_symlink() || !metadata.is_file() {
+        return Err(ObservationError::unsafe_input(
+            "An observation input is no longer a safe regular file.",
+            "Stop the server or observe a self-contained filesystem snapshot, then try again.",
+            safe_file.absolute_path.display().to_string(),
+        ));
+    }
+    let canonical = fs::canonicalize(&safe_file.absolute_path).map_err(|error| {
+        ObservationError::io(
+            "An observation input could not be resolved safely.",
+            "Check permissions or observe a readable filesystem snapshot, then try again.",
+            format!("{}: {error}", safe_file.absolute_path.display()),
+        )
+    })?;
+    if canonical != safe_file.absolute_path {
+        return Err(ObservationError::unsafe_input(
+            "An observation input changed its filesystem identity.",
+            "Stop the server or observe a filesystem snapshot, then try again.",
+            format!(
+                "{} resolved as {}",
+                safe_file.absolute_path.display(),
+                canonical.display()
+            ),
+        ));
+    }
+
+    let mut file = File::open(&safe_file.absolute_path).map_err(|error| {
+        ObservationError::io(
+            "An observation input could not be opened read-only.",
+            "Check read permissions or observe a readable filesystem snapshot, then try again.",
+            format!("{}: {error}", safe_file.absolute_path.display()),
+        )
+    })?;
+    let mut digest = Sha256::new();
+    let mut buffer = [0_u8; 64 * 1024];
+    let mut logical_bytes = 0_u64;
+    loop {
+        let count = file.read(&mut buffer).map_err(|error| {
+            ObservationError::io(
+                "An observation input could not be read completely.",
+                "Check read permissions or observe a readable filesystem snapshot, then try again.",
+                format!("{}: {error}", safe_file.absolute_path.display()),
+            )
+        })?;
+        if count == 0 {
+            break;
+        }
+        logical_bytes = logical_bytes.checked_add(count as u64).ok_or_else(|| {
+            ObservationError::unsafe_input(
+                "An observation input exceeds the supported byte range.",
+                "Observe a smaller filesystem snapshot, then try again.",
+                safe_file.relative_path.clone(),
+            )
+        })?;
+        digest.update(&buffer[..count]);
+    }
+    if logical_bytes != metadata.len() {
+        return Err(ObservationError::changed(
+            "An observation input changed while Elah was reading it.",
+            "Stop the server or observe a filesystem snapshot, then try again.",
+            format!(
+                "{}: metadata reported {} bytes but {} bytes were read",
+                safe_file.relative_path,
+                metadata.len(),
+                logical_bytes
+            ),
+        ));
+    }
+    let digest = digest.finalize();
+    let mut sha256 = String::with_capacity(digest.len() * 2);
+    for byte in digest {
+        use std::fmt::Write as _;
+        write!(&mut sha256, "{byte:02x}").expect("writing to a String cannot fail");
+    }
+    Ok(InputEvidence {
+        relative_path: safe_file.relative_path.clone(),
+        logical_bytes,
+        modified: metadata.modified().ok(),
+        sha256,
+    })
+}
+
 fn read_with_sentinel<R: Read>(
     mut reader: Take<R>,
     bytes: &mut Vec<u8>,

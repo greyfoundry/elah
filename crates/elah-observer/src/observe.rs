@@ -24,13 +24,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
+use crate::evidence::fingerprint_file;
 use crate::snapshot::ObservationSnapshot;
 use crate::{
-    Bounds, DimensionReport, ObservationError, ObservationLimits, REPORT_SCHEMA, RegionScan,
-    ScanDepth, ScanSummary, WorldIdentity, WorldReport, WorldTotals, checked_json_integer,
-    discover_world, read_level, scan_region_standard,
+    Bounds, DeepValidation, DimensionReport, NumericDistribution, ObservationError,
+    ObservationLimits, REPORT_SCHEMA, RegionScan, ScanDepth, ScanSummary, TextDistribution,
+    WorldIdentity, WorldReport, WorldTotals, checked_json_integer, decode_chunk, discover_world,
+    read_level, scan_region_standard,
 };
 
 /// Complete request for one world observation.
@@ -76,6 +79,7 @@ pub enum ObservationEvent {
 struct StandardPass {
     report: WorldReport,
     snapshot: ObservationSnapshot,
+    regions: Vec<RegionScan>,
 }
 
 /// Observes a world and returns only after a matching evidence pass.
@@ -83,22 +87,33 @@ pub fn observe<F>(request: ObserveRequest, mut on_event: F) -> Result<WorldRepor
 where
     F: FnMut(&ObservationEvent),
 {
-    if request.depth == ScanDepth::Deep {
-        return Err(ObservationError::unsupported_world(
-            "Deep world observation is not available in this build.",
-            "Run a standard observation or use a build that includes deep validation.",
-            "deep scan implementation is not present",
-        ));
-    }
-
     let limits = ObservationLimits::default();
-    let first = scan_standard_once(&request, limits)?;
+    let mut first = scan_standard_once(&request, limits)?;
     on_event(&ObservationEvent::StandardScanComplete {
         occupied_chunks: first.report.totals.occupied_chunks,
         region_bytes: first.report.totals.region_bytes,
     });
+    if request.depth == ScanDepth::Deep {
+        on_event(&ObservationEvent::DeepScanStarting {
+            occupied_chunks: first.report.totals.occupied_chunks,
+            region_bytes: first.report.totals.region_bytes,
+        });
+        add_deep_evidence(&mut first)?;
+        first.report.deep_validation = Some(validate_deep_chunks(&first.regions, limits)?);
+        first.report.scan.depth = ScanDepth::Deep;
+        first.report.scan.content_nbt_decoded = true;
+        first.report.limitations = vec![
+            "Deep validation decodes bounded schema-light chunk metadata; it does not interpret gameplay semantics."
+                .to_owned(),
+            "Saved timestamps and filesystem times are metadata, not proof of player activity."
+                .to_owned(),
+        ];
+    }
     on_event(&ObservationEvent::VerifyingConsistency);
-    let second = scan_standard_once(&request, limits)?;
+    let mut second = scan_standard_once(&request, limits)?;
+    if request.depth == ScanDepth::Deep {
+        add_deep_evidence(&mut second)?;
+    }
     first.snapshot.compare(&second.snapshot, limits)?;
 
     let mut report = first.report;
@@ -221,7 +236,75 @@ fn scan_standard_once(
             ],
         },
         snapshot,
+        regions: region_scans,
     })
+}
+
+fn add_deep_evidence(pass: &mut StandardPass) -> Result<(), ObservationError> {
+    let mut inputs = BTreeMap::new();
+    for region in &pass.regions {
+        inputs.insert(region.source.relative_path.clone(), region.source.clone());
+        for chunk in &region.chunks {
+            if let Some(external) = &chunk.external_file {
+                inputs.insert(external.relative_path.clone(), external.clone());
+            }
+        }
+    }
+    for input in inputs.values() {
+        let evidence = fingerprint_file(input)?;
+        pass.snapshot.add_full_evidence(&evidence);
+    }
+    Ok(())
+}
+
+fn validate_deep_chunks(
+    regions: &[RegionScan],
+    limits: ObservationLimits,
+) -> Result<DeepValidation, ObservationError> {
+    let mut decoded_chunks = 0_u64;
+    let mut data_versions = BTreeMap::<i64, u64>::new();
+    let mut statuses = BTreeMap::<String, u64>::new();
+    for region in regions {
+        for chunk in &region.chunks {
+            let metadata = decode_chunk(&region.source, chunk, limits)?;
+            decoded_chunks = decoded_chunks.checked_add(1).ok_or_else(|| {
+                ObservationError::unsafe_input(
+                    "Decoded chunk totals exceed the supported range.",
+                    "Observe a smaller filesystem snapshot, then try again.",
+                    "decoded chunk counter overflowed",
+                )
+            })?;
+            if let Some(value) = metadata.data_version {
+                increment_count(&mut data_versions, i64::from(value))?;
+            }
+            if let Some(value) = metadata.status {
+                increment_count(&mut statuses, value)?;
+            }
+        }
+    }
+    Ok(DeepValidation {
+        decoded_chunks: checked_json_integer(decoded_chunks, "decoded_chunks")?,
+        data_versions: data_versions
+            .into_iter()
+            .map(|(value, count)| NumericDistribution { value, count })
+            .collect(),
+        statuses: statuses
+            .into_iter()
+            .map(|(value, count)| TextDistribution { value, count })
+            .collect(),
+    })
+}
+
+fn increment_count<K: Ord>(counts: &mut BTreeMap<K, u64>, key: K) -> Result<(), ObservationError> {
+    let count = counts.entry(key).or_default();
+    *count = count.checked_add(1).ok_or_else(|| {
+        ObservationError::unsafe_input(
+            "A deep-validation distribution exceeds the supported range.",
+            "Observe a smaller filesystem snapshot, then try again.",
+            "distribution counter overflowed",
+        )
+    })?;
+    Ok(())
 }
 
 fn aggregate_dimensions(

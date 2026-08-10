@@ -135,6 +135,22 @@ impl ObservationSnapshot {
         };
         Err(ObservationError::changed_inputs(details))
     }
+
+    pub(crate) fn add_full_evidence(&mut self, evidence: &InputEvidence) {
+        let entry = self
+            .entries
+            .entry(evidence.relative_path.clone())
+            .or_insert_with(|| SnapshotValue {
+                logical_bytes: evidence.logical_bytes,
+                modified: time_key(evidence.modified),
+                fingerprints: Vec::new(),
+            });
+        entry.logical_bytes = evidence.logical_bytes;
+        entry.modified = time_key(evidence.modified);
+        entry.fingerprints.push(format!("full:{}", evidence.sha256));
+        entry.fingerprints.sort();
+        entry.fingerprints.dedup();
+    }
 }
 
 fn time_key(time: Option<SystemTime>) -> String {

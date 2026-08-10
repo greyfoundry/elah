@@ -26,6 +26,7 @@
 
 //! Read-only Minecraft Java world observation.
 
+mod chunk;
 mod dimension;
 mod error;
 mod evidence;
@@ -36,6 +37,7 @@ mod report;
 mod snapshot;
 mod world;
 
+pub use chunk::{ChunkMetadata, decode_chunk};
 pub use error::{ErrorKind, ObservationError};
 pub use evidence::InputEvidence;
 pub use level::{LevelMetadata, read_level};
