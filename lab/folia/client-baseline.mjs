@@ -46,10 +46,13 @@ export async function runFoliaClientBaseline ({
   let primaryError
   let cleanupError
   let startAttempted = false
+  let readyObserved = false
+  let cleanupResult
 
   try {
     startAttempted = true
     await server.start()
+    readyObserved = true
     let realBotFactory = botFactory
     if (!realBotFactory) {
       const mineflayer = await import('mineflayer')
@@ -102,8 +105,8 @@ export async function runFoliaClientBaseline ({
   } finally {
     if (startAttempted) {
       try {
-        const cleanup = await server.stop()
-        if (!primaryError) ledger.recordServerCleanup(cleanup)
+        cleanupResult = await server.stop()
+        if (!primaryError) ledger.recordServerCleanup(cleanupResult)
       } catch (error) {
         if (!primaryError) primaryError = error
         else cleanupError = error
@@ -115,15 +118,19 @@ export async function runFoliaClientBaseline ({
     const report = ledger.fail(primaryError)
     report.compatibility = structuredClone(compatibility)
     report.diagnostics = server.diagnostics()
+    report.fixtureLifecycle = fixtureLifecycle(readyObserved, cleanupResult)
     if (cleanupError) report.cleanupDiagnostic = boundedSummary(cleanupError)
     return report
   }
   try {
-    return ledger.finalize()
+    const report = ledger.finalize()
+    report.fixtureLifecycle = fixtureLifecycle(readyObserved, cleanupResult)
+    return report
   } catch (error) {
     const report = ledger.fail(error)
     report.compatibility = structuredClone(compatibility)
     report.diagnostics = server.diagnostics()
+    report.fixtureLifecycle = fixtureLifecycle(readyObserved, cleanupResult)
     return report
   }
 }
@@ -160,4 +167,13 @@ function cancelActiveBots (activeBots, cancelledBots) {
 
 function boundedSummary (error) {
   return (error instanceof Error ? error.message : String(error)).replace(/[\r\n]+/g, ' ').slice(0, 500)
+}
+
+function fixtureLifecycle (readyObserved, cleanup) {
+  return {
+    readyObserved,
+    cleanStopRequested: cleanup?.requested === true,
+    exitCode: Number.isSafeInteger(cleanup?.exitCode) ? cleanup.exitCode : null,
+    signal: typeof cleanup?.signal === 'string' ? cleanup.signal : null
+  }
 }

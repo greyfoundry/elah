@@ -90,6 +90,12 @@ test('runs two sequential waves of 16 and stops Folia before passing', async () 
   assert.equal(report.outcome, 'passed')
   assert.equal(report.completedSessions, 32)
   assert.equal(report.completedWaves, 2)
+  assert.deepEqual(report.fixtureLifecycle, {
+    readyObserved: true,
+    cleanStopRequested: true,
+    exitCode: 0,
+    signal: null
+  })
   assert.equal(observations.maximumActive, 16)
   assert.equal(observations.started[15], 'session-016')
   assert.equal(observations.started[16], 'session-017')
@@ -123,6 +129,12 @@ test('the first rejected session cancels peers and still requests shutdown', asy
   assert.equal(report.schema, 'elah.client-laboratory-error/v1')
   assert.equal(report.outcome, 'failed')
   assert.match(report.error.summary, /first Folia session failure/)
+  assert.deepEqual(report.fixtureLifecycle, {
+    readyObserved: true,
+    cleanStopRequested: true,
+    exitCode: 0,
+    signal: null
+  })
   assert.equal(bots.filter((bot) => bot.quitCalls === 1).length, 16)
   assert.deepEqual(server.events, ['start', 'stop'])
 })

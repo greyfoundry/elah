@@ -26,6 +26,8 @@
     "test:client": "node --test lab/client/test/*.test.mjs",
     "lab:client": "node lab/client/run-laboratory.mjs",
     "test:folia": "node --test lab/folia/test/*.test.mjs",
+    "lab:folia": "node lab/folia/run-laboratory.mjs",
+    "verify:folia": "node lab/folia/verify-report.mjs",
     "test:proto": "node --test scripts/proto/check-generated.test.mjs",
     "proto:check-generated": "node scripts/proto/check-generated.mjs proto/generated-manifest.json",
     "proto:lint": "buf lint proto",
