@@ -50,7 +50,6 @@ export class MinecraftServerLaboratory {
   #serverName
   #kindPrefix
   #motd
-  #positionSelector
   #limits
   #spawn
   #timers
@@ -71,7 +70,6 @@ export class MinecraftServerLaboratory {
     serverName,
     kindPrefix = 'server',
     motd,
-    positionSelector = false,
     limits,
     spawnImpl = spawn,
     timers = { setTimeout, clearTimeout }
@@ -94,9 +92,6 @@ export class MinecraftServerLaboratory {
     if (typeof motd !== 'string' || motd.trim() === '' || motd.length > 120 || /[\r\n]/.test(motd)) {
       throw new ClientLaboratoryError('invalid_server_identity', 'server MOTD must be a bounded single line')
     }
-    if (typeof positionSelector !== 'boolean') {
-      throw new ClientLaboratoryError('invalid_server_identity', 'server position selector mode must be boolean')
-    }
     validateLimits(limits)
     if (
       typeof spawnImpl !== 'function' ||
@@ -112,7 +107,6 @@ export class MinecraftServerLaboratory {
     this.#serverName = serverName
     this.#kindPrefix = kindPrefix
     this.#motd = motd
-    this.#positionSelector = positionSelector
     this.#limits = Object.freeze({ ...limits })
     this.#spawn = spawnImpl
     this.#timers = timers
@@ -183,8 +177,7 @@ export class MinecraftServerLaboratory {
     })
     this.#pendingPositions.set(username, { resolve: resolvePosition, reject: rejectPosition })
     try {
-      const target = this.#positionSelector ? `@a[name=${username},limit=1]` : username
-      this.#child.stdin.write(`data get entity ${target} Pos\n`)
+      this.#child.stdin.write(`data get entity ${username} Pos\n`)
       return await this.#withTimeout(
         Promise.race([
           response,

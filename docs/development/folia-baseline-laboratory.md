@@ -18,6 +18,8 @@ Minecraft: 1.21.8
 
 The identity comes from [PaperMC build metadata](https://fill.papermc.io/v3/projects/folia/versions/1.21.8/builds/6). The download must use HTTPS, return no redirect, match the published byte count, remain within 64 MiB, and match the pinned SHA-256 before execution. The JAR, EULA acceptance, configuration, world, and process root exist only for the job. They are not committed, uploaded, cached across trust boundaries, or attached to a release.
 
+Because Folia executes console commands on its global region, entity-sensitive position probes do not run from console. The disposable offline fixture pre-provisions operator entries only for the 32 fixed `elah_lab_NNN` identities. Each connected bot runs `/data get entity @s Pos` from its owning player context, and the laboratory parses the server response. This remains server-authoritative evidence without accepting Mineflayer-local coordinates. The operator file is deleted with the fixture root.
+
 Folia itself groups nearby loaded chunks into independently ticking regions. The upstream [Folia architecture overview](https://github.com/PaperMC/Folia#overview) explains that model. This laboratory deliberately does not measure or assert that parallel behavior.
 
 ## Ordered gate

@@ -85,7 +85,7 @@ export async function runFoliaClientBaseline ({
           version: compatibility.minecraftVersion,
           direction,
           botFactory: trackingBotFactory,
-          positionProbe: (name) => server.queryPosition(name),
+          positionProbe: (name, bot) => server.queryPosition(name, bot),
           ledger
         }).catch((error) => {
           waveFailure ??= error

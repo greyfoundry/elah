@@ -94,7 +94,7 @@ export async function runClientSession ({
     await waitFor('physicsTick', CLIENT_LAB_COMPATIBILITY.spawnTimeoutMillis)
 
     const clientBefore = diagnosticClientPosition(bot)
-    const before = await guardBotOperation(bot, () => positionProbe(username))
+    const before = await guardBotOperation(bot, () => positionProbe(username, bot))
     ledger.record(sessionId, 'server_position_before', { position: before })
 
     activeDirection = direction
@@ -105,7 +105,7 @@ export async function runClientSession ({
     activeDirection = undefined
 
     const clientAfter = diagnosticClientPosition(bot)
-    const after = await guardBotOperation(bot, () => positionProbe(username))
+    const after = await guardBotOperation(bot, () => positionProbe(username, bot))
     try {
       ledger.record(sessionId, 'server_position_after', { position: after })
     } catch (error) {

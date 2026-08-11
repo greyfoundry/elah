@@ -26,7 +26,7 @@
 
 import assert from 'node:assert/strict'
 import { EventEmitter } from 'node:events'
-import { mkdtemp, rm } from 'node:fs/promises'
+import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { PassThrough, Writable } from 'node:stream'
@@ -54,15 +54,27 @@ class SelectorFoliaChild extends EventEmitter {
         this.commands.push(command)
         if (command === 'stop') {
           setImmediate(() => this.emit('exit', 0, null))
-        } else if (command === 'data get entity @a[name=elah_lab_001,limit=1] Pos') {
-          setImmediate(() => this.stdout.write(
-            '[Global region/INFO]: elah_lab_001 has the following entity data: [1.0d, 64.0d, 2.0d]\n'
-          ))
         }
         callback()
       }
     })
     setImmediate(() => this.stdout.write('[Global region/INFO]: Done (1.000s)! For help, type "help"\n'))
+  }
+}
+
+class PlayerCommandBot extends EventEmitter {
+  constructor () {
+    super()
+    this.username = 'elah_lab_001'
+    this.commands = []
+  }
+
+  chat (command) {
+    this.commands.push(command)
+    setImmediate(() => this.emit(
+      'messagestr',
+      'elah_lab_001 has the following entity data: [1.0d, 64.0d, 2.0d]'
+    ))
   }
 }
 
@@ -161,7 +173,7 @@ test('the Folia process wrapper also rejects a changed compatibility tuple', () 
   }), /pinned Folia 1\.21\.8 build 6/i)
 })
 
-test('the Folia wrapper uses an exact vanilla selector for global-region position probes', async () => {
+test('the Folia wrapper provisions bounded operators and probes from the owning player context', async () => {
   const root = await mkdtemp(join(tmpdir(), 'elah-folia-selector-'))
   const child = new SelectorFoliaChild()
   const server = new FoliaLaboratory({
@@ -174,12 +186,20 @@ test('the Folia wrapper uses an exact vanilla selector for global-region positio
   })
   try {
     await server.start()
-    assert.deepEqual(await server.queryPosition('elah_lab_001'), { x: 1, y: 64, z: 2 })
+    const bot = new PlayerCommandBot()
+    assert.deepEqual(await server.queryPosition('elah_lab_001', bot), { x: 1, y: 64, z: 2 })
     await server.stop()
-    assert.deepEqual(child.commands, [
-      'data get entity @a[name=elah_lab_001,limit=1] Pos',
-      'stop'
-    ])
+    assert.deepEqual(bot.commands, ['/data get entity @s Pos'])
+    assert.deepEqual(child.commands, ['stop'])
+    const operators = JSON.parse(await readFile(join(root, 'ops.json'), 'utf8'))
+    assert.equal(operators.length, 32)
+    assert.deepEqual(operators[0], {
+      uuid: 'cc9f1f55-bec7-352b-a466-33147b91eb29',
+      name: 'elah_lab_001',
+      level: 4,
+      bypassesPlayerLimit: false
+    })
+    assert.equal(operators[31].name, 'elah_lab_032')
   } finally {
     await rm(root, { recursive: true, force: true })
   }

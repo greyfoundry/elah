@@ -70,7 +70,6 @@ test('runs a named server through the bounded loopback lifecycle', async () => {
     port: 25570,
     serverName: 'Folia',
     motd: 'Elah Folia Baseline Laboratory',
-    positionSelector: true,
     limits: {
       startupTimeoutMillis: 1000,
       commandTimeoutMillis: 1000,
@@ -93,7 +92,7 @@ test('runs a named server through the bounded loopback lifecycle', async () => {
     assert.deepEqual(calls[0].args, ['-Xms512M', '-Xmx1536M', '-jar', join(root, 'folia.jar'), '--nogui'])
     assert.deepEqual(await server.queryPosition('elah_lab_001'), { x: 8.5, y: 64, z: -2.25 })
     assert.deepEqual(await server.stop(), { requested: true, exitCode: 0, signal: null })
-    assert.deepEqual(child.commands, ['data get entity @a[name=elah_lab_001,limit=1] Pos', 'stop'])
+    assert.deepEqual(child.commands, ['data get entity elah_lab_001 Pos', 'stop'])
   } finally {
     await rm(root, { recursive: true, force: true })
   }

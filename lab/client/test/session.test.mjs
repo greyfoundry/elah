@@ -144,8 +144,8 @@ function buildHarness (botOptions = {}, overrides = {}) {
         setImmediate(() => bot.start())
         return bot
       },
-      positionProbe: async (username) => {
-        probes.push(username)
+      positionProbe: async (username, probeBot) => {
+        probes.push([username, probeBot])
         if (overrides.probeError) throw new Error('Paper position probe failed')
         return positions.shift()
       },
@@ -174,7 +174,8 @@ test('records the real event, server position, movement, and terminal sequence',
       'ended'
     ]
   )
-  assert.deepEqual(harness.probes, ['elah_lab_001', 'elah_lab_001'])
+  assert.deepEqual(harness.probes.map(([username]) => username), ['elah_lab_001', 'elah_lab_001'])
+  assert.equal(harness.probes.every(([, probeBot]) => probeBot === harness.bot), true)
   assert.deepEqual(harness.bot.controlCalls, [['forward', true], ['forward', false]])
   assert.deepEqual(harness.bot.packetWrites, [
     ['player_loaded', {}],
@@ -240,7 +241,7 @@ test('waits for Mineflayer physics readiness before sampling or requesting movem
   harness.bot.physicsTick()
   await running
 
-  assert.deepEqual(harness.probes, ['elah_lab_001', 'elah_lab_001'])
+  assert.deepEqual(harness.probes.map(([username]) => username), ['elah_lab_001', 'elah_lab_001'])
   assert.deepEqual(harness.bot.controlCalls, [['forward', true], ['forward', false]])
 })
 
