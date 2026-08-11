@@ -89,6 +89,7 @@ export async function runClientSession ({
 
     await waitFor('spawn', CLIENT_LAB_COMPATIBILITY.spawnTimeoutMillis)
     ledger.record(sessionId, 'spawned')
+    bot._client.write('player_loaded', {})
 
     await waitFor('physicsTick', CLIENT_LAB_COMPATIBILITY.spawnTimeoutMillis)
 

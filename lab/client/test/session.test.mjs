@@ -177,6 +177,7 @@ test('records the real event, server position, movement, and terminal sequence',
   assert.deepEqual(harness.probes, ['elah_lab_001', 'elah_lab_001'])
   assert.deepEqual(harness.bot.controlCalls, [['forward', true], ['forward', false]])
   assert.deepEqual(harness.bot.packetWrites, [
+    ['player_loaded', {}],
     ['tick_end', {}],
     ['player_input', { inputs: {
       forward: true,
