@@ -33,11 +33,12 @@ import { ClientLaboratoryLedger } from '../ledger.mjs'
 import { runClientSession } from '../session.mjs'
 
 class FakeBot extends EventEmitter {
-  constructor ({ version = '1.21.11', terminal = 'end', failureAt = null } = {}) {
+  constructor ({ version = '1.21.11', terminal = 'end', failureAt = null, automaticPhysicsTick = true } = {}) {
     super()
     this.version = version
     this.terminal = terminal
     this.failureAt = failureAt
+    this.automaticPhysicsTick = automaticPhysicsTick
     this.controls = new Map()
     this.controlCalls = []
     this.quitCalls = []
@@ -47,7 +48,9 @@ class FakeBot extends EventEmitter {
   start () {
     this.#emitStage('connect', () => {
       setImmediate(() => this.#emitStage('login', () => {
-        setImmediate(() => this.#emitStage('spawn'))
+        setImmediate(() => this.#emitStage('spawn', () => {
+          if (this.automaticPhysicsTick) setImmediate(() => this.emit('physicsTick'))
+        }))
       }))
     })
   }
@@ -193,6 +196,23 @@ test('uses Paper observations instead of the Mineflayer local position', async (
   )
 })
 
+test('waits for Mineflayer physics readiness before sampling or requesting movement', async () => {
+  const harness = buildHarness({ automaticPhysicsTick: false })
+  const running = harness.run()
+
+  await new Promise((resolve) => setImmediate(resolve))
+  await new Promise((resolve) => setImmediate(resolve))
+  await new Promise((resolve) => setImmediate(resolve))
+  assert.deepEqual(harness.probes, [])
+  assert.deepEqual(harness.bot.controlCalls, [])
+
+  harness.bot.emit('physicsTick')
+  await running
+
+  assert.deepEqual(harness.probes, ['elah_lab_001', 'elah_lab_001'])
+  assert.deepEqual(harness.bot.controlCalls, [['forward', true], ['forward', false]])
+})
+
 test('waits for Mineflayer plugin injection before requiring session controls', async () => {
   const ledger = new ClientLaboratoryLedger({ compatibility: CLIENT_LAB_COMPATIBILITY, now: () => 1 })
   ledger.startSession({ sessionId: 'session-001', username: 'elah_lab_001', wave: 1 })
@@ -216,7 +236,10 @@ test('waits for Mineflayer plugin injection before requiring session controls', 
           bot.emit('connect')
           setImmediate(() => {
             bot.emit('login')
-            setImmediate(() => bot.emit('spawn'))
+            setImmediate(() => {
+              bot.emit('spawn')
+              setImmediate(() => bot.emit('physicsTick'))
+            })
           })
         })
       })

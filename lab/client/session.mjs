@@ -81,6 +81,8 @@ export async function runClientSession ({
     await waitFor('spawn', CLIENT_LAB_COMPATIBILITY.spawnTimeoutMillis)
     ledger.record(sessionId, 'spawned')
 
+    await waitFor('physicsTick', CLIENT_LAB_COMPATIBILITY.spawnTimeoutMillis)
+
     const before = await guardBotOperation(bot, () => positionProbe(username))
     ledger.record(sessionId, 'server_position_before', { position: before })
 
