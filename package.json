@@ -14,7 +14,7 @@
     }
   },
   "scripts": {
-    "test": "node --test scripts/studying/validate-manifest.test.mjs lab/bots/test/component-identity.test.mjs lab/protocol/test/bindings.test.mjs lab/protocol/test/laboratory-ledger.test.mjs lab/observer/test/oracle.test.mjs lab/client/test/*.test.mjs scripts/proto/check-generated.test.mjs scripts/ci/check-studying-boundary.test.mjs scripts/ci/check-public-provenance.test.mjs scripts/ci/check-license-headers.test.mjs scripts/ci/check-text-policy.test.mjs scripts/ci/check-observer-docs.test.mjs scripts/ci/check-client-laboratory-docs.test.mjs",
+    "test": "node --test scripts/studying/validate-manifest.test.mjs lab/bots/test/component-identity.test.mjs lab/protocol/test/bindings.test.mjs lab/protocol/test/laboratory-ledger.test.mjs lab/observer/test/oracle.test.mjs lab/server/test/*.test.mjs lab/client/test/*.test.mjs scripts/proto/check-generated.test.mjs scripts/ci/check-studying-boundary.test.mjs scripts/ci/check-public-provenance.test.mjs scripts/ci/check-license-headers.test.mjs scripts/ci/check-text-policy.test.mjs scripts/ci/check-observer-docs.test.mjs scripts/ci/check-client-laboratory-docs.test.mjs",
     "studying:validate": "node scripts/studying/validate-manifest.mjs studying/manifest.lock",
     "test:studying": "node --test scripts/studying/validate-manifest.test.mjs",
     "test:bots": "node --test lab/bots/test/component-identity.test.mjs",
@@ -22,6 +22,7 @@
     "lab:protocol": "node lab/protocol/run-laboratory.mjs",
     "test:observer": "node --test lab/observer/test/oracle.test.mjs",
     "lab:observer": "node lab/observer/run-laboratory.mjs",
+    "test:server": "node --test lab/server/test/*.test.mjs",
     "test:client": "node --test lab/client/test/*.test.mjs",
     "lab:client": "node lab/client/run-laboratory.mjs",
     "test:proto": "node --test scripts/proto/check-generated.test.mjs",
