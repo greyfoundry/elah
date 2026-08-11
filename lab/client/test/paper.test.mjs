@@ -123,6 +123,10 @@ test('writes a loopback-only disposable server and requires the Paper Done line'
     assert.match(properties, /^server-port=25570$/m)
     assert.match(properties, /^online-mode=false$/m)
     assert.match(properties, /^level-type=minecraft:flat$/m)
+    assert.match(
+      properties,
+      /^generator-settings=\{"layers":\[\{"block":"minecraft:bedrock","height":1\},\{"block":"minecraft:dirt","height":2\},\{"block":"minecraft:grass_block","height":1\}\],"biome":"minecraft:plains"\}$/m
+    )
     assert.match(properties, /^generate-structures=false$/m)
     assert.deepEqual(calls, [{
       file: 'C:\\Java\\bin\\java.exe',

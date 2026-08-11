@@ -189,6 +189,7 @@ export class PaperLaboratory {
       'online-mode=false',
       'level-name=world',
       'level-type=minecraft:flat',
+      'generator-settings={"layers":[{"block":"minecraft:bedrock","height":1},{"block":"minecraft:dirt","height":2},{"block":"minecraft:grass_block","height":1}],"biome":"minecraft:plains"}',
       'generate-structures=false',
       'max-players=20',
       'view-distance=3',
