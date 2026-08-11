@@ -113,6 +113,7 @@ test('accepts complete notices in every supported comment syntax', async () => {
   await withTrackedFiles({
     'src/example.mjs': `${notice('//')}export const value = 1;\n`,
     'config/example.yml': `${notice('#')}value: true\n`,
+    '.github/CODEOWNERS': `${notice('#')}* @greyfoundry/elah-maintainers\n`,
     'db/schema.sql': `${notice('--')}SELECT 1;\n`,
     'web/example.css': `${notice('/*', '*/')}body {}\n`,
     'web/example.html': `${notice('<!--', '-->')}<p>Example</p>\n`,

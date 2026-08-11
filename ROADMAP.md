@@ -1,26 +1,29 @@
 # Roadmap
 
-## 0.0.1 — Genesis
+## 0.0.1 - Genesis
 
 Genesis establishes the laboratory: monorepo foundations, licensing, ADRs, build and CI foundations, studying isolation, an upstream manifest, and public architecture documents. It is not released to server owners and ships **no gameplay feature**. Its exit gate is repeatable validation under pinned toolchains.
 
-## 0.0.2 — Protocol Laboratory
+## 0.0.2 - Protocol Laboratory
 
 Protocol Laboratory adds the first executable cross-language control path: a loopback-only Rust `elahd`, versioned Protocol Buffer and gRPC contracts, generated Rust/Java/TypeScript surfaces, and a Java dummy worker. Its release gate force-kills and reconnects worker sessions 25 times on a GitHub-hosted runner while asserting exact generations, monotonic heartbeats, and retired-session rejection. It still ships **no Minecraft integration or gameplay feature**.
 
-## 0.0.3 — Observer
+## 0.0.3 - Observer
 
 Observer adds the read-only `elah observe <world>` administrator command for Minecraft Java Anvil snapshots. Standard mode inventories safe files, dimensions, `level.dat`, region headers, and chunk envelopes. Optional deep mode boundedly decompresses and validates chunk NBT. Both modes use two-pass evidence and produce no report if report-driving data changes. A development-only PrismarineJS oracle independently creates and reads the release fixture, compares standard and deep reports, and proves complete file hashes remain unchanged. Observer still ships **no server integration, ownership, storage write, failover, repair, or gameplay feature**.
+
+## 0.0.4 - Client Laboratory
+
+Client Laboratory qualifies Mineflayer 4.37.1 with Minecraft 1.21.8 and Paper build 60. A real Paper server runs only as a disposable, loopback-only GitHub-hosted fixture. The gate requires `elah.client-laboratory/v1` evidence for 32 sessions in two sequential waves, exact lifecycle stages, server-observed movement, and clean Paper shutdown. Minecraft 1.21.11 is not qualified because hosted candidate evidence showed client-local movement that Paper did not accept. Minecraft 26.2 is also unqualified because upstream client support remains unresolved. This development-only release does not prove Folia, ownership, storage, failover, gameplay, a playable cluster, or production readiness. It adds no operator command.
 
 ## Near-term sequence
 
 The immediate path is intentionally narrow:
 
-1. Add a separate protocol-aware laboratory client without coupling it to production code.
-2. Run a single Folia worker and record a baseline using Observer evidence where applicable.
-3. Introduce a second worker with static cells.
-4. Demonstrate a fixed-boundary player handoff repeatedly without state loss or duplication.
-5. Add ownership epochs, crash-safe transfer recovery, and runtime observability before broader scaling.
+1. Run a single Folia worker and record a baseline using Observer and Client Laboratory evidence where applicable.
+2. Introduce a second worker with static cells.
+3. Demonstrate a fixed-boundary player handoff repeatedly without state loss or duplication.
+4. Add ownership epochs, crash-safe transfer recovery, and runtime observability before broader scaling.
 
 ## Later directions
 

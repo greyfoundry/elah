@@ -28,7 +28,7 @@ package org.greyfoundry.elah.api;
 
 /** Immutable identity for an Elah component. */
 public final class ComponentIdentity {
-  private static final String VERSION = "0.0.3";
+  private static final String VERSION = "0.0.4";
 
   private final String name;
 

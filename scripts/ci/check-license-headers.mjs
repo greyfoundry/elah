@@ -60,7 +60,7 @@ async function trackedFiles(root) {
 
 function commentPrefix(file) {
   const basename = path.posix.basename(file);
-  if (['.gitattributes', '.gitignore', 'Dockerfile', 'Justfile', 'Makefile', 'justfile'].includes(basename)) {
+  if (['.gitattributes', '.gitignore', 'CODEOWNERS', 'Dockerfile', 'Justfile', 'Makefile', 'justfile'].includes(basename)) {
     return { open: '#' };
   }
   const extension = path.posix.extname(file).toLowerCase();
