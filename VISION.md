@@ -74,6 +74,16 @@ This can support capacity policies such as:
 
 Elah supplies Minecraft-aware cluster decisions. A separate hosting or fleet layer remains responsible for customers, billing, generic machine inventory, and provider-wide allocation.
 
+## Future independent server fleets
+
+**Future / Not Yet Implemented**
+
+Elah may eventually add an Instance Fleet Engine for whole independent Minecraft servers such as lobbies, minigame matches, dungeons, or separate survival instances. That engine would place and operate complete instances across compatible machines. It would not divide those instances into cells or treat them as parts of one distributed simulation.
+
+This capability is intentionally deferred. The Distributed World Engine is Elah's core differentiator and must be proven in production before a second workload engine receives a release number. Existing work may share small host, capacity, lifecycle, health, network, admission, and observability primitives when those primitives improve the distributed-world system on their own merits.
+
+The reservation does not turn Elah into a hosting panel or a generic scheduler. Accounts, billing, generic container orchestration, and provider-wide machine management stay outside the project boundary. Agones demonstrates that whole game-server fleets have useful concepts such as warm instances, allocation, placement strategies, templates, health, and demand-driven autoscaling. Elah should learn from that evidence later without copying Kubernetes into its core or mixing instance lifecycle with cell ownership.
+
 ## Why total CPU is not enough
 
 A worker can have moderate total CPU utilization while one Folia region exceeds its tick budget. Another worker can have high CPU utilization even though moving a cell would increase boundary traffic and make gameplay worse.
@@ -112,12 +122,19 @@ Every future capacity claim must publish its hardware, world, settings, plugins,
 10. Multi-tenant fleet integration cannot weaken single-cluster isolation or ownership invariants.
 11. Elastic work starts only after safe static operation and dynamic migration are proven.
 12. One cell, one authoritative owner, and one epoch remains the central invariant.
+13. The Distributed World Engine remains the only workload engine on the committed roadmap.
+14. Instance Fleet Mode is a post-production research reservation with no assigned release.
+15. Shared substrate abstractions must improve current distributed-world work before they are introduced.
 
 ## References
 
 - [Kubernetes scheduler](https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/)
 - [Kubernetes node autoscaling](https://kubernetes.io/docs/concepts/cluster-administration/node-autoscaling/)
 - [Kubernetes resource bin packing](https://kubernetes.io/docs/concepts/scheduling-eviction/resource-bin-packing/)
+- [Agones Fleet specification](https://www.agones.dev/site/docs/reference/fleet/)
+- [Agones FleetAutoscaler specification](https://agones.dev/site/docs/reference/fleetautoscaler/)
+- [Nomad scheduling model](https://developer.hashicorp.com/nomad/docs/concepts/scheduling/how-scheduling-works)
+- [Folia region logic](https://docs.papermc.io/folia/reference/region-logic/)
 - [Elah architecture](ARCHITECTURE.md)
 - [Elah invariants](INVARIANTS.md)
 - [Elah roadmap](ROADMAP.md)

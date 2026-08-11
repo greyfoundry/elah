@@ -66,3 +66,21 @@ The mature target combines safe ownership, dynamic placement, elastic workers, a
 Dynamic repartitioning, autoscaling, multi-region operation, custom clients, GPU world generation, and a Kubernetes requirement are not early work. Runtime Provider concepts may inform earlier interface design, but provider orchestration cannot enter an earlier milestone.
 
 The mature aim remains one logical Minecraft world across many workers while retaining vanilla Java clients. This roadmap is directional, not a promise of release dates.
+
+## Post-production research reservation: Instance Fleet Mode
+
+**Future / Not Yet Implemented. No release number or date is assigned.**
+
+After the Distributed World Engine is production-proven, Elah may evaluate a separate Instance Fleet Engine for scheduling whole independent Minecraft server instances across compatible machines. This is not part of 0.x, 1.x, 2.x, 3.x, or the Elah 4.0 completion gate.
+
+Research may begin only when all of these entry conditions hold:
+
+1. Static and dynamic distributed-world ownership are production-supported.
+2. Cell handoff, fencing, recovery, drain, storage, and boundary behavior are qualified under failure.
+3. Runtime Providers and resource envelopes have stable evidence from real deployments.
+4. Concrete operators need whole-instance orchestration that existing providers do not already solve well enough.
+5. Instance identity, ports, proxy registration, templates, secrets, storage, isolation, health, drain, restart, and autoscaling have an independent threat and failure model.
+
+The future engine must not reuse cell ownership epochs, ghost boundaries, or distributed-world protocols for independent instances. It may share only proven low-level host, capacity, lifecycle, health, networking, admission, and observability primitives.
+
+Elah will integrate with Kubernetes, Nomad, Pterodactyl, Pelican, or similar systems where they are the right infrastructure layer. It will not compete with them as a generic orchestrator or control panel.

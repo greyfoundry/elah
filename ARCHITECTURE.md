@@ -44,6 +44,32 @@ Providers may report capacity and prepare, inspect, drain, or stop workers. They
 
 The planned provider order is Native, Docker, then an authenticated External Provider for hosting panels, Kubernetes, cloud systems, and custom infrastructure. Kubernetes remains optional. Elah is not a container orchestrator, VM manager, billing platform, hosting panel, or general-purpose scheduler.
 
+## Workload engines and shared substrate
+
+Elah's primary architecture is the **Distributed World Engine**: one logical Minecraft world divided into cells, with authoritative ownership, ownership epochs, handoffs, boundary behavior, and distributed world consistency. This remains the only workload engine on the committed release roadmap.
+
+The architecture reserves a future **Instance Fleet Engine** for whole, independent Minecraft server instances such as lobbies, minigame matches, or separate survival servers. Its scheduling unit would be an entire instance, not a cell. Independent instances would use lifecycle, placement, resource, port, proxy-registration, health, drain, restart, and demand evidence. They would not use cell ownership, ownership epochs, ghost state, or cross-cell simulation.
+
+```text
+                         elahd
+                           |
+                 small shared substrate
+          hosts, capacity, lifecycle, health,
+             admission, network, observability
+                    /               \
+                   /                 \
+      Distributed World Engine    Instance Fleet Engine
+            current focus        Future / Not Yet Implemented
+                   |                       |
+                 cells              whole instances
+```
+
+Only low-level capabilities with value to the current system belong in the shared substrate: host identity and discovery, capacity evidence, admission primitives, worker lifecycle, health, networking, and observability. Ownership, epochs, cell migration, player and entity handoff, and boundary simulation remain explicit Distributed World Engine concepts.
+
+No common schedulable-workload type, class hierarchy, protocol, template system, minigame API, or instance autoscaler is reserved today. A future engine must earn any shared abstraction from concrete implementations and must not require a rewrite of the distributed-world model.
+
+Instance Fleet Mode is distinct from Fleet Integration. Fleet Integration lets many isolated Elah clusters consume one infrastructure pool. Instance Fleet Mode would let one future Elah deployment schedule independent Minecraft server instances. The two may later coexist on shared machines only after resource isolation, identity, port, network, proxy, storage, and failure-domain policies are independently qualified.
+
 ## Elastic worker model
 
 Future worker lifecycle states are:
