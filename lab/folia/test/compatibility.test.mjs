@@ -25,6 +25,11 @@
 //
 
 import assert from 'node:assert/strict'
+import { EventEmitter } from 'node:events'
+import { mkdtemp, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { PassThrough, Writable } from 'node:stream'
 import test from 'node:test'
 
 import {
@@ -36,6 +41,30 @@ import { FoliaLaboratory } from '../folia.mjs'
 
 const sha256 = '233843cfd5001b6f658fcab549178d694cc37f0277d004ea295de0a94c57278f'
 const url = `https://fill-data.papermc.io/v1/objects/${sha256}/folia-1.21.8-6.jar`
+
+class SelectorFoliaChild extends EventEmitter {
+  constructor () {
+    super()
+    this.stdout = new PassThrough()
+    this.stderr = new PassThrough()
+    this.commands = []
+    this.stdin = new Writable({
+      write: (chunk, encoding, callback) => {
+        const command = chunk.toString().trim()
+        this.commands.push(command)
+        if (command === 'stop') {
+          setImmediate(() => this.emit('exit', 0, null))
+        } else if (command === 'data get entity @a[name=elah_lab_001,limit=1] Pos') {
+          setImmediate(() => this.stdout.write(
+            '[Global region/INFO]: elah_lab_001 has the following entity data: [1.0d, 64.0d, 2.0d]\n'
+          ))
+        }
+        callback()
+      }
+    })
+    setImmediate(() => this.stdout.write('[Global region/INFO]: Done (1.000s)! For help, type "help"\n'))
+  }
+}
 
 test('publishes the exact official Folia baseline identity and limits', () => {
   assert.deepEqual(FOLIA_BASELINE_COMPATIBILITY, {
@@ -130,4 +159,28 @@ test('the Folia process wrapper also rejects a changed compatibility tuple', () 
     port: 25570,
     compatibility: { ...FOLIA_BASELINE_COMPATIBILITY, foliaBuild: 5 }
   }), /pinned Folia 1\.21\.8 build 6/i)
+})
+
+test('the Folia wrapper uses an exact vanilla selector for global-region position probes', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'elah-folia-selector-'))
+  const child = new SelectorFoliaChild()
+  const server = new FoliaLaboratory({
+    java: 'java',
+    root,
+    jar: join(root, 'folia.jar'),
+    port: 25570,
+    spawnImpl: () => child,
+    compatibility: FOLIA_BASELINE_COMPATIBILITY
+  })
+  try {
+    await server.start()
+    assert.deepEqual(await server.queryPosition('elah_lab_001'), { x: 1, y: 64, z: 2 })
+    await server.stop()
+    assert.deepEqual(child.commands, [
+      'data get entity @a[name=elah_lab_001,limit=1] Pos',
+      'stop'
+    ])
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
 })

@@ -37,6 +37,7 @@ export class FoliaLaboratory extends MinecraftServerLaboratory {
       serverName: 'Folia',
       kindPrefix: 'folia',
       motd: 'Elah Folia Baseline Laboratory',
+      positionSelector: true,
       limits: {
         startupTimeoutMillis: compatibility.serverStartupTimeoutMillis,
         commandTimeoutMillis: compatibility.serverCommandTimeoutMillis,

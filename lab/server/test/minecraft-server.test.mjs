@@ -47,7 +47,7 @@ class FakeChild extends EventEmitter {
         if (command === 'stop') {
           setImmediate(() => this.emit('exit', 0, null))
         } else {
-          const username = command.split(' ')[3]
+          const username = command.match(/name=(elah_lab_[0-9]{3}),/)?.[1] ?? command.split(' ')[3]
           setImmediate(() => this.stdout.write(
             `[Global region/INFO]: ${username} has the following entity data: [8.5d, 64.0d, -2.25d]\n`
           ))
@@ -70,6 +70,7 @@ test('runs a named server through the bounded loopback lifecycle', async () => {
     port: 25570,
     serverName: 'Folia',
     motd: 'Elah Folia Baseline Laboratory',
+    positionSelector: true,
     limits: {
       startupTimeoutMillis: 1000,
       commandTimeoutMillis: 1000,
@@ -92,7 +93,7 @@ test('runs a named server through the bounded loopback lifecycle', async () => {
     assert.deepEqual(calls[0].args, ['-Xms512M', '-Xmx1536M', '-jar', join(root, 'folia.jar'), '--nogui'])
     assert.deepEqual(await server.queryPosition('elah_lab_001'), { x: 8.5, y: 64, z: -2.25 })
     assert.deepEqual(await server.stop(), { requested: true, exitCode: 0, signal: null })
-    assert.deepEqual(child.commands, ['data get entity elah_lab_001 Pos', 'stop'])
+    assert.deepEqual(child.commands, ['data get entity @a[name=elah_lab_001,limit=1] Pos', 'stop'])
   } finally {
     await rm(root, { recursive: true, force: true })
   }
