@@ -325,6 +325,7 @@ test('rejects a non-loopback endpoint before constructing a bot', async () => {
 test('rejects insufficient server-observed movement and disables movement', async () => {
   const harness = buildHarness()
   let calls = 0
+  harness.bot.entity = { position: { x: 0, y: 64, z: 0 }, onGround: true, yaw: 0 }
 
   await assert.rejects(
     runClientSession({
@@ -341,9 +342,15 @@ test('rejects insufficient server-observed movement and disables movement', asyn
         ? { x: 0, y: 64, z: 0 }
         : { x: 0.1, y: 64, z: 0.1 }),
       ledger: harness.ledger,
-      timers: { delay: async () => {}, setTimeout, clearTimeout }
+      timers: {
+        delay: async () => {
+          harness.bot.entity.position = { x: 1, y: 64, z: 0 }
+        },
+        setTimeout,
+        clearTimeout
+      }
     }),
-    /displacement/i
+    /server-observed horizontal displacement 0\.141.+client-local horizontal displacement 1\.000/i
   )
 
   assert.deepEqual(harness.bot.controlCalls, [['forward', true], ['forward', false]])

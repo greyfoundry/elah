@@ -155,6 +155,22 @@ test('one rejected session disconnects peers, stops Paper, and writes failure ev
   })
 })
 
+test('preserves the first causal session error instead of a later peer error', async () => {
+  await withOptions(async ({ options }) => {
+    const runSession = async ({ sessionId }) => {
+      if (sessionId === 'session-003') throw new Error('first causal failure')
+      await new Promise((resolve) => setImmediate(resolve))
+      if (sessionId === 'session-001') throw new Error('secondary peer failure')
+    }
+
+    const report = await runClientLaboratory(options, dependencies(runSession))
+
+    assert.equal(report.outcome, 'failed')
+    assert.match(report.error.summary, /first causal failure/i)
+    assert.doesNotMatch(report.error.summary, /secondary peer failure/i)
+  })
+})
+
 test('Paper cleanup failure prevents passed evidence', async () => {
   await withOptions(async ({ options }) => {
     FakePaper.failStop = true

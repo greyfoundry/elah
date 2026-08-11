@@ -128,6 +128,7 @@ export async function runClientLaboratory (options, dependencyOverrides = {}) {
 
     for (let wave = 1; wave <= CLIENT_LAB_COMPATIBILITY.waves; wave += 1) {
       const sessions = []
+      let waveFailure
       for (let offset = 0; offset < CLIENT_LAB_COMPATIBILITY.concurrency; offset += 1) {
         const ordinal = (wave - 1) * CLIENT_LAB_COMPATIBILITY.concurrency + offset + 1
         const suffix = String(ordinal).padStart(3, '0')
@@ -145,6 +146,7 @@ export async function runClientLaboratory (options, dependencyOverrides = {}) {
           positionProbe: (name) => paper.queryPosition(name),
           ledger
         }).catch((error) => {
+          waveFailure ??= error
           cancelActiveBots(activeBots, cancelledBots)
           throw error
         })
@@ -152,7 +154,7 @@ export async function runClientLaboratory (options, dependencyOverrides = {}) {
       }
       const results = await Promise.allSettled(sessions)
       const failed = results.find(({ status }) => status === 'rejected')
-      if (failed) throw failed.reason
+      if (failed) throw waveFailure ?? failed.reason
       ledger.completeWave(wave)
     }
   } catch (error) {

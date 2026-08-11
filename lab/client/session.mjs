@@ -92,6 +92,7 @@ export async function runClientSession ({
 
     await waitFor('physicsTick', CLIENT_LAB_COMPATIBILITY.spawnTimeoutMillis)
 
+    const clientBefore = diagnosticClientPosition(bot)
     const before = await guardBotOperation(bot, () => positionProbe(username))
     ledger.record(sessionId, 'server_position_before', { position: before })
 
@@ -102,8 +103,16 @@ export async function runClientSession ({
     setMovementState(bot, direction, false)
     activeDirection = undefined
 
+    const clientAfter = diagnosticClientPosition(bot)
     const after = await guardBotOperation(bot, () => positionProbe(username))
-    ledger.record(sessionId, 'server_position_after', { position: after })
+    try {
+      ledger.record(sessionId, 'server_position_after', { position: after })
+    } catch (error) {
+      if (error instanceof ClientLaboratoryError && error.kind === 'insufficient_movement') {
+        throw new ClientLaboratoryError(error.kind, `${error.message}; ${clientMovementDiagnostic(clientBefore, clientAfter, bot)}`)
+      }
+      throw error
+    }
     ledger.record(sessionId, 'disconnect_requested')
 
     const terminalWaiter = createBotEventWaiter(
@@ -228,6 +237,32 @@ function synchronizeClientTicks (bot) {
   }
   bot.on('move', finishMovementTick)
   return () => bot.removeListener('move', finishMovementTick)
+}
+
+function diagnosticClientPosition (bot) {
+  const position = bot?.entity?.position
+  if (
+    position === null ||
+    typeof position !== 'object' ||
+    !Number.isFinite(position.x) ||
+    !Number.isFinite(position.y) ||
+    !Number.isFinite(position.z)
+  ) return undefined
+  return { x: position.x, y: position.y, z: position.z }
+}
+
+function clientMovementDiagnostic (before, after, bot) {
+  if (before === undefined || after === undefined) {
+    return 'client-local position was unavailable or non-finite'
+  }
+  const displacement = Math.hypot(after.x - before.x, after.z - before.z)
+  const onGround = typeof bot?.entity?.onGround === 'boolean' ? bot.entity.onGround : 'unavailable'
+  const yaw = Number.isFinite(bot?.entity?.yaw) ? bot.entity.yaw.toFixed(3) : 'unavailable'
+  return `client-local horizontal displacement ${displacement.toFixed(3)} from (${formatPosition(before)}) to (${formatPosition(after)}), onGround=${onGround}, yaw=${yaw}`
+}
+
+function formatPosition ({ x, y, z }) {
+  return `${x.toFixed(3)}, ${y.toFixed(3)}, ${z.toFixed(3)}`
 }
 
 function validateSessionControls (bot) {
