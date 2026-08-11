@@ -125,3 +125,9 @@ Client Laboratory is isolated under `lab/client/` and has no production runtime 
 The `elah.client-laboratory/v1` ledger requires 32 sessions in two sequential waves of 16. Each session records `created`, `connected`, `logged_in`, `spawned`, `server_position_before`, `movement_requested`, `server_position_after`, `disconnect_requested`, and `ended` in exact order. Position evidence comes from Paper console queries, not Mineflayer-local state. Any client, movement, report, or Paper cleanup failure produces distinct failed evidence and prevents a passing report.
 
 Minecraft 26.2 is not qualified because upstream client support remains unresolved. The laboratory does not prove Folia, ownership, placement, storage, failover, gameplay, a playable cluster, or production readiness. It adds no operator command and does not move client code into a production data path.
+
+## Implemented development-only Folia Baseline Laboratory
+
+Folia Baseline Laboratory is isolated under `lab/folia/` and has no production runtime authority. It pins Folia 1.21.8 build 6 at commit `612d9bd8569fe1a6008a05325af3fad66ef1cef7` with Mineflayer 4.37.1. The executable JAR is accepted only after exact size and SHA-256 verification, runs on loopback in a disposable root, and is neither committed nor released.
+
+The gate requires 32 sessions in two sequential waves of 16 with server-observed movement and clean Folia shutdown. Only after shutdown does it hash the complete world tree, run standard and deep Observer reports, hash the world again, and require byte-identical snapshots. Passing `elah.folia-baseline/v1` evidence is functional-only compatibility evidence. It does not prove performance, Folia region parallelism, Elah integration, ownership, handoff, gameplay, a playable cluster, or production readiness.

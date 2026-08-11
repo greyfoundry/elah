@@ -16,6 +16,10 @@ Observer adds the read-only `elah observe <world>` administrator command for Min
 
 Client Laboratory qualifies Mineflayer 4.37.1 with Minecraft 1.21.8 and Paper build 60. A real Paper server runs only as a disposable, loopback-only GitHub-hosted fixture. The gate requires `elah.client-laboratory/v1` evidence for 32 sessions in two sequential waves, exact lifecycle stages, server-observed movement, and clean Paper shutdown. Minecraft 1.21.11 is not qualified because hosted candidate evidence showed client-local movement that Paper did not accept. Minecraft 26.2 is also unqualified because upstream client support remains unresolved. This development-only release does not prove Folia, ownership, storage, failover, gameplay, a playable cluster, or production readiness. It adds no operator command.
 
+## 0.0.5 - Folia Baseline Laboratory
+
+Folia Baseline Laboratory pins Folia 1.21.8 build 6 at commit `612d9bd8569fe1a6008a05325af3fad66ef1cef7` with Mineflayer 4.37.1. The GitHub-hosted gate requires 32 sessions in two sequential waves of 16, server-observed movement, clean Folia shutdown, valid standard and deep Observer reports, and an unchanged stopped world proven by complete before and after hashes. Passing `elah.folia-baseline/v1` evidence is functional-only compatibility evidence. It does not prove performance, Folia region parallelism, Elah integration, ownership, handoff, gameplay, a playable cluster, or production readiness. It adds no operator command.
+
 ## Near-term sequence
 
 The immediate path is intentionally narrow:
