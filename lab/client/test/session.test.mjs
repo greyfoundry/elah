@@ -53,10 +53,15 @@ class FakeBot extends EventEmitter {
     this.#emitStage('connect', () => {
       setImmediate(() => this.#emitStage('login', () => {
         setImmediate(() => this.#emitStage('spawn', () => {
-          if (this.automaticPhysicsTick) setImmediate(() => this.emit('physicsTick'))
+          if (this.automaticPhysicsTick) setImmediate(() => this.physicsTick())
         }))
       }))
     })
+  }
+
+  physicsTick () {
+    this.emit('physicsTick')
+    this.emit('move')
   }
 
   setControlState (direction, enabled) {
@@ -172,6 +177,7 @@ test('records the real event, server position, movement, and terminal sequence',
   assert.deepEqual(harness.probes, ['elah_lab_001', 'elah_lab_001'])
   assert.deepEqual(harness.bot.controlCalls, [['forward', true], ['forward', false]])
   assert.deepEqual(harness.bot.packetWrites, [
+    ['tick_end', {}],
     ['player_input', { inputs: {
       forward: true,
       backward: false,
@@ -230,7 +236,7 @@ test('waits for Mineflayer physics readiness before sampling or requesting movem
   assert.deepEqual(harness.probes, [])
   assert.deepEqual(harness.bot.controlCalls, [])
 
-  harness.bot.emit('physicsTick')
+  harness.bot.physicsTick()
   await running
 
   assert.deepEqual(harness.probes, ['elah_lab_001', 'elah_lab_001'])
@@ -263,7 +269,10 @@ test('waits for Mineflayer plugin injection before requiring session controls', 
             bot.emit('login')
             setImmediate(() => {
               bot.emit('spawn')
-              setImmediate(() => bot.emit('physicsTick'))
+              setImmediate(() => {
+                bot.emit('physicsTick')
+                bot.emit('move')
+              })
             })
           })
         })

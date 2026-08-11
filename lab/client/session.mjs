@@ -53,6 +53,7 @@ export async function runClientSession ({
 }) {
   let bot
   let activeDirection
+  let removeTickSynchronizer = () => {}
   const activeWaiters = new Set()
 
   try {
@@ -72,6 +73,7 @@ export async function runClientSession ({
       await waitFor('inject_allowed', CLIENT_LAB_COMPATIBILITY.connectTimeoutMillis)
     }
     validateSessionControls(bot)
+    removeTickSynchronizer = synchronizeClientTicks(bot)
 
     await waitFor('connect', CLIENT_LAB_COMPATIBILITY.connectTimeoutMillis)
     ledger.record(sessionId, 'connected')
@@ -125,6 +127,7 @@ export async function runClientSession ({
     throw error
   } finally {
     for (const waiter of activeWaiters) waiter.cancel()
+    removeTickSynchronizer()
     if (bot) {
       if (activeDirection !== undefined) {
         try {
@@ -213,6 +216,18 @@ function setMovementState (bot, direction, enabled) {
   }
   inputs[PROTOCOL_DIRECTION[direction]] = enabled
   bot._client.write('player_input', { inputs })
+}
+
+function synchronizeClientTicks (bot) {
+  const finishMovementTick = () => {
+    try {
+      bot._client.write('tick_end', {})
+    } catch (error) {
+      bot.emit('error', error)
+    }
+  }
+  bot.on('move', finishMovementTick)
+  return () => bot.removeListener('move', finishMovementTick)
 }
 
 function validateSessionControls (bot) {
