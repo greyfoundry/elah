@@ -31,7 +31,7 @@ fn component_identity_has_the_requested_name_and_workspace_version() {
     let identity = ComponentIdentity::new("elah-core").expect("a non-empty name is valid");
 
     assert_eq!(identity.name(), "elah-core");
-    assert_eq!(identity.version(), "0.0.4");
+    assert_eq!(identity.version(), "0.0.5");
 }
 
 #[test]
