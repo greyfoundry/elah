@@ -18,6 +18,7 @@
     "test:observer": "node --test lab/observer/test/oracle.test.mjs",
     "lab:observer": "node lab/observer/run-laboratory.mjs",
     "test:client": "node --test lab/client/test/*.test.mjs",
+    "lab:client": "node lab/client/run-laboratory.mjs",
     "test:proto": "node --test scripts/proto/check-generated.test.mjs",
     "proto:check-generated": "node scripts/proto/check-generated.mjs proto/generated-manifest.json",
     "proto:lint": "buf lint proto",

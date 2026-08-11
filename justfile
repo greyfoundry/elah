@@ -1,6 +1,6 @@
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║                                                                  ║
-# ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+# ║                   ELAH | A GREYFOUNDRY PROJECT                   ║
 # ║                                                                  ║
 # ║               https://github.com/greyfoundry/elah                ║
 # ║                                                                  ║
@@ -38,7 +38,7 @@ rust-check:
     cargo test --workspace --all-targets --all-features --locked
 
 java-check:
-    {{gradle}} --no-daemon check
+    {{ gradle }} --no-daemon check
 
 node-check:
     pnpm install --frozen-lockfile
@@ -54,11 +54,14 @@ proto-generate:
 
 protocol-lab-build:
     cargo build --locked -p elahd
-    {{gradle}} --no-daemon :java:elah-dummy-worker:installDist
+    {{ gradle }} --no-daemon :java:elah-dummy-worker:installDist
 
 protocol-lab reconnects="2": protocol-lab-build
-    node lab/protocol/run-laboratory.mjs --reconnects {{reconnects}}
+    node lab/protocol/run-laboratory.mjs --reconnects {{ reconnects }}
 
 observer-lab:
     cargo build --locked -p elah-cli --bin elah
     pnpm lab:observer
+
+client-lab report="build/reports/client-laboratory/report.json" java="java" paper_cache="build/cache/client-laboratory":
+    pnpm lab:client -- --report "{{ report }}" --java "{{ java }}" --paper-cache "{{ paper_cache }}"
