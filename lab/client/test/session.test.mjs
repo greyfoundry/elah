@@ -193,6 +193,47 @@ test('uses Paper observations instead of the Mineflayer local position', async (
   )
 })
 
+test('waits for Mineflayer plugin injection before requiring session controls', async () => {
+  const ledger = new ClientLaboratoryLedger({ compatibility: CLIENT_LAB_COMPATIBILITY, now: () => 1 })
+  ledger.startSession({ sessionId: 'session-001', username: 'elah_lab_001', wave: 1 })
+  const bot = new EventEmitter()
+  bot.version = '1.21.11'
+  bot.controls = []
+
+  await runClientSession({
+    sessionId: 'session-001',
+    username: 'elah_lab_001',
+    endpoint: { host: '127.0.0.1', port: 25565 },
+    version: '1.21.11',
+    direction: 'forward',
+    botFactory: () => {
+      setImmediate(() => {
+        bot.setControlState = (direction, enabled) => bot.controls.push([direction, enabled])
+        bot.clearControlStates = () => {}
+        bot.quit = () => setImmediate(() => bot.emit('end'))
+        bot.emit('inject_allowed')
+        setImmediate(() => {
+          bot.emit('connect')
+          setImmediate(() => {
+            bot.emit('login')
+            setImmediate(() => bot.emit('spawn'))
+          })
+        })
+      })
+      return bot
+    },
+    positionProbe: (() => {
+      const positions = [{ x: 0, y: 64, z: 0 }, { x: 1, y: 64, z: 0 }]
+      return async () => positions.shift()
+    })(),
+    ledger,
+    timers: { delay: async () => {}, setTimeout, clearTimeout }
+  })
+
+  assert.deepEqual(bot.controls, [['forward', true], ['forward', false]])
+  assert.equal(ledger.sessions[0].stages.at(-1).name, 'ended')
+})
+
 for (const [name, botOptions, overrides, pattern] of [
   ['a kicked connection', { failureAt: 'login' }, {}, /kicked/i],
   ['a bot error', { terminal: 'error' }, {}, /socket broke/i],

@@ -60,7 +60,11 @@ export async function runClientSession ({
       hideErrors: true,
       checkTimeoutInterval: 30_000
     })
-    validateBot(bot)
+    validateBotEvents(bot)
+    if (!hasSessionControls(bot)) {
+      await waitFor('inject_allowed', CLIENT_LAB_COMPATIBILITY.connectTimeoutMillis)
+    }
+    validateSessionControls(bot)
 
     await waitFor('connect', CLIENT_LAB_COMPATIBILITY.connectTimeoutMillis)
     ledger.record(sessionId, 'connected')
@@ -159,15 +163,30 @@ function validateInputs ({ endpoint, version, direction, botFactory, positionPro
   }
 }
 
-function validateBot (bot) {
+function validateBotEvents (bot) {
   if (
     bot === null ||
     typeof bot?.on !== 'function' ||
-    typeof bot?.removeListener !== 'function' ||
-    typeof bot?.setControlState !== 'function' ||
-    typeof bot?.quit !== 'function'
+    typeof bot?.removeListener !== 'function'
   ) {
-    throw new ClientLaboratoryError('invalid_bot', 'bot factory returned an incomplete Mineflayer adapter')
+    throw new ClientLaboratoryError('invalid_bot_events', 'bot factory returned no Mineflayer event surface')
+  }
+}
+
+function hasSessionControls (bot) {
+  return (
+    typeof bot?.setControlState === 'function' &&
+    typeof bot?.clearControlStates === 'function' &&
+    typeof bot?.quit === 'function'
+  )
+}
+
+function validateSessionControls (bot) {
+  if (!hasSessionControls(bot)) {
+    throw new ClientLaboratoryError(
+      'invalid_bot_controls',
+      'Mineflayer plugin injection completed without movement and disconnect controls'
+    )
   }
 }
 

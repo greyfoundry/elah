@@ -217,7 +217,8 @@ function cancelActiveBots (activeBots, cancelledBots) {
     if (cancelledBots.has(bot)) continue
     cancelledBots.add(bot)
     try {
-      bot.quit?.('client laboratory peer failed')
+      const disconnect = typeof bot.quit === 'function' ? bot.quit.bind(bot) : bot.end?.bind(bot)
+      disconnect?.('client laboratory peer failed')
     } catch {
       // The original laboratory error remains authoritative.
     }
