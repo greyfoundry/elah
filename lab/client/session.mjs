@@ -27,6 +27,12 @@
 import { ClientLaboratoryError, CLIENT_LAB_COMPATIBILITY, assertLoopbackHost } from './compatibility.mjs'
 
 const SUPPORTED_DIRECTIONS = new Set(['forward', 'back', 'left', 'right'])
+const PROTOCOL_DIRECTION = Object.freeze({
+  forward: 'forward',
+  back: 'backward',
+  left: 'left',
+  right: 'right'
+})
 
 const DEFAULT_TIMERS = Object.freeze({
   delay: (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
@@ -46,6 +52,7 @@ export async function runClientSession ({
   timers = DEFAULT_TIMERS
 }) {
   let bot
+  let activeDirection
   const activeWaiters = new Set()
 
   try {
@@ -86,10 +93,12 @@ export async function runClientSession ({
     const before = await guardBotOperation(bot, () => positionProbe(username))
     ledger.record(sessionId, 'server_position_before', { position: before })
 
-    bot.setControlState(direction, true)
+    activeDirection = direction
+    setMovementState(bot, direction, true)
     ledger.record(sessionId, 'movement_requested', { direction })
     await guardBotOperation(bot, () => timers.delay(CLIENT_LAB_COMPATIBILITY.movementMillis))
-    bot.setControlState(direction, false)
+    setMovementState(bot, direction, false)
+    activeDirection = undefined
 
     const after = await guardBotOperation(bot, () => positionProbe(username))
     ledger.record(sessionId, 'server_position_after', { position: after })
@@ -117,6 +126,13 @@ export async function runClientSession ({
   } finally {
     for (const waiter of activeWaiters) waiter.cancel()
     if (bot) {
+      if (activeDirection !== undefined) {
+        try {
+          setMovementState(bot, activeDirection, false)
+        } catch {
+          // The original session failure remains authoritative.
+        }
+      }
       if (typeof bot.clearControlStates === 'function') bot.clearControlStates()
     }
   }
@@ -179,8 +195,24 @@ function hasSessionControls (bot) {
   return (
     typeof bot?.setControlState === 'function' &&
     typeof bot?.clearControlStates === 'function' &&
-    typeof bot?.quit === 'function'
+    typeof bot?.quit === 'function' &&
+    typeof bot?._client?.write === 'function'
   )
+}
+
+function setMovementState (bot, direction, enabled) {
+  bot.setControlState(direction, enabled)
+  const inputs = {
+    forward: false,
+    backward: false,
+    left: false,
+    right: false,
+    jump: false,
+    shift: false,
+    sprint: false
+  }
+  inputs[PROTOCOL_DIRECTION[direction]] = enabled
+  bot._client.write('player_input', { inputs })
 }
 
 function validateSessionControls (bot) {

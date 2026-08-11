@@ -41,8 +41,12 @@ class FakeBot extends EventEmitter {
     this.automaticPhysicsTick = automaticPhysicsTick
     this.controls = new Map()
     this.controlCalls = []
+    this.packetWrites = []
     this.quitCalls = []
     this.clearCalls = 0
+    this._client = {
+      write: (name, payload) => this.packetWrites.push([name, payload])
+    }
   }
 
   start () {
@@ -167,6 +171,26 @@ test('records the real event, server position, movement, and terminal sequence',
   )
   assert.deepEqual(harness.probes, ['elah_lab_001', 'elah_lab_001'])
   assert.deepEqual(harness.bot.controlCalls, [['forward', true], ['forward', false]])
+  assert.deepEqual(harness.bot.packetWrites, [
+    ['player_input', { inputs: {
+      forward: true,
+      backward: false,
+      left: false,
+      right: false,
+      jump: false,
+      shift: false,
+      sprint: false
+    } }],
+    ['player_input', { inputs: {
+      forward: false,
+      backward: false,
+      left: false,
+      right: false,
+      jump: false,
+      shift: false,
+      sprint: false
+    } }]
+  ])
   assert.deepEqual(harness.bot.quitCalls, ['client laboratory complete'])
   assert.equal(harness.bot.clearCalls, 1)
   assert.equal([...harness.bot.controls.values()].every((enabled) => enabled === false), true)
@@ -219,6 +243,7 @@ test('waits for Mineflayer plugin injection before requiring session controls', 
   const bot = new EventEmitter()
   bot.version = '1.21.11'
   bot.controls = []
+  bot._client = { write: () => {} }
 
   await runClientSession({
     sessionId: 'session-001',

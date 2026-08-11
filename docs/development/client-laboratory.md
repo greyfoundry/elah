@@ -10,6 +10,8 @@ The fixture accepts the Paper EULA only for that ephemeral CI run. Paper binds t
 
 The gate starts a real Paper server and runs 32 sessions in two sequential waves of 16. Every client uses a unique `elah_lab_NNN` username. Directions repeat deterministically as forward, right, back, and left. The second wave cannot begin until all sessions in the first wave have ended.
 
+Mineflayer 4.37.1 does not send the complete modern `player_input` direction state from its high-level control setter on Minecraft 1.21.11. The session adapter therefore mirrors the selected single direction into one complete `player_input` state when movement starts and a complete cleared state when it stops. This narrow compatibility adapter is covered by packet-shape tests and remains laboratory-only. It can be removed after an equivalent fix, such as [PrismarineJS/mineflayer#3949](https://github.com/PrismarineJS/mineflayer/pull/3949), ships in a separately reviewed and pinned Mineflayer release.
+
 ## Evidence contract
 
 A passing report uses schema `elah.client-laboratory/v1`. Every session must contain these exact stages in order:
