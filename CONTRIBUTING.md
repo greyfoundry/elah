@@ -33,7 +33,7 @@ Contributions to original Elah work are made under `Apache-2.0`. Every human-aut
 ```text
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║                                                                  ║
-# ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+# ║                   ELAH | A GREYFOUNDRY PROJECT                   ║
 # ║                                                                  ║
 # ║               https://github.com/greyfoundry/elah                ║
 # ║                                                                  ║

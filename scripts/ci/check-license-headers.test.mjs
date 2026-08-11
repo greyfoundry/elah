@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════════╗
 // ║                                                                  ║
-// ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+// ║                   ELAH | A GREYFOUNDRY PROJECT                   ║
 // ║                                                                  ║
 // ║               https://github.com/greyfoundry/elah                ║
 // ║                                                                  ║
@@ -36,7 +36,7 @@ import { checkLicenseHeaders } from './check-license-headers.mjs';
 const noticeLines = [
   `╔${'═'.repeat(66)}╗`,
   `║${''.padStart(66)}║`,
-  `║${'ELAH — A GREYFOUNDRY PROJECT'.padStart(47).padEnd(66)}║`,
+  `║${'ELAH | A GREYFOUNDRY PROJECT'.padStart(47).padEnd(66)}║`,
   `║${''.padStart(66)}║`,
   `║${'https://github.com/greyfoundry/elah'.padStart(50).padEnd(66)}║`,
   `║${''.padStart(66)}║`,
@@ -123,13 +123,14 @@ test('accepts complete notices in every supported comment syntax', async () => {
   });
 });
 
-test('accepts the ASCII project banner for new source files', async () => {
-  const asciiBanner = `║${'ELAH | A GREYFOUNDRY PROJECT'.padStart(47).padEnd(66)}║`;
-  const asciiNotice = notice('//').replace(`// ${noticeLines[2]}`, `// ${asciiBanner}`);
+test('rejects the legacy project banner', async () => {
+  const legacyBannerText = ['ELAH', 'A GREYFOUNDRY PROJECT'].join(` ${String.fromCodePoint(0x2014)} `);
+  const legacyBanner = `║${legacyBannerText.padStart(47).padEnd(66)}║`;
+  const legacyNotice = notice('//').replace(`// ${noticeLines[2]}`, `// ${legacyBanner}`);
   await withTrackedFiles({
-    'src/example.mjs': `${asciiNotice}export const value = 1;\n`,
+    'src/example.mjs': `${legacyNotice}export const value = 1;\n`,
   }, async (root) => {
-    assert.deepEqual(await checkLicenseHeaders(root), []);
+    assert.deepEqual(await checkLicenseHeaders(root), [missingDiagnostic('src/example.mjs')]);
   });
 });
 

@@ -1,6 +1,6 @@
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║                                                                  ║
-# ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+# ║                   ELAH | A GREYFOUNDRY PROJECT                   ║
 # ║                                                                  ║
 # ║               https://github.com/greyfoundry/elah                ║
 # ║                                                                  ║
@@ -68,7 +68,7 @@ body:
       label: Exact locations
       description: List files, symbols, and relevant line numbers or revisions.
       placeholder: |
-        - path/to/file:42 — SymbolName
+        - path/to/file:42 - SymbolName
         - commit SHA or permalink
     validations:
       required: true

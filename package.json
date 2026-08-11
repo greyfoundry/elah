@@ -14,7 +14,7 @@
     }
   },
   "scripts": {
-    "test": "node --test scripts/studying/validate-manifest.test.mjs lab/bots/test/component-identity.test.mjs lab/protocol/test/bindings.test.mjs lab/protocol/test/laboratory-ledger.test.mjs lab/observer/test/oracle.test.mjs lab/client/test/*.test.mjs scripts/proto/check-generated.test.mjs scripts/ci/check-studying-boundary.test.mjs scripts/ci/check-public-provenance.test.mjs scripts/ci/check-license-headers.test.mjs scripts/ci/check-observer-docs.test.mjs scripts/ci/check-client-laboratory-docs.test.mjs",
+    "test": "node --test scripts/studying/validate-manifest.test.mjs lab/bots/test/component-identity.test.mjs lab/protocol/test/bindings.test.mjs lab/protocol/test/laboratory-ledger.test.mjs lab/observer/test/oracle.test.mjs lab/client/test/*.test.mjs scripts/proto/check-generated.test.mjs scripts/ci/check-studying-boundary.test.mjs scripts/ci/check-public-provenance.test.mjs scripts/ci/check-license-headers.test.mjs scripts/ci/check-text-policy.test.mjs scripts/ci/check-observer-docs.test.mjs scripts/ci/check-client-laboratory-docs.test.mjs",
     "studying:validate": "node scripts/studying/validate-manifest.mjs studying/manifest.lock",
     "test:studying": "node --test scripts/studying/validate-manifest.test.mjs",
     "test:bots": "node --test lab/bots/test/component-identity.test.mjs",
@@ -29,12 +29,14 @@
     "proto:lint": "buf lint proto",
     "proto:build": "buf build proto",
     "proto:generate": "buf generate proto --template proto/buf.gen.yaml",
-    "test:ci": "node --test scripts/ci/check-studying-boundary.test.mjs scripts/ci/check-public-provenance.test.mjs scripts/ci/check-license-headers.test.mjs scripts/ci/check-observer-docs.test.mjs scripts/ci/check-client-laboratory-docs.test.mjs",
+    "test:text-policy": "node --test scripts/ci/check-text-policy.test.mjs",
+    "test:ci": "node --test scripts/ci/check-studying-boundary.test.mjs scripts/ci/check-public-provenance.test.mjs scripts/ci/check-license-headers.test.mjs scripts/ci/check-text-policy.test.mjs scripts/ci/check-observer-docs.test.mjs scripts/ci/check-client-laboratory-docs.test.mjs",
     "ci:check-studying": "node scripts/ci/check-studying-boundary.mjs",
     "ci:check-provenance": "node scripts/ci/check-public-provenance.mjs",
     "ci:check-licenses": "node scripts/ci/check-license-headers.mjs",
+    "ci:check-text-policy": "node scripts/ci/check-text-policy.mjs",
     "ci:check-client-docs": "node scripts/ci/check-client-laboratory-docs.mjs",
-    "ci:check": "pnpm ci:check-studying && pnpm ci:check-provenance && pnpm ci:check-licenses && pnpm ci:check-client-docs"
+    "ci:check": "pnpm ci:check-studying && pnpm ci:check-provenance && pnpm ci:check-licenses && pnpm ci:check-text-policy && pnpm ci:check-client-docs"
   },
   "dependencies": {
     "@bufbuild/protobuf": "2.13.0"
