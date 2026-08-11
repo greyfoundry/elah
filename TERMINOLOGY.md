@@ -25,6 +25,10 @@ Use these terms consistently. Minecraft and Folia already use “region”, so E
 | **BURST capacity** | Shared spare capacity available up to an explicit cluster ceiling. |
 | **PREEMPTIBLE capacity** | Opportunistic capacity that may be reclaimed only after safe drain proves zero ownership. |
 | **Resource envelope** | Hard per-cluster scheduling limits for workers and infrastructure resources; it is not a billing model. |
-| **Fleet integration** | Many isolated Elah clusters consuming a shared infrastructure pool through provider boundaries. It is not a shared ownership domain. |
+| **Infrastructure fleet** | A pool of machines and capacity exposed by one or more Runtime Providers. It has no Minecraft ownership authority. |
+| **Fleet Integration** | Many isolated Elah clusters consuming an infrastructure fleet through provider boundaries. It is not a workload engine or shared ownership domain. |
+| **Distributed World Engine** | Elah's primary architecture for one logical world divided into cells with ownership, epochs, handoffs, and distributed simulation. It is the current focus. |
+| **Instance Fleet Mode** | A reserved future mode for whole independent Minecraft server instances. It has no cell ownership or distributed simulation semantics. |
+| **Instance Fleet Engine** | The future workload engine that could implement Instance Fleet Mode. Future / Not Yet Implemented, with no assigned release. |
 
-Do not call a cell a “region”, a tile a “shard”, or ghost state a copy with write authority.
+Do not call a cell a “region”, a tile a “shard”, an infrastructure fleet an Instance Fleet, or ghost state a copy with write authority.
