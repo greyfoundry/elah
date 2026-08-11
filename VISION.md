@@ -4,7 +4,7 @@
 
 Elah is intended to become a domain-specific distributed runtime and orchestrator for Minecraft Java. Its purpose is to make one logical world use several workers and machines while retaining normal clients and protecting authoritative world state.
 
-This is a future architecture. Elah 0.0.3 is a read-only Observer release and does not provide a playable distributed cluster, dynamic placement, or elastic workers.
+This is a future architecture. Elah 0.0.4 adds a development-only Client Laboratory while Observer remains the operator-useful surface. The release does not provide a playable distributed cluster, dynamic placement, or elastic workers.
 
 ## The Kubernetes comparison
 

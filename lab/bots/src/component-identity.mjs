@@ -24,7 +24,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-const version = '0.0.3';
+const version = '0.0.4';
 
 export function createComponentIdentity(name) {
   if (typeof name !== 'string' || name.trim().length === 0) {

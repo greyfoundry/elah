@@ -117,3 +117,11 @@ Protocol Laboratory implements only the versioned, loopback-only `elahd` worker-
 The `elah` Rust binary contains a separate read-only Observer path for offline Minecraft Java Anvil worlds. Its production parser owns the filesystem boundary, Anvil header and envelope validation, bounded decompression, schema-light NBT extraction, report aggregation, and two-pass consistency ledger. It rejects symbolic links and never opens an observed input with write capability.
 
 Standard mode reads report-driving metadata, every region header, and every occupied chunk envelope. Deep mode additionally fingerprints and boundedly decodes complete chunk payload inputs. PrismarineJS is a development and CI oracle only: it creates and rereads fixtures independently, but it is not a production dependency or runtime authority. Observer does not assign ownership, repair data, write storage, route clients, simulate gameplay, or prove player activity.
+
+## Implemented development-only Client Laboratory
+
+Client Laboratory is isolated under `lab/client/` and has no production runtime authority. It qualifies Mineflayer 4.37.1 with Minecraft 1.21.11 and Paper build 132 against a real Paper server. The server binds only to loopback, uses offline authentication only inside the disposable fixture, and is shut down after each run. The downloaded Paper JAR must match its pinned SHA-256 before execution and is never committed or released.
+
+The `elah.client-laboratory/v1` ledger requires 32 sessions in two sequential waves of 16. Each session records `created`, `connected`, `logged_in`, `spawned`, `server_position_before`, `movement_requested`, `server_position_after`, `disconnect_requested`, and `ended` in exact order. Position evidence comes from Paper console queries, not Mineflayer-local state. Any client, movement, report, or Paper cleanup failure produces distinct failed evidence and prevents a passing report.
+
+Minecraft 26.2 is not qualified because upstream client support remains unresolved. The laboratory does not prove Folia, ownership, placement, storage, failover, gameplay, a playable cluster, or production readiness. It adds no operator command and does not move client code into a production data path.

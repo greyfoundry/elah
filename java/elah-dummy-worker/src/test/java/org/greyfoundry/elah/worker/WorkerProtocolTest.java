@@ -43,7 +43,7 @@ final class WorkerProtocolTest {
     RegisterWorkerRequest registration = protocol.registration(arguments, "register", "trace-1");
     HeartbeatRequest heartbeat = protocol.heartbeat(arguments, 7, "heartbeat", "trace-1");
 
-    assertEquals("0.0.3", registration.getContext().getProductSemver());
+    assertEquals("0.0.4", registration.getContext().getProductSemver());
     assertEquals(2, registration.getContext().getCurrentProtocol().getPatch());
     assertEquals("dummy-worker", registration.getContext().getCaller().getComponentName());
     assertEquals("worker-a", registration.getWorkerId());

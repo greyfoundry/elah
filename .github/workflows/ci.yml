@@ -1,6 +1,6 @@
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║                                                                  ║
-# ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+# ║                   ELAH | A GREYFOUNDRY PROJECT                   ║
 # ║                                                                  ║
 # ║               https://github.com/greyfoundry/elah                ║
 # ║                                                                  ║
@@ -326,5 +326,42 @@ jobs:
           path: |
             build/reports/observer-laboratory/report.json
             build/reports/observer-laboratory/comparison.json
+          if-no-files-found: error
+          retention-days: 14
+
+  client-laboratory:
+    name: Client Laboratory (32 sessions, server-observed movement)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Temurin Java 21
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Set up Node 24.19.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.19.0
+      - name: Install pnpm 10.34.5
+        run: npm install --global pnpm@10.34.5
+      - name: Install locked Client Laboratory dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Test Client Laboratory boundaries
+        run: pnpm test:client
+      - name: Run 32 real-server sessions
+        run: pnpm lab:client -- --report build/reports/client-laboratory/report.json
+      - name: Upload bounded Client Laboratory evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: client-laboratory-report
+          path: |
+            build/reports/client-laboratory/report.json
+            build/reports/client-laboratory/paper.log
           if-no-files-found: error
           retention-days: 14

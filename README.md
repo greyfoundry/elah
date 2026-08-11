@@ -4,11 +4,11 @@
 
 Elah is intended to become a distributed orchestration and ownership layer for Minecraft worlds. The planned system would not replace a Minecraft server, a proxy, or a database; it would coordinate authoritative world ownership across workers while retaining a normal Java-client experience.
 
-Elah is at the beginning of its journey. **0.0.3 (Observer) is a read-only world inspection release, not a gameplay release.** It adds `elah observe <world>` for deterministic structural reports over offline Minecraft Java Anvil worlds, with an optional bounded deep scan. Observer does not provide a runnable Minecraft cluster or playable distributed world. See the [0.0.3 release gate](docs/releases/0.0.3-observer.md) and [Observer guide](docs/development/observer.md).
+Elah is at the beginning of its journey. **0.0.4 (Client Laboratory) is a development-only compatibility and lifecycle gate, not a gameplay release.** It qualifies Mineflayer 4.37.1 against Minecraft 1.21.11 and Paper build 132 using a real Paper server on an isolated GitHub-hosted runner. Observer remains the current operator-useful command. See the [0.0.4 release gate](docs/releases/0.0.4-client-laboratory.md), [Client Laboratory guide](docs/development/client-laboratory.md), and [Observer guide](docs/development/observer.md).
 
 ## Intended architecture
 
-This diagram and its component descriptions are a future design target. Observer is independent of this future runtime path; Protocol Laboratory implements only the `elahd`-to-dummy-worker control connection.
+This diagram and its component descriptions are a future design target. Observer, Protocol Laboratory, and Client Laboratory are independent development surfaces. They do not implement this future runtime path.
 
 ```text
 Minecraft client -> Velocity / Sling -> ElahFolia workers
@@ -28,7 +28,9 @@ The intended division of responsibility is that Folia would scale vertically wit
 
 ## Status
 
-Observer reports saved world identity, dimensions, region and chunk counts, storage distribution, coordinate bounds, and source-labelled timestamps without modifying the selected world. Standard mode validates every terrain region header and occupied chunk envelope. `--deep` additionally decodes every occupied chunk within fixed resource limits. Both modes repeat discovery and evidence collection before returning a report; changed inputs fail closed. Folia workers, Mineflayer clients, multi-worker handoff, storage, ownership epochs, failover, repair, and gameplay remain future work.
+Client Laboratory produces `elah.client-laboratory/v1` evidence for 32 Mineflayer sessions in two sequential waves of 16. Every session must connect, log in, spawn, move by a server-observed distance, request disconnect, and end. Paper must then exit cleanly. Minecraft 26.2 is not qualified because upstream client support remains unresolved. This gate does not prove Folia, ownership, storage, failover, gameplay, a playable cluster, or production readiness.
+
+0.0.3 (Observer) remains a read-only world inspection release, not a gameplay release. Its `elah observe <world>` command reports saved world identity, dimensions, region and chunk counts, storage distribution, coordinate bounds, and source-labelled timestamps without modifying the selected world. Standard mode validates every terrain region header and occupied chunk envelope. `--deep` additionally decodes every occupied chunk within fixed resource limits. Both modes repeat discovery and evidence collection before returning a report; changed inputs fail closed.
 
 ## Contributing and security
 

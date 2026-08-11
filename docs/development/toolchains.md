@@ -6,6 +6,7 @@ Use the pinned toolchain inputs below when preparing a local contributor environ
 | --- | --- | --- |
 | Rust | 1.97.1, with `clippy` and `rustfmt` | `rust-toolchain.toml` |
 | Java | Temurin 25 | CI configuration |
+| Client Laboratory Java | Temurin 21 | Isolated real Paper server job |
 | Gradle | 9.7.0 | Gradle wrapper |
 | Node.js | 24.19.0 | `.node-version` |
 | pnpm | 10.34.5 | `package.json` |
@@ -13,6 +14,9 @@ Use the pinned toolchain inputs below when preparing a local contributor environ
 | Google Java Format | 1.36.1 | CI Java job downloads the Maven Central all-dependencies JAR and verifies its SHA-256 |
 | Python | 3.13 | CI licensing job |
 | REUSE | 6.2.0 | CI licensing job installs `reuse==6.2.0` with pip |
+| Mineflayer | 4.37.1 | Exact development dependency and lockfile |
+| Client Laboratory Minecraft | 1.21.11 | Qualified compatibility tuple |
+| Client Laboratory Paper | Build 132 | Checksum-pinned disposable hosted fixture |
 
 Rust Protocol Buffer compilation uses `protoc-bin-vendored` 3.2.0, so a system `protoc` installation is not required.
 
@@ -54,7 +58,7 @@ reuse lint
 
 CI obtains Google Java Format 1.36.1 from Maven Central in its Java job, verifies the downloaded JAR by SHA-256, and uses it in dry-run mode. CI sets up Python 3.13 in its licensing job, installs `reuse==6.2.0`, and then runs `reuse lint`.
 
-The project does not require a Minecraft server, proxy, cluster, database, or gameplay workload for the Protocol Laboratory validation gate. Those runtime environments belong to later stages and are not represented as a local setup requirement here.
+The standard local baseline does not require a Minecraft server, proxy, cluster, database, or gameplay workload. The separate GitHub-hosted Client Laboratory downloads and runs a real Paper server with Temurin 21. It records 32 sessions, two sequential waves, `elah.client-laboratory/v1`, and server-observed movement. Minecraft 26.2 is not qualified because upstream client support remains unresolved. This development-only fixture does not prove Folia, ownership, storage, failover, gameplay, a playable cluster, or production readiness.
 
 ## Verify the environment
 
