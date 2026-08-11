@@ -8,6 +8,11 @@
   "engines": {
     "node": "24.19.0"
   },
+  "pnpm": {
+    "overrides": {
+      "uuid": "11.1.1"
+    }
+  },
   "scripts": {
     "test": "node --test scripts/studying/validate-manifest.test.mjs lab/bots/test/component-identity.test.mjs lab/protocol/test/bindings.test.mjs lab/protocol/test/laboratory-ledger.test.mjs lab/observer/test/oracle.test.mjs lab/client/test/*.test.mjs scripts/proto/check-generated.test.mjs scripts/ci/check-studying-boundary.test.mjs scripts/ci/check-public-provenance.test.mjs scripts/ci/check-license-headers.test.mjs scripts/ci/check-observer-docs.test.mjs scripts/ci/check-client-laboratory-docs.test.mjs",
     "studying:validate": "node scripts/studying/validate-manifest.mjs studying/manifest.lock",

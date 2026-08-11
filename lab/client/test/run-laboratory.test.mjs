@@ -180,3 +180,12 @@ test('CLI accepts only report, java, and paper-cache values', () => {
   assert.throws(() => parseClientLaboratoryArgs(['--concurrency', '1']), /unknown option/i)
   assert.throws(() => parseClientLaboratoryArgs(['--minecraft-version', '26.2']), /unknown option/i)
 })
+
+test('CLI accepts one standard option separator but rejects repeated separators', () => {
+  assert.deepEqual(parseClientLaboratoryArgs(['--', '--report', 'out/report.json']), {
+    report: 'out/report.json',
+    java: 'java',
+    paperCache: 'build/cache/client-laboratory'
+  })
+  assert.throws(() => parseClientLaboratoryArgs(['--', '--', '--report', 'out/report.json']), /unknown option/i)
+})

@@ -53,13 +53,14 @@ export function parseClientLaboratoryArgs (args) {
     java: 'java',
     paperCache: 'build/cache/client-laboratory'
   }
+  const normalizedArgs = args[0] === '--' ? args.slice(1) : args
   const seen = new Set()
-  for (let index = 0; index < args.length; index += 2) {
-    const flag = args[index]
+  for (let index = 0; index < normalizedArgs.length; index += 2) {
+    const flag = normalizedArgs[index]
     const key = CLI_OPTIONS.get(flag)
     if (!key) throw new ClientLaboratoryError('unknown_option', `unknown option ${String(flag)}`)
     if (seen.has(flag)) throw new ClientLaboratoryError('duplicate_option', `option ${flag} was repeated`)
-    const value = args[index + 1]
+    const value = normalizedArgs[index + 1]
     if (typeof value !== 'string' || value === '' || value.startsWith('--')) {
       throw new ClientLaboratoryError('missing_option_value', `option ${flag} requires a value`)
     }
