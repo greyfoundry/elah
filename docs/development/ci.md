@@ -87,7 +87,7 @@ pnpm test:client
 pnpm lab:client -- --report build/reports/client-laboratory/report.json
 ```
 
-The hosted job uses Temurin 21, Node 24.19.0, pnpm 10.34.5, Mineflayer 4.37.1, Minecraft 1.21.11, and Paper build 132. Passing `elah.client-laboratory/v1` evidence requires 32 sessions in two sequential waves, server-observed movement, and clean Paper shutdown. Minecraft 26.2 is not qualified because upstream client support remains unresolved.
+The hosted job uses Temurin 21, Node 24.19.0, pnpm 10.34.5, Mineflayer 4.37.1, Minecraft 1.21.8, and Paper build 60. Passing `elah.client-laboratory/v1` evidence requires 32 sessions in two sequential waves, server-observed movement, and clean Paper shutdown. Minecraft 1.21.11 is not qualified because hosted candidate evidence showed client-local movement that Paper did not accept. Minecraft 26.2 is also unqualified because upstream client support remains unresolved.
 
 This development-only gate does not prove Folia, ownership, storage, failover, gameplay, a playable cluster, or production readiness. See [Client Laboratory](client-laboratory.md) for the complete safety and evidence contract.
 

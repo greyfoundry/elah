@@ -33,7 +33,8 @@ import test from 'node:test'
 import { CLIENT_LABORATORY_DOCUMENT_PATHS, checkClientLaboratoryDocs } from './check-client-laboratory-docs.mjs'
 
 const VALID_CONTRACT = `
-Elah 0.0.4 Client Laboratory uses Mineflayer 4.37.1 with Minecraft 1.21.11 and Paper build 132.
+Elah 0.0.4 Client Laboratory uses Mineflayer 4.37.1 with Minecraft 1.21.8 and Paper build 60.
+Minecraft 1.21.11 is not qualified.
 The real Paper server gate records elah.client-laboratory/v1 evidence for 32 sessions in two waves.
 Movement is server-observed movement from Paper console position queries.
 Minecraft 26.2 is not qualified because upstream client support remains unresolved.

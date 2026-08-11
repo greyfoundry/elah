@@ -1,6 +1,6 @@
 # Client Laboratory
 
-Client Laboratory is Elah's development-only real-server compatibility gate. It qualifies Mineflayer 4.37.1 with Minecraft 1.21.11 and Paper build 132. It does not add an operator command or a production client path.
+Client Laboratory is Elah's development-only real-server compatibility gate. It qualifies Mineflayer 4.37.1 with Minecraft 1.21.8 and Paper build 60. It does not add an operator command or a production client path.
 
 ## What the hosted gate does
 
@@ -10,7 +10,7 @@ The fixture accepts the Paper EULA only for that ephemeral CI run. Paper binds t
 
 The gate starts a real Paper server and runs 32 sessions in two sequential waves of 16. Every client uses a unique `elah_lab_NNN` username. Directions repeat deterministically as forward, right, back, and left. The second wave cannot begin until all sessions in the first wave have ended.
 
-Mineflayer 4.37.1 omits two modern movement protocol details on Minecraft 1.21.11: its high-level control setter does not send the complete `player_input` direction state, and its physics loop does not finish emitted movement packets with `tick_end`. The session adapter therefore mirrors the selected single direction into a complete input state and completes every emitted movement tick. This narrow compatibility adapter is covered by packet-order tests and remains laboratory-only. It can be removed after equivalents of [PrismarineJS/mineflayer#3949](https://github.com/PrismarineJS/mineflayer/pull/3949) and [PrismarineJS/mineflayer#3948](https://github.com/PrismarineJS/mineflayer/pull/3948) ship in a separately reviewed and pinned Mineflayer release.
+Mineflayer 4.37.1 omits two modern movement protocol details on Minecraft 1.21.8: its high-level control setter does not send the complete `player_input` direction state, and its physics loop does not finish emitted movement packets with `tick_end`. The session adapter therefore mirrors the selected single direction into a complete input state and completes every emitted movement tick. This narrow compatibility adapter is covered by packet-order tests and remains laboratory-only. It can be removed after equivalents of [PrismarineJS/mineflayer#3949](https://github.com/PrismarineJS/mineflayer/pull/3949) and [PrismarineJS/mineflayer#3948](https://github.com/PrismarineJS/mineflayer/pull/3948) ship in a separately reviewed and pinned Mineflayer release.
 
 ## Evidence contract
 
@@ -50,6 +50,6 @@ The CLI accepts only `--report`, `--java`, and `--paper-cache`. Session count, w
 
 ## Qualification boundary
 
-Minecraft 26.2 is not qualified because upstream client support remains unresolved. A later version requires its own pinned tuple and evidence before it can replace 1.21.11.
+Minecraft 1.21.11 is not qualified because hosted candidate evidence showed Mineflayer moving 8.375 blocks locally while Paper observed 0.000 blocks of horizontal displacement. Minecraft 26.2 is also unqualified because upstream client support remains unresolved. A later version requires its own pinned tuple and evidence before it can replace 1.21.8.
 
 This laboratory does not prove Folia, ownership, placement, storage, failover, gameplay, a playable cluster, or production readiness. It proves only the bounded Mineflayer-to-Paper lifecycle and server-observed movement described above.

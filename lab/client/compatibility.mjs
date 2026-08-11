@@ -24,8 +24,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-const PAPER_SHA256 = '5ffef465eeeb5f2a3c23a24419d97c51afd7dbb4923ff42df9a3f58bba1ccfba'
-const PAPER_URL = `https://fill-data.papermc.io/v1/objects/${PAPER_SHA256}/paper-1.21.11-132.jar`
+const PAPER_SHA256 = '8de7c52c3b02403503d16fac58003f1efef7dd7a0256786843927fa92ee57f1e'
+const PAPER_URL = `https://fill-data.papermc.io/v1/objects/${PAPER_SHA256}/paper-1.21.8-60.jar`
 
 export class ClientLaboratoryError extends Error {
   constructor (kind, summary, options) {
@@ -36,9 +36,9 @@ export class ClientLaboratoryError extends Error {
 }
 export const CLIENT_LAB_COMPATIBILITY = Object.freeze({
   mineflayerVersion: '4.37.1',
-  minecraftVersion: '1.21.11',
-  paperBuild: 132,
-  paperFile: 'paper-1.21.11-132.jar',
+  minecraftVersion: '1.21.8',
+  paperBuild: 60,
+  paperFile: 'paper-1.21.8-60.jar',
   paperUrl: PAPER_URL,
   paperSha256: PAPER_SHA256,
   paperMaxBytes: 64 * 1024 * 1024,
@@ -85,7 +85,7 @@ export function assertPinnedPaperSource ({ url, sha256, maxBytes } = {}) {
   ) {
     throw new ClientLaboratoryError(
       'unsafe_paper_source',
-      'Paper source must match the pinned 1.21.11 build 132 object and limits'
+      'Paper source must match the pinned 1.21.8 build 60 object and limits'
     )
   }
 }

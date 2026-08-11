@@ -4,7 +4,7 @@
 
 Elah is intended to become a distributed orchestration and ownership layer for Minecraft worlds. The planned system would not replace a Minecraft server, a proxy, or a database; it would coordinate authoritative world ownership across workers while retaining a normal Java-client experience.
 
-Elah is at the beginning of its journey. **0.0.4 (Client Laboratory) is a development-only compatibility and lifecycle gate, not a gameplay release.** It qualifies Mineflayer 4.37.1 against Minecraft 1.21.11 and Paper build 132 using a real Paper server on an isolated GitHub-hosted runner. Observer remains the current operator-useful command. See the [0.0.4 release gate](docs/releases/0.0.4-client-laboratory.md), [Client Laboratory guide](docs/development/client-laboratory.md), and [Observer guide](docs/development/observer.md).
+Elah is at the beginning of its journey. **0.0.4 (Client Laboratory) is a development-only compatibility and lifecycle gate, not a gameplay release.** It qualifies Mineflayer 4.37.1 against Minecraft 1.21.8 and Paper build 60 using a real Paper server on an isolated GitHub-hosted runner. Observer remains the current operator-useful command. See the [0.0.4 release gate](docs/releases/0.0.4-client-laboratory.md), [Client Laboratory guide](docs/development/client-laboratory.md), and [Observer guide](docs/development/observer.md).
 
 ## Intended architecture
 

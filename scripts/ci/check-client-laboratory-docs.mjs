@@ -41,8 +41,9 @@ export const CLIENT_LABORATORY_DOCUMENT_PATHS = Object.freeze([
 const REQUIRED_CLAIMS = Object.freeze([
   ['0.0.4 Client Laboratory', /0\.0\.4\s+(?:\([^)]*Client Laboratory[^)]*\)|Client Laboratory)/i],
   ['Mineflayer 4.37.1', /Mineflayer 4\.37\.1/],
-  ['Minecraft 1.21.11', /Minecraft 1\.21\.11/],
-  ['Paper build 132', /Paper build 132/],
+  ['Minecraft 1.21.8', /Minecraft 1\.21\.8/],
+  ['Paper build 60', /Paper build 60/],
+  ['unqualified Minecraft 1.21.11 boundary', /Minecraft 1\.21\.11 is not qualified/],
   ['real Paper server', /real Paper server/i],
   ['elah.client-laboratory/v1', /elah\.client-laboratory\/v1/],
   ['32 sessions', /32 sessions/i],

@@ -14,7 +14,7 @@ Observer adds the read-only `elah observe <world>` administrator command for Min
 
 ## 0.0.4 - Client Laboratory
 
-Client Laboratory qualifies Mineflayer 4.37.1 with Minecraft 1.21.11 and Paper build 132. A real Paper server runs only as a disposable, loopback-only GitHub-hosted fixture. The gate requires `elah.client-laboratory/v1` evidence for 32 sessions in two sequential waves, exact lifecycle stages, server-observed movement, and clean Paper shutdown. Minecraft 26.2 is not qualified because upstream client support remains unresolved. This development-only release does not prove Folia, ownership, storage, failover, gameplay, a playable cluster, or production readiness. It adds no operator command.
+Client Laboratory qualifies Mineflayer 4.37.1 with Minecraft 1.21.8 and Paper build 60. A real Paper server runs only as a disposable, loopback-only GitHub-hosted fixture. The gate requires `elah.client-laboratory/v1` evidence for 32 sessions in two sequential waves, exact lifecycle stages, server-observed movement, and clean Paper shutdown. Minecraft 1.21.11 is not qualified because hosted candidate evidence showed client-local movement that Paper did not accept. Minecraft 26.2 is also unqualified because upstream client support remains unresolved. This development-only release does not prove Folia, ownership, storage, failover, gameplay, a playable cluster, or production readiness. It adds no operator command.
 
 ## Near-term sequence
 

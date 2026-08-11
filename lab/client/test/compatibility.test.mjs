@@ -38,13 +38,14 @@ import {
 test('accepts only the qualified Mineflayer and Minecraft tuple', () => {
   assert.doesNotThrow(() => assertCompatibility({
     mineflayerVersion: '4.37.1',
-    minecraftVersion: '1.21.11'
+    minecraftVersion: '1.21.8'
   }))
 
   for (const candidate of [
-    { mineflayerVersion: '4.37.0', minecraftVersion: '1.21.11' },
+    { mineflayerVersion: '4.37.0', minecraftVersion: '1.21.8' },
+    { mineflayerVersion: '4.37.1', minecraftVersion: '1.21.11' },
     { mineflayerVersion: '4.37.1', minecraftVersion: '26.2' },
-    { mineflayerVersion: '', minecraftVersion: '1.21.11' }
+    { mineflayerVersion: '', minecraftVersion: '1.21.8' }
   ]) {
     assert.throws(
       () => assertCompatibility(candidate),
@@ -66,8 +67,8 @@ test('allows loopback endpoints and rejects network exposure', () => {
 
 test('requires the exact Paper object URL, checksum, and bounded size', () => {
   const exact = {
-    url: 'https://fill-data.papermc.io/v1/objects/5ffef465eeeb5f2a3c23a24419d97c51afd7dbb4923ff42df9a3f58bba1ccfba/paper-1.21.11-132.jar',
-    sha256: '5ffef465eeeb5f2a3c23a24419d97c51afd7dbb4923ff42df9a3f58bba1ccfba',
+    url: 'https://fill-data.papermc.io/v1/objects/8de7c52c3b02403503d16fac58003f1efef7dd7a0256786843927fa92ee57f1e/paper-1.21.8-60.jar',
+    sha256: '8de7c52c3b02403503d16fac58003f1efef7dd7a0256786843927fa92ee57f1e',
     maxBytes: 64 * 1024 * 1024
   }
   assert.doesNotThrow(() => assertPinnedPaperSource(exact))
@@ -100,8 +101,8 @@ test('publishes fixed resource and lifecycle limits', () => {
     },
     {
       mineflayerVersion: '4.37.1',
-      minecraftVersion: '1.21.11',
-      paperBuild: 132,
+      minecraftVersion: '1.21.8',
+      paperBuild: 60,
       paperMaxBytes: 64 * 1024 * 1024,
       waves: 2,
       concurrency: 16,

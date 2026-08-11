@@ -15,8 +15,8 @@ Use the pinned toolchain inputs below when preparing a local contributor environ
 | Python | 3.13 | CI licensing job |
 | REUSE | 6.2.0 | CI licensing job installs `reuse==6.2.0` with pip |
 | Mineflayer | 4.37.1 | Exact development dependency and lockfile |
-| Client Laboratory Minecraft | 1.21.11 | Qualified compatibility tuple |
-| Client Laboratory Paper | Build 132 | Checksum-pinned disposable hosted fixture |
+| Client Laboratory Minecraft | 1.21.8 | Qualified compatibility tuple |
+| Client Laboratory Paper | Build 60 | Checksum-pinned disposable hosted fixture |
 
 Rust Protocol Buffer compilation uses `protoc-bin-vendored` 3.2.0, so a system `protoc` installation is not required.
 

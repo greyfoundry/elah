@@ -33,7 +33,7 @@ import { ClientLaboratoryLedger } from '../ledger.mjs'
 import { runClientSession } from '../session.mjs'
 
 class FakeBot extends EventEmitter {
-  constructor ({ version = '1.21.11', terminal = 'end', failureAt = null, automaticPhysicsTick = true } = {}) {
+  constructor ({ version = '1.21.8', terminal = 'end', failureAt = null, automaticPhysicsTick = true } = {}) {
     super()
     this.version = version
     this.terminal = terminal
@@ -137,7 +137,7 @@ function buildHarness (botOptions = {}, overrides = {}) {
       sessionId: 'session-001',
       username: 'elah_lab_001',
       endpoint: overrides.endpoint ?? { host: '127.0.0.1', port: 25565 },
-      version: overrides.version ?? '1.21.11',
+      version: overrides.version ?? '1.21.8',
       direction: overrides.direction ?? 'forward',
       botFactory: (options) => {
         factoryOptions.push(options)
@@ -205,7 +205,7 @@ test('records the real event, server position, movement, and terminal sequence',
     port: 25565,
     username: 'elah_lab_001',
     auth: 'offline',
-    version: '1.21.11',
+    version: '1.21.8',
     hideErrors: true,
     checkTimeoutInterval: 30_000
   }])
@@ -247,7 +247,7 @@ test('waits for Mineflayer plugin injection before requiring session controls', 
   const ledger = new ClientLaboratoryLedger({ compatibility: CLIENT_LAB_COMPATIBILITY, now: () => 1 })
   ledger.startSession({ sessionId: 'session-001', username: 'elah_lab_001', wave: 1 })
   const bot = new EventEmitter()
-  bot.version = '1.21.11'
+  bot.version = '1.21.8'
   bot.controls = []
   bot._client = { write: () => {} }
 
@@ -255,7 +255,7 @@ test('waits for Mineflayer plugin injection before requiring session controls', 
     sessionId: 'session-001',
     username: 'elah_lab_001',
     endpoint: { host: '127.0.0.1', port: 25565 },
-    version: '1.21.11',
+    version: '1.21.8',
     direction: 'forward',
     botFactory: () => {
       setImmediate(() => {
@@ -332,7 +332,7 @@ test('rejects insufficient server-observed movement and disables movement', asyn
       sessionId: 'session-001',
       username: 'elah_lab_001',
       endpoint: { host: '127.0.0.1', port: 25565 },
-      version: '1.21.11',
+      version: '1.21.8',
       direction: 'forward',
       botFactory: () => {
         setImmediate(() => harness.bot.start())
