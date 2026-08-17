@@ -31,7 +31,7 @@ plugins {
 dependencies {
     implementation(project(":java:elah-api"))
     implementation("io.grpc:grpc-netty-shaded:1.83.1")
-    testImplementation(platform("org.junit:junit-bom:6.1.2"))
+    testImplementation(platform("org.junit:junit-bom:6.1.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
