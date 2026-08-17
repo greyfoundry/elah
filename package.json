@@ -40,7 +40,7 @@
     "@bufbuild/protobuf": "2.13.0"
   },
   "devDependencies": {
-    "minecraft-data": "3.113.0",
+    "minecraft-data": "3.113.1",
     "mineflayer": "4.37.1",
     "prismarine-chunk": "1.41.0",
     "prismarine-nbt": "2.8.0",
