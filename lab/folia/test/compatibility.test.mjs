@@ -73,7 +73,7 @@ class PlayerCommandBot extends EventEmitter {
     this.commands.push(command)
     setImmediate(() => this.emit(
       'messagestr',
-      'elah_lab_001 has the following entity data: [1.0d, 64.0d, 2.0d]'
+      'ELAH_POS elah_lab_001 [1.0d, 64.0d, 2.0d]'
     ))
   }
 }
@@ -189,7 +189,9 @@ test('the Folia wrapper provisions bounded operators and probes from the owning 
     const bot = new PlayerCommandBot()
     assert.deepEqual(await server.queryPosition('elah_lab_001', bot), { x: 1, y: 64, z: 2 })
     await server.stop()
-    assert.deepEqual(bot.commands, ['/data get entity @s Pos'])
+    assert.deepEqual(bot.commands, [
+      '/tellraw @s {"text":"ELAH_POS elah_lab_001 ","extra":[{"nbt":"Pos","entity":"@s"}]}'
+    ])
     assert.deepEqual(child.commands, ['stop'])
     const operators = JSON.parse(await readFile(join(root, 'ops.json'), 'utf8'))
     assert.equal(operators.length, 32)

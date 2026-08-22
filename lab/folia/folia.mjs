@@ -85,11 +85,13 @@ export class FoliaLaboratory extends MinecraftServerLaboratory {
 
     let timer
     let listener
+    const marker = `ELAH_POS ${username} `
+    const positionPattern = new RegExp(
+      `^${marker}\\[(${numberPattern})[dDfF]?,\\s*(${numberPattern})[dDfF]?,\\s*(${numberPattern})[dDfF]?\\]$`
+    )
     const response = new Promise((resolve, reject) => {
       listener = (message) => {
-        const values = String(message).match(new RegExp(
-          `^${username} has the following entity data: \\[(${numberPattern})[dDfF]?,\\s*(${numberPattern})[dDfF]?,\\s*(${numberPattern})[dDfF]?\\]$`
-        ))
+        const values = String(message).match(positionPattern)
         if (!values) return
         const position = { x: Number(values[1]), y: Number(values[2]), z: Number(values[3]) }
         if (!Object.values(position).every(Number.isFinite)) {
@@ -105,7 +107,10 @@ export class FoliaLaboratory extends MinecraftServerLaboratory {
       )), this.#commandTimeoutMillis)
     })
     try {
-      bot.chat('/data get entity @s Pos')
+      bot.chat(`/tellraw @s ${JSON.stringify({
+        text: marker,
+        extra: [{ nbt: 'Pos', entity: '@s' }]
+      })}`)
       return await response
     } finally {
       clearTimeout(timer)
