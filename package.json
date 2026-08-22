@@ -44,7 +44,7 @@
     "ci:check": "pnpm ci:check-studying && pnpm ci:check-provenance && pnpm ci:check-licenses && pnpm ci:check-text-policy && pnpm ci:check-client-docs && pnpm ci:check-folia-docs"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "2.13.0"
+    "@bufbuild/protobuf": "2.14.0"
   },
   "devDependencies": {
     "minecraft-data": "3.113.1",
