@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════════╗
 // ║                                                                  ║
-// ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+// ║                   ELAH | A GREYFOUNDRY PROJECT                   ║
 // ║                                                                  ║
 // ║               https://github.com/greyfoundry/elah                ║
 // ║                                                                  ║
@@ -30,5 +30,5 @@ plugins {
 
 allprojects {
     group = "org.greyfoundry.elah"
-    version = "0.0.4"
+    version = "0.0.5"
 }

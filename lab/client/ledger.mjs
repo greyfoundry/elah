@@ -144,7 +144,7 @@ export class ClientLaboratoryLedger {
   recordServerCleanup ({ requested, exitCode }) {
     this.#ensureActive()
     if (requested !== true || exitCode !== 0) {
-      throw new ClientLaboratoryError('server_cleanup_failed', 'Paper did not complete a requested clean exit')
+      throw new ClientLaboratoryError('server_cleanup_failed', 'server did not complete a requested clean exit')
     }
     if (this.#serverCleanup !== undefined) {
       throw new ClientLaboratoryError('duplicate_server_cleanup', 'server cleanup was already recorded')

@@ -1,11 +1,11 @@
 {
   "version": 1,
   "inputs": {
-    "proto/buf.gen.yaml": "04b088a1dc729c70b330d73270714c737f1cc714f088c5ee2eeed2516a251462",
-    "proto/buf.yaml": "96180afd313f56f8135b3ebb6597b2d94f5053316219e6b33af2d5c6c520ea71",
-    "proto/control/v1/identity.proto": "b673a976cf24beb6267e7138cf4e69bd61ce94b5250c28c71d6a42c99a27cb5a",
-    "proto/control/v1/protocol.proto": "bcd395a6698af4e81a4dddc689fcdf79862d7c9952d2455f3a11ef3a06c7ec71",
-    "proto/control/v1/worker_control.proto": "62943038feedb45a9717fde72d53a220179cbf9bc86663f0131f440d157e3c7f"
+    "proto/buf.gen.yaml": "75051b99497cecc967c67cb0ae0e2a4e81480a1e73713189902cca8d7b72c1be",
+    "proto/buf.yaml": "070c90344083ae065613012ef6108066a6914672f2c61bcbe6a9b862556909db",
+    "proto/control/v1/identity.proto": "0bed54ef49be13ba544b3c17623049ea2a6f04ee2a64502d5b80647085f739fd",
+    "proto/control/v1/protocol.proto": "e604497a5dde8df951c32d2fed2f53b09e7baf11f4bd26be5bc416b145cd0a16",
+    "proto/control/v1/worker_control.proto": "24502fd57fb22e4099c2d96592c925be3fd8be4e0d2945964cba51d3c40366e4"
   },
   "outputs": {
     "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/ComponentIdentity.java": "0a70fa4621c00983b561c2d0a9f4d11f97a423078d29d52cfdd654952e2dfa09",
@@ -32,11 +32,11 @@
     "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/WorkerLoadOrBuilder.java": "3be7b3d3eb350820ae8a5a6c466cfd0684e50e881d18fe07eeca870c906beb56",
     "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/WorkerProfile.java": "b1964625355709034bd39b2bf5a072ee78f1c5c34330ad1aaed5cf670b792a0e",
     "java/elah-api/src/generated/java/org/greyfoundry/elah/control/v1/WorkerProfileOrBuilder.java": "7f8e5c1201c86ae64c900be98aa2a892bba6ea3571697ba3e1d648d00422cfe8",
-    "lab/protocol/generated/control/v1/identity_pb.d.ts": "70df03cdde15cf85c8a2659be3ffdc151543d9b4dfd9966e81c1dd4e1377cb6c",
-    "lab/protocol/generated/control/v1/identity_pb.js": "985433a46012e4c0bc5c65e4e6a66c262d843b55de03e37f54b792b222c54df0",
-    "lab/protocol/generated/control/v1/protocol_pb.d.ts": "63623f7fa18f86906719bf8ff450db6133ece544310c0c87cccbb9651765319d",
-    "lab/protocol/generated/control/v1/protocol_pb.js": "07e5dd3f835c13eebce3d87d9a24bd741878fca92945fbc698d08219b0112d4b",
-    "lab/protocol/generated/control/v1/worker_control_pb.d.ts": "dce2cd4dc593643007b19a2e4122515cd7553312129de57d09cd9d7e47b0b76c",
-    "lab/protocol/generated/control/v1/worker_control_pb.js": "7b3fe58ce87e1e09ae24cd6542f3092711033fb4e8c8b2a313ad166256d8dbbd"
+    "lab/protocol/generated/control/v1/identity_pb.d.ts": "bed7e2ef1f7a5d16f3207c52e4cf1c0c6a3d3e4a95bde701d38dae05c88a3a86",
+    "lab/protocol/generated/control/v1/identity_pb.js": "93a7d2f0704a2aa2fb0735c7f96646aab3f6d7cbab000656d0411f321784999d",
+    "lab/protocol/generated/control/v1/protocol_pb.d.ts": "03093ea274d0a408f7f97285ff3a59c45f72267e19ae76b031b70f65e76162c0",
+    "lab/protocol/generated/control/v1/protocol_pb.js": "217f0b41404077330f3cea631e8306b7a3a6bce0788dafa6b38c2aaec9650429",
+    "lab/protocol/generated/control/v1/worker_control_pb.d.ts": "886ab2907d4c4164a72f306353e4e25a653d56f3acc9ee1e321025ba1f58565c",
+    "lab/protocol/generated/control/v1/worker_control_pb.js": "dcd051212fd6a23d59c94daeade5e6efc10c0ac7798fc79ec12e9bb2e0fb8741"
   }
 }

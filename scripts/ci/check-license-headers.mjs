@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════════╗
 // ║                                                                  ║
-// ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+// ║                   ELAH | A GREYFOUNDRY PROJECT                   ║
 // ║                                                                  ║
 // ║               https://github.com/greyfoundry/elah                ║
 // ║                                                                  ║
@@ -101,7 +101,7 @@ function isExcluded(file) {
 const apacheNoticeLines = [
   `╔${'═'.repeat(66)}╗`,
   `║${''.padStart(66)}║`,
-  `║${'ELAH — A GREYFOUNDRY PROJECT'.padStart(47).padEnd(66)}║`,
+  `║${'ELAH | A GREYFOUNDRY PROJECT'.padStart(47).padEnd(66)}║`,
   `║${''.padStart(66)}║`,
   `║${'https://github.com/greyfoundry/elah'.padStart(50).padEnd(66)}║`,
   `║${''.padStart(66)}║`,
@@ -125,11 +125,6 @@ const apacheNoticeLines = [
   ['SPDX-License', 'Identifier: Apache-2.0'].join('-'),
   '',
 ];
-
-const asciiApacheNoticeLines = apacheNoticeLines.with(
-  2,
-  `║${'ELAH | A GREYFOUNDRY PROJECT'.padStart(47).padEnd(66)}║`,
-);
 
 function expectedHeader(syntax, noticeLines) {
   return noticeLines.map((line) => {
@@ -167,12 +162,9 @@ export async function checkLicenseHeaders(root = process.cwd()) {
       continue;
     }
     const firstLine = lines[0]?.startsWith('#!') || xmlDeclaration === 0 ? 1 : 0;
-    const requiredHeaders = [apacheNoticeLines, asciiApacheNoticeLines]
-      .map((noticeLines) => expectedHeader(syntax, noticeLines));
+    const requiredHeader = expectedHeader(syntax, apacheNoticeLines);
     const actualHeader = lines.slice(firstLine, firstLine + apacheNoticeLines.length);
-    if (!requiredHeaders.some((requiredHeader) => (
-      requiredHeader.every((line, index) => actualHeader[index] === line)
-    ))) {
+    if (!requiredHeader.every((line, index) => actualHeader[index] === line)) {
       diagnostics.push(
         `${file}:${firstLine + 1}: expected the complete Greyfoundry Apache-2.0 notice at the first syntactically valid line`,
       );

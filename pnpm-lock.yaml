@@ -12,12 +12,12 @@ importers:
   .:
     dependencies:
       '@bufbuild/protobuf':
-        specifier: 2.13.0
-        version: 2.13.0
+        specifier: 2.14.0
+        version: 2.14.0
     devDependencies:
       minecraft-data:
-        specifier: 3.113.0
-        version: 3.113.0
+        specifier: 3.113.1
+        version: 3.113.1
       mineflayer:
         specifier: 4.37.1
         version: 4.37.1
@@ -41,8 +41,8 @@ packages:
     resolution: {integrity: sha512-CO+SE4weOsfJf+C5LM8argzvotrXw252/ZU6SM2Tz63fEblhH1uuVaaO4ISYFuN4Q6BhTo7I3qIdi8ydUQCqhw==}
     engines: {node: '>=16'}
 
-  '@bufbuild/protobuf@2.13.0':
-    resolution: {integrity: sha512-acq7c49vxfm1ggJ95P70TX7ABDM0vxr1SYD3BB0o0jnBLB4OAqeHyKuN+cD3w80gXEDQ2zxHpR6CUeA+O/aU9g==}
+  '@bufbuild/protobuf@2.14.0':
+    resolution: {integrity: sha512-C3UGsiCwSprE2NKIIFA3hCDlpXTMCAXRZuEVp88L1GY36Y41+rYL5fryE+nOFhp4p4JPQvdV8PQ4DWgHgeTE+w==}
 
   '@types/node-rsa@1.1.4':
     resolution: {integrity: sha512-dB0ECel6JpMnq5ULvpUTunx3yNm8e/dIkv8Zu9p2c8me70xIRUUG3q+qXRwcSf9rN3oqamv4116iHy90dJGRpA==}
@@ -164,8 +164,8 @@ packages:
   macaddress@0.5.4:
     resolution: {integrity: sha512-i8xVWoUjj2woYU8kbpQby86Kq7uF7xl2brtKREXUBWpfgqx1fKXEeYzDiVMVxA/IufC1d3xxwJRHtFCX+9IspA==}
 
-  minecraft-data@3.113.0:
-    resolution: {integrity: sha512-sXV01wt/1ZoYGvEq1D+41hqrJ4dW+bHYzb7Ik2X1WX21uxAeHgUif9oAStcc9m+FGvRkSri5cMrWz/zezxAqAw==}
+  minecraft-data@3.113.1:
+    resolution: {integrity: sha512-OJu7QbE5YY/5iLWLp7PV7SYrqHkZsthhY1RWXj9Uhrm2zF5f6Nr2vM18VJmLUY9CGG7Jfvdlh0YWeLweya8B4A==}
 
   minecraft-folder-path@1.2.0:
     resolution: {integrity: sha512-qaUSbKWoOsH9brn0JQuBhxNAzTDMwrOXorwuRxdJKKKDYvZhtml+6GVCUrY5HRiEsieBEjCUnhVpDuQiKsiFaw==}
@@ -359,7 +359,7 @@ snapshots:
       jsonwebtoken: 9.0.3
       uuid: 11.1.1
 
-  '@bufbuild/protobuf@2.13.0': {}
+  '@bufbuild/protobuf@2.14.0': {}
 
   '@types/node-rsa@1.1.4':
     dependencies:
@@ -471,7 +471,7 @@ snapshots:
 
   macaddress@0.5.4: {}
 
-  minecraft-data@3.113.0: {}
+  minecraft-data@3.113.1: {}
 
   minecraft-folder-path@1.2.0: {}
 
@@ -484,7 +484,7 @@ snapshots:
       debug: 4.4.3
       endian-toggle: 0.0.0
       lodash.merge: 4.6.2
-      minecraft-data: 3.113.0
+      minecraft-data: 3.113.1
       minecraft-folder-path: 1.2.0
       node-fetch: 2.7.0
       node-rsa: 0.4.2
@@ -502,7 +502,7 @@ snapshots:
 
   mineflayer@4.37.1:
     dependencies:
-      minecraft-data: 3.113.0
+      minecraft-data: 3.113.1
       minecraft-protocol: 1.66.2
       mojangson: 2.0.4
       prismarine-biome: 1.4.0(prismarine-registry@1.12.0)
@@ -564,7 +564,7 @@ snapshots:
 
   prismarine-block@1.23.0(prismarine-registry@1.12.0):
     dependencies:
-      minecraft-data: 3.113.0
+      minecraft-data: 3.113.1
       prismarine-biome: 1.4.0(prismarine-registry@1.12.0)
       prismarine-chat: 1.13.0
       prismarine-item: 1.18.0
@@ -616,7 +616,7 @@ snapshots:
 
   prismarine-physics@1.11.1:
     dependencies:
-      minecraft-data: 3.113.0
+      minecraft-data: 3.113.1
       prismarine-nbt: 2.8.0
       vec3: 0.2.0
 
@@ -643,7 +643,7 @@ snapshots:
 
   prismarine-registry@1.12.0:
     dependencies:
-      minecraft-data: 3.113.0
+      minecraft-data: 3.113.1
       prismarine-block: 1.23.0(prismarine-registry@1.12.0)
       prismarine-nbt: 2.8.0
     transitivePeerDependencies:

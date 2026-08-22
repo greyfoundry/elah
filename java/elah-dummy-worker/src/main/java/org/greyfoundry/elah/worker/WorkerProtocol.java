@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════════╗
 // ║                                                                  ║
-// ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+// ║                   ELAH | A GREYFOUNDRY PROJECT                   ║
 // ║                                                                  ║
 // ║               https://github.com/greyfoundry/elah                ║
 // ║                                                                  ║
@@ -36,7 +36,7 @@ import org.greyfoundry.elah.control.v1.WorkerLoad;
 import org.greyfoundry.elah.control.v1.WorkerProfile;
 
 final class WorkerProtocol {
-  private static final String PRODUCT_VERSION = "0.0.4";
+  private static final String PRODUCT_VERSION = "0.0.5";
   private static final ProtocolVersion PROTOCOL_VERSION =
       ProtocolVersion.newBuilder().setMajor(0).setMinor(0).setPatch(2).build();
 

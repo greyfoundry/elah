@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════════╗
 // ║                                                                  ║
-// ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+// ║                   ELAH | A GREYFOUNDRY PROJECT                   ║
 // ║                                                                  ║
 // ║               https://github.com/greyfoundry/elah                ║
 // ║                                                                  ║
@@ -28,7 +28,7 @@ package org.greyfoundry.elah.api;
 
 /** Immutable identity for an Elah component. */
 public final class ComponentIdentity {
-  private static final String VERSION = "0.0.4";
+  private static final String VERSION = "0.0.5";
 
   private final String name;
 

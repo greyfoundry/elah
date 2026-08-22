@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════════╗
 // ║                                                                  ║
-// ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+// ║                   ELAH | A GREYFOUNDRY PROJECT                   ║
 // ║                                                                  ║
 // ║               https://github.com/greyfoundry/elah                ║
 // ║                                                                  ║

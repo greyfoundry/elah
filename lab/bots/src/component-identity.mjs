@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════════╗
 // ║                                                                  ║
-// ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+// ║                   ELAH | A GREYFOUNDRY PROJECT                   ║
 // ║                                                                  ║
 // ║               https://github.com/greyfoundry/elah                ║
 // ║                                                                  ║
@@ -24,7 +24,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-const version = '0.0.4';
+const version = '0.0.5';
 
 export function createComponentIdentity(name) {
   if (typeof name !== 'string' || name.trim().length === 0) {

@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════════════════╗
 // ║                                                                  ║
-// ║                   ELAH — A GREYFOUNDRY PROJECT                   ║
+// ║                   ELAH | A GREYFOUNDRY PROJECT                   ║
 // ║                                                                  ║
 // ║               https://github.com/greyfoundry/elah                ║
 // ║                                                                  ║
@@ -37,7 +37,7 @@ final class ComponentIdentityTest {
     ComponentIdentity identity = ComponentIdentity.of("elah-api");
 
     assertEquals("elah-api", identity.name());
-    assertEquals("0.0.4", identity.version());
+    assertEquals("0.0.5", identity.version());
   }
 
   @Test

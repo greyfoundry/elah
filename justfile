@@ -27,6 +27,7 @@
 set windows-shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-Command"]
 
 gradle := if os() == "windows" { ".\\gradlew.bat" } else { "./gradlew" }
+elah_cli := if os() == "windows" { "target/debug/elah.exe" } else { "target/debug/elah" }
 
 default: check
 
@@ -65,3 +66,7 @@ observer-lab:
 
 client-lab report="build/reports/client-laboratory/report.json" java="java" paper_cache="build/cache/client-laboratory":
     pnpm lab:client -- --report "{{ report }}" --java "{{ java }}" --paper-cache "{{ paper_cache }}"
+
+folia-lab report="build/reports/folia-baseline/report.json" java="java" elah=elah_cli folia_cache="build/cache/folia-baseline":
+    pnpm lab:folia -- --report "{{ report }}" --java "{{ java }}" --elah "{{ elah }}" --folia-cache "{{ folia_cache }}"
+    pnpm verify:folia -- "{{ report }}"

@@ -141,11 +141,25 @@ function buildHarness (botOptions = {}, overrides = {}) {
       direction: overrides.direction ?? 'forward',
       botFactory: (options) => {
         factoryOptions.push(options)
-        setImmediate(() => bot.start())
+        if (overrides.outOfOrderLifecycle) {
+          setImmediate(() => {
+            bot.emit('login')
+            bot.emit('connect')
+          })
+        } else if (overrides.rapidLifecycleBurst) {
+          setImmediate(() => {
+            bot.emit('connect')
+            bot.emit('login')
+            bot.emit('spawn')
+            setImmediate(() => bot.physicsTick())
+          })
+        } else {
+          setImmediate(() => bot.start())
+        }
         return bot
       },
-      positionProbe: async (username) => {
-        probes.push(username)
+      positionProbe: async (username, probeBot) => {
+        probes.push([username, probeBot])
         if (overrides.probeError) throw new Error('Paper position probe failed')
         return positions.shift()
       },
@@ -174,7 +188,8 @@ test('records the real event, server position, movement, and terminal sequence',
       'ended'
     ]
   )
-  assert.deepEqual(harness.probes, ['elah_lab_001', 'elah_lab_001'])
+  assert.deepEqual(harness.probes.map(([username]) => username), ['elah_lab_001', 'elah_lab_001'])
+  assert.equal(harness.probes.every(([, probeBot]) => probeBot === harness.bot), true)
   assert.deepEqual(harness.bot.controlCalls, [['forward', true], ['forward', false]])
   assert.deepEqual(harness.bot.packetWrites, [
     ['player_loaded', {}],
@@ -240,7 +255,7 @@ test('waits for Mineflayer physics readiness before sampling or requesting movem
   harness.bot.physicsTick()
   await running
 
-  assert.deepEqual(harness.probes, ['elah_lab_001', 'elah_lab_001'])
+  assert.deepEqual(harness.probes.map(([username]) => username), ['elah_lab_001', 'elah_lab_001'])
   assert.deepEqual(harness.bot.controlCalls, [['forward', true], ['forward', false]])
 })
 
@@ -290,6 +305,22 @@ test('waits for Mineflayer plugin injection before requiring session controls', 
 
   assert.deepEqual(bot.controls, [['forward', true], ['forward', false]])
   assert.equal(ledger.sessions[0].stages.at(-1).name, 'ended')
+})
+
+test('latches rapid login and spawn events emitted in one event-loop turn', async () => {
+  const harness = buildHarness({}, { rapidLifecycleBurst: true, timeoutAt: 2 })
+
+  await harness.run()
+
+  assert.equal(harness.ledger.sessions[0].stages.at(-1).name, 'ended')
+})
+
+test('rejects out-of-order Mineflayer lifecycle events', async () => {
+  const harness = buildHarness({}, { outOfOrderLifecycle: true })
+
+  await assert.rejects(harness.run(), /emitted login before connect/i)
+
+  assert.throws(() => harness.ledger.finalize(), /failed state/i)
 })
 
 for (const [name, botOptions, overrides, pattern] of [
