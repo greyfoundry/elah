@@ -33,7 +33,7 @@ import test from 'node:test'
 import { REQUIRED_STAGES } from '../../client/ledger.mjs'
 import { FOLIA_BASELINE_COMPATIBILITY } from '../compatibility.mjs'
 import { parseFoliaBaselineArgs, runFoliaBaseline } from '../run-laboratory.mjs'
-import { verifyFoliaBaselineReport } from '../verify-report.mjs'
+import { parseFoliaVerifyArgs, verifyFoliaBaselineReport } from '../verify-report.mjs'
 
 function passingClient () {
   return {
@@ -210,4 +210,11 @@ test('parses exact CLI options and rejects duplicate or unknown flags', () => {
   })
   assert.throws(() => parseFoliaBaselineArgs(['--java', 'one', '--java', 'two']), /repeated/i)
   assert.throws(() => parseFoliaBaselineArgs(['--unknown', 'value']), /unknown/i)
+})
+
+test('the independent verifier accepts one standard option separator only', () => {
+  assert.equal(parseFoliaVerifyArgs(['report.json']), 'report.json')
+  assert.equal(parseFoliaVerifyArgs(['--', 'report.json']), 'report.json')
+  assert.throws(() => parseFoliaVerifyArgs(['--', '--', 'report.json']), /usage/i)
+  assert.throws(() => parseFoliaVerifyArgs(['report.json', 'extra.json']), /usage/i)
 })

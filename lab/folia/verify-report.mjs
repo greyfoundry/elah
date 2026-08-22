@@ -88,11 +88,16 @@ function assertExpectedReferences (bundle) {
   }
 }
 
-async function main () {
-  if (process.argv.length !== 3) {
-    throw new ClientLaboratoryError('report_argument', 'Usage: node lab/folia/verify-report.mjs <report.json>')
+export function parseFoliaVerifyArgs (args) {
+  const values = args[0] === '--' ? args.slice(1) : args
+  if (values.length !== 1 || typeof values[0] !== 'string' || values[0].trim() === '' || values[0] === '--') {
+    throw new ClientLaboratoryError('report_argument', 'Usage: node lab/folia/verify-report.mjs [--] <report.json>')
   }
-  await verifyFoliaBaselineReport(process.argv[2])
+  return values[0]
+}
+
+async function main () {
+  await verifyFoliaBaselineReport(parseFoliaVerifyArgs(process.argv.slice(2)))
   process.stdout.write('Folia baseline evidence verified\n')
 }
 
