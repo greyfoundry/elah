@@ -52,6 +52,7 @@ export async function runClientSession ({
   timers = DEFAULT_TIMERS
 }) {
   let bot
+  let lifecycleJournal
   let activeDirection
   let removeTickSynchronizer = () => {}
   const activeWaiters = new Set()
@@ -69,16 +70,17 @@ export async function runClientSession ({
       checkTimeoutInterval: 30_000
     })
     validateBotEvents(bot)
+    lifecycleJournal = createOrderedBotEventJournal(bot, ['connect', 'login', 'spawn', 'physicsTick'])
     if (!hasSessionControls(bot)) {
       await waitFor('inject_allowed', CLIENT_LAB_COMPATIBILITY.connectTimeoutMillis)
     }
     validateSessionControls(bot)
     removeTickSynchronizer = synchronizeClientTicks(bot)
 
-    await waitFor('connect', CLIENT_LAB_COMPATIBILITY.connectTimeoutMillis)
+    await lifecycleJournal.wait('connect', CLIENT_LAB_COMPATIBILITY.connectTimeoutMillis, timers)
     ledger.record(sessionId, 'connected')
 
-    await waitFor('login', CLIENT_LAB_COMPATIBILITY.connectTimeoutMillis)
+    await lifecycleJournal.wait('login', CLIENT_LAB_COMPATIBILITY.connectTimeoutMillis, timers)
     if (bot.version !== version) {
       throw new ClientLaboratoryError(
         'wrong_negotiated_version',
@@ -87,11 +89,13 @@ export async function runClientSession ({
     }
     ledger.record(sessionId, 'logged_in')
 
-    await waitFor('spawn', CLIENT_LAB_COMPATIBILITY.spawnTimeoutMillis)
+    await lifecycleJournal.wait('spawn', CLIENT_LAB_COMPATIBILITY.spawnTimeoutMillis, timers)
     ledger.record(sessionId, 'spawned')
     bot._client.write('player_loaded', {})
 
-    await waitFor('physicsTick', CLIENT_LAB_COMPATIBILITY.spawnTimeoutMillis)
+    await lifecycleJournal.wait('physicsTick', CLIENT_LAB_COMPATIBILITY.spawnTimeoutMillis, timers)
+    lifecycleJournal.cancel()
+    lifecycleJournal = undefined
 
     const clientBefore = diagnosticClientPosition(bot)
     const before = await guardBotOperation(bot, () => positionProbe(username, bot))
@@ -137,6 +141,7 @@ export async function runClientSession ({
     throw error
   } finally {
     for (const waiter of activeWaiters) waiter.cancel()
+    lifecycleJournal?.cancel()
     removeTickSynchronizer()
     if (bot) {
       if (activeDirection !== undefined) {
@@ -159,6 +164,89 @@ export async function runClientSession ({
       waiter.cancel()
       activeWaiters.delete(waiter)
     }
+  }
+}
+
+function createOrderedBotEventJournal (bot, expectedEvents) {
+  const entries = new Map()
+  const listeners = new Map()
+  let nextIndex = 0
+  let failure
+  let cancelled = false
+
+  for (const eventName of expectedEvents) {
+    let resolveEntry
+    let rejectEntry
+    const promise = new Promise((resolve, reject) => {
+      resolveEntry = resolve
+      rejectEntry = reject
+    })
+    promise.catch(() => {})
+    entries.set(eventName, { promise, resolve: resolveEntry, reject: rejectEntry })
+    listen(eventName, () => {
+      if (cancelled || failure) return
+      const eventIndex = expectedEvents.indexOf(eventName)
+      if (eventIndex < nextIndex) return
+      if (eventIndex !== nextIndex) {
+        fail(new ClientLaboratoryError(
+          'client_event_order',
+          `Mineflayer emitted ${eventName} before ${expectedEvents[nextIndex]}`
+        ))
+        return
+      }
+      nextIndex += 1
+      entries.get(eventName).resolve()
+    })
+  }
+
+  listen('kicked', (reason) => fail(new ClientLaboratoryError(
+    'client_kicked',
+    `Mineflayer was kicked: ${boundedReason(reason)}`
+  )))
+  listen('error', (error) => fail(error instanceof Error
+    ? error
+    : new ClientLaboratoryError('client_error', `Mineflayer error: ${boundedReason(error)}`)))
+  listen('end', (reason) => fail(new ClientLaboratoryError(
+    'client_ended_early',
+    `Mineflayer ended before physicsTick: ${boundedReason(reason)}`
+  )))
+
+  return {
+    async wait (eventName, timeoutMillis, timers) {
+      const entry = entries.get(eventName)
+      if (!entry) {
+        throw new ClientLaboratoryError('invalid_event_wait', `Unknown client lifecycle event ${eventName}`)
+      }
+      let timer
+      const timeout = new Promise((_, reject) => {
+        timer = timers.setTimeout(() => reject(new ClientLaboratoryError(
+          'client_timeout',
+          `Mineflayer timed out waiting for ${eventName}`
+        )), timeoutMillis)
+      })
+      try {
+        await Promise.race([entry.promise, timeout])
+      } finally {
+        timers.clearTimeout(timer)
+      }
+    },
+    cancel () {
+      if (cancelled) return
+      cancelled = true
+      for (const [eventName, listener] of listeners) bot.removeListener(eventName, listener)
+      listeners.clear()
+    }
+  }
+
+  function listen (eventName, listener) {
+    listeners.set(eventName, listener)
+    bot.on(eventName, listener)
+  }
+
+  function fail (error) {
+    if (failure || cancelled) return
+    failure = error
+    for (const entry of entries.values()) entry.reject(error)
   }
 }
 

@@ -141,7 +141,21 @@ function buildHarness (botOptions = {}, overrides = {}) {
       direction: overrides.direction ?? 'forward',
       botFactory: (options) => {
         factoryOptions.push(options)
-        setImmediate(() => bot.start())
+        if (overrides.outOfOrderLifecycle) {
+          setImmediate(() => {
+            bot.emit('login')
+            bot.emit('connect')
+          })
+        } else if (overrides.rapidLifecycleBurst) {
+          setImmediate(() => {
+            bot.emit('connect')
+            bot.emit('login')
+            bot.emit('spawn')
+            setImmediate(() => bot.physicsTick())
+          })
+        } else {
+          setImmediate(() => bot.start())
+        }
         return bot
       },
       positionProbe: async (username, probeBot) => {
@@ -291,6 +305,22 @@ test('waits for Mineflayer plugin injection before requiring session controls', 
 
   assert.deepEqual(bot.controls, [['forward', true], ['forward', false]])
   assert.equal(ledger.sessions[0].stages.at(-1).name, 'ended')
+})
+
+test('latches rapid login and spawn events emitted in one event-loop turn', async () => {
+  const harness = buildHarness({}, { rapidLifecycleBurst: true, timeoutAt: 2 })
+
+  await harness.run()
+
+  assert.equal(harness.ledger.sessions[0].stages.at(-1).name, 'ended')
+})
+
+test('rejects out-of-order Mineflayer lifecycle events', async () => {
+  const harness = buildHarness({}, { outOfOrderLifecycle: true })
+
+  await assert.rejects(harness.run(), /emitted login before connect/i)
+
+  assert.throws(() => harness.ledger.finalize(), /failed state/i)
 })
 
 for (const [name, botOptions, overrides, pattern] of [
