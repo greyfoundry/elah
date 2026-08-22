@@ -45,12 +45,10 @@ export async function runFoliaClientBaseline ({
   const cancelledBots = new WeakSet()
   let primaryError
   let cleanupError
-  let startAttempted = false
   let readyObserved = false
   let cleanupResult
 
   try {
-    startAttempted = true
     await server.start()
     readyObserved = true
     let realBotFactory = botFactory
@@ -103,14 +101,12 @@ export async function runFoliaClientBaseline ({
     primaryError = error
     cancelActiveBots(activeBots, cancelledBots)
   } finally {
-    if (startAttempted) {
-      try {
-        cleanupResult = await server.stop()
-        if (!primaryError) ledger.recordServerCleanup(cleanupResult)
-      } catch (error) {
-        if (!primaryError) primaryError = error
-        else cleanupError = error
-      }
+    try {
+      cleanupResult = await server.stop()
+      if (!primaryError) ledger.recordServerCleanup(cleanupResult)
+    } catch (error) {
+      if (!primaryError) primaryError = error
+      else cleanupError = error
     }
   }
 

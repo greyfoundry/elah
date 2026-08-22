@@ -132,6 +132,9 @@ function operatorEntries () {
 }
 
 function offlineUuid (username) {
+  // Minecraft offline UUIDs require the UUID v3 name-hash algorithm. This value is an identity compatibility token, not a security primitive.
+
+  // codeql[js/weak-cryptographic-algorithm]
   const bytes = createHash('md5').update(`OfflinePlayer:${username}`, 'utf8').digest()
   bytes[6] = (bytes[6] & 0x0f) | 0x30
   bytes[8] = (bytes[8] & 0x3f) | 0x80
