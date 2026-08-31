@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "minecraft-data": "3.113.2",
-    "mineflayer": "4.37.1",
+    "mineflayer": "4.38.0",
     "prismarine-chunk": "1.41.0",
     "prismarine-nbt": "2.8.0",
     "prismarine-provider-anvil": "2.13.0"

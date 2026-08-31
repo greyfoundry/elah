@@ -19,8 +19,8 @@ importers:
         specifier: 3.113.2
         version: 3.113.2
       mineflayer:
-        specifier: 4.37.1
-        version: 4.37.1
+        specifier: 4.38.0
+        version: 4.38.0
       prismarine-chunk:
         specifier: 1.41.0
         version: 1.41.0
@@ -47,8 +47,8 @@ packages:
   '@types/node-rsa@1.1.4':
     resolution: {integrity: sha512-dB0ECel6JpMnq5ULvpUTunx3yNm8e/dIkv8Zu9p2c8me70xIRUUG3q+qXRwcSf9rN3oqamv4116iHy90dJGRpA==}
 
-  '@types/node@26.2.0':
-    resolution: {integrity: sha512-5IviulTZeRNp2vAJ514cc/HUlY5nZ9fCbq9DMyC52BrhFZACo3nI0R7qBxhQmo/d27NFe96ur/b7Wwxklda+kg==}
+  '@types/node@26.4.0':
+    resolution: {integrity: sha512-faiGnoIrLH/V8cibOMEAZ8pMw6oXqSukl29ra4mN8GdaB2ZewzeaLj+INpV5N+Z1eKWzY+IzaIZH2EIR6YZRNQ==}
 
   '@types/readable-stream@4.0.24':
     resolution: {integrity: sha512-NRvUNC/JFGPJvqdAfEve8oginbM6V08u5NzLWpG8MwA2kTPOLnqk+wpwuPT+mp3aUsxyuT6m2gnrPuHYCruzEg==}
@@ -170,16 +170,16 @@ packages:
   minecraft-folder-path@1.2.0:
     resolution: {integrity: sha512-qaUSbKWoOsH9brn0JQuBhxNAzTDMwrOXorwuRxdJKKKDYvZhtml+6GVCUrY5HRiEsieBEjCUnhVpDuQiKsiFaw==}
 
-  minecraft-protocol@1.66.2:
-    resolution: {integrity: sha512-keY1IY1E2AeurcekCfcXrg0TDbykGVFiMe1E4wR8QkNtQRieNwfr2xaF3g3vT9ChkwzvENqp3jxgmtFCKSUKPg==}
+  minecraft-protocol@1.68.0:
+    resolution: {integrity: sha512-atAGg/fhIVqyK6voWvED5QA+4ah65PNwpoDnkHawWhVzQbwFii77KcF6OpsU/Xlbi0o9GpihHiPdORSxXEA+Ug==}
     engines: {node: '>=22'}
 
-  mineflayer@4.37.1:
-    resolution: {integrity: sha512-kchZCJb1znzz8ZhE0+gLQ3e2t/9xUsqUy/IM/sGfceINxi3h6KXKY9luaUEa59vnD/x0OKwYdERY4sscm0ErNQ==}
+  mineflayer@4.38.0:
+    resolution: {integrity: sha512-uaHLRK/Vg9xTTx8WH57WmWdu4AYqDpQW1fqMHhyrlNQhb9JFgjfSWcr2DENK7meIKmsl64oF4gr8L73aK8zhfQ==}
     engines: {node: '>=22'}
 
-  mojangson@2.0.4:
-    resolution: {integrity: sha512-HYmhgDjr1gzF7trGgvcC/huIg2L8FsVbi/KacRe6r1AswbboGVZDS47SOZlomPuMWvZLas8m9vuHHucdZMwTmQ==}
+  mojangson@2.1.0:
+    resolution: {integrity: sha512-uz0PPHAc/kRO5tBOmEZIWxLlne3NRqO2PRyvIXbU0523tItgpvt0XG83IFZgH21EaKY1/B9c9ca074/eZlI59Q==}
 
   moo@0.5.3:
     resolution: {integrity: sha512-m2fmM2dDm7GZQsY7KK2cme8agi+AAljILjQnof7p1ZMDe6dQ4bdnSMx0cPppudoeNv5hEFQirN6u+O4fDE0IWA==}
@@ -258,8 +258,8 @@ packages:
     resolution: {integrity: sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==}
     engines: {node: '>= 0.6.0'}
 
-  protodef-validator@1.4.0:
-    resolution: {integrity: sha512-2y2coBolqCEuk5Kc3QwO7ThR+/7TZiOit4FrpAgl+vFMvq8w76nDhh09z08e2NQOdrgPLsN2yzXsvRvtADgUZQ==}
+  protodef-validator@1.5.0:
+    resolution: {integrity: sha512-GrPKsNpcd7/4bIAZN3Ojgk5ILsRX9s1IItzU+o29D1o0AKbIaLuBCmaSGbZE90Gn8zxF2/Vj8aPUHjo0AbgFdw==}
     hasBin: true
 
   protodef@1.19.0:
@@ -363,15 +363,15 @@ snapshots:
 
   '@types/node-rsa@1.1.4':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.4.0
 
-  '@types/node@26.2.0':
+  '@types/node@26.4.0':
     dependencies:
       undici-types: 8.3.0
 
   '@types/readable-stream@4.0.24':
     dependencies:
-      '@types/node': 26.2.0
+      '@types/node': 26.4.0
 
   '@xboxreplay/xboxlive-auth@5.1.0': {}
 
@@ -475,7 +475,7 @@ snapshots:
 
   minecraft-folder-path@1.2.0: {}
 
-  minecraft-protocol@1.66.2:
+  minecraft-protocol@1.68.0:
     dependencies:
       '@types/node-rsa': 1.1.4
       '@types/readable-stream': 4.0.24
@@ -500,11 +500,11 @@ snapshots:
       - encoding
       - supports-color
 
-  mineflayer@4.37.1:
+  mineflayer@4.38.0:
     dependencies:
       minecraft-data: 3.113.2
-      minecraft-protocol: 1.66.2
-      mojangson: 2.0.4
+      minecraft-protocol: 1.68.0
+      mojangson: 2.1.0
       prismarine-biome: 1.4.0(prismarine-registry@1.12.0)
       prismarine-block: 1.23.0(prismarine-registry@1.12.0)
       prismarine-chat: 1.13.0
@@ -525,7 +525,7 @@ snapshots:
       - encoding
       - supports-color
 
-  mojangson@2.0.4:
+  mojangson@2.1.0:
     dependencies:
       nearley: 2.20.1
 
@@ -577,7 +577,7 @@ snapshots:
   prismarine-chat@1.13.0:
     dependencies:
       debug: 4.4.3
-      mojangson: 2.0.4
+      mojangson: 2.1.0
       prismarine-nbt: 2.8.0
       prismarine-registry: 1.12.0
     transitivePeerDependencies:
@@ -661,14 +661,14 @@ snapshots:
 
   process@0.11.10: {}
 
-  protodef-validator@1.4.0:
+  protodef-validator@1.5.0:
     dependencies:
       ajv: 6.15.0
 
   protodef@1.19.0:
     dependencies:
       lodash.reduce: 4.6.0
-      protodef-validator: 1.4.0
+      protodef-validator: 1.5.0
       readable-stream: 4.7.0
 
   punycode@2.3.1: {}
